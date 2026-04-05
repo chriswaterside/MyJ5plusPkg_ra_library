@@ -1,0 +1,191 @@
+:root {
+    --xoption:#919187;
+    --xoptionHover:#757570;
+}
+.leaflet-container .leaflet-control-mouseposition {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 5px #bbb;
+    padding: 3px;
+    margin:0;
+    margin-left: 5px;
+    border:2px;
+    border-color: #777777;
+    border-style: solid;
+    color: #333;
+    min-width: 150px;
+}
+.racontainer {
+    min-width:120px;
+}
+
+div.leaflet-control-container div.leaflet-control-resizer-corner-s{
+    width:50px;
+    left:50%;
+}
+div.leaflet-control-rightclick{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    background:#fff url(images/mouse-right-click-icon.png) no-repeat 0 0;
+    background-size:20px 28px;
+    background-position: center;
+    cursor: pointer;
+}
+div.leaflet-control-rightclick-container{
+    position:absolute;
+    left:32px;
+    font-size: 14px;
+}
+div.leaflet-control-rightclick-container div.remove{
+    background-color: var(--xoption);
+    color:white;
+    padding-left:10px;
+    border-radius:3px;
+    padding-top:3px;
+    padding-bottom:3px;
+}
+
+div.ra-mouse-options {
+    color:var(--pantone0159);
+    border-radius: 10px;
+    font-family: "Assistant" !important;
+    margin-left: 20px;
+    width: auto;
+}
+div.ra-mouse-option{
+    height:20px;
+}
+div.ra-mouse-option a img{
+    margin-right: 10px;
+}
+
+div.leaflet-control-osmaps{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    background:#fff url(images/osicons.jpg) no-repeat 0 0;
+    background-size:30px 18px;
+    background-position: center;
+    cursor: pointer;
+    z-index:2000
+}
+
+div.leaflet-os-options {
+    width:600px;
+    position:relative;
+    left:25px;
+}
+div.leaflet-os-options div{
+    width:95px;
+    font-weight: bold;
+    padding:5px;
+    color:black;
+    background-color: white;
+    margin-bottom:1px;
+    border: 1.5px solid var(--xoption);
+    border-radius: 5px;
+}
+div.leaflet-os-options div.explorer:hover{
+    background-color: #FF7F50;
+}
+div.leaflet-os-options div.landranger:hover{
+    background-color: #C53283;
+}
+div.leaflet-os-options div.remove:hover{
+    background-color: var(--xoptionHover);
+}
+div.leaflet-os-options div.osgrid:hover{
+    background-color: #0080C0;
+}
+div.leaflet-os-options div.disclaim:hover{
+    background-color: var(--xoptionHover);
+}
+
+button.rightClick.clearItems{
+    cursor: default;
+    display: inline-block;
+    font-size: 1.1em;
+    padding: 3px 6px;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    margin-left:20px;
+    background-image: linear-gradient(-90deg, #C0C0C0 0%, #C0C0C0 100%);
+}
+button.rightClick.clearItems.active{
+    cursor: pointer;
+    background-image: linear-gradient(-90deg, #1191D1 0%, #0080C0 100%);
+}
+.rotateimg90 {
+    -webkit-transform:rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+div.leaflet-popup-content ul {
+    margin-top: 0.5rem;
+}
+div.leaflet-control-mouseposition.leaflet-control div.icon.grid{
+    background-size: cover;
+    height:25px;
+    width:25px;
+    float:right;
+    margin: 3px;
+    border: 2px solid #777;
+    border-radius: 5px;
+    cursor:pointer;
+}
+xxxxdiv.leaflet-control-mouseposition div.icon.search{
+    background-size: cover;
+    background-image:url('./images/search.png');
+    background-size: 20px 20px;
+    height:25px;
+    width:25px;
+    float:right;
+    margin: 3px;
+    border: 2px solid #777;
+    border-radius: 5px;
+
+}
+div.leaflet-control-mouseposition div.icon.search{
+    background:#fff url(images/search.png) no-repeat 0 0;
+    cursor: pointer;
+    background-size:15px 15px;
+    background-position: center;
+    width:25px;
+    height:25px;
+    float:right;
+    margin: 3px;
+    border: 2px solid #777;
+    border-radius: 5px;
+    cursor:pointer;
+}
+
+div.leaflet-control-mouseposition.leaflet-control div.latlng{
+    text-wrap: nowrap;
+}
+span.ra.setting.grid{
+    background-size: cover;
+    height:35px;
+    width:35px;
+    display:inline-block;
+    border: 2px solid #777;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+span.ra.setting.grid.mouse,
+div.icon.grid.mouse{
+    background-image:url('./images/gridmouse.png');
+}
+span.ra.setting.grid.full,
+div.icon.grid.full{
+    background-image:url('./images/gridfull.png');
+}
+span.ra.setting.grid.none,
+div.icon.grid.none{
+    background-image:url('./images/gridnone.png');
+}

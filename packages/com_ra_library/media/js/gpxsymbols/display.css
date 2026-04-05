@@ -1,0 +1,38 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 24-Mar-2019, 16:34:14
+    Author     : Chris Vaughan
+*/
+.gpximage {
+    float:left;
+    width: 120px;
+    height: 120px;
+}
+div.gpximage {
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+    width: 120px;
+}
+img {
+    width: 50px;
+    height: 50px;
+}
+.gpximagetitle {
+    display: block;
+    overflow-wrap: break-word;
+}
+div.clear {
+    clear:both;
+}
+
+summary {
+  padding: 10px; 
+  border: 5px solid #f7f7f7;
+  border-radius: 10px;
+  cursor: pointer;
+}

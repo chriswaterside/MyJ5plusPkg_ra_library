@@ -1,0 +1,36 @@
+/* 
+    Created on : 26-Jun-2019, 14:22:33
+    Author     : Chris Vaughan
+*/
+
+.tabledetails th{
+    vertical-align: middle;
+}
+.tabledetails {
+    width: 100%;
+
+}
+.tabledetails th.right,
+.tabledetails td.right{
+    text-align: right;
+}
+.tabledetails th.left,
+.tabledetails td.left{
+    text-align: left;
+}
+.tabledetails th.center,
+.tabledetails td.center{
+    text-align: center;
+}
+.tabledetails th{
+    line-height:30px;
+}
+div.tableFilter input{
+    display: block;
+}
+.ra-table-text-marker {
+    border-radius: 5px;
+    background-color:#eeeeee;
+    padding:10px;
+    border:2px solid #444444;
+}

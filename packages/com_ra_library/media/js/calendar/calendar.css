@@ -1,0 +1,654 @@
+/******************************* Common *********************************/
+/* There are three fixed sizes 200, 250 and 400 */
+/* Size 0 gives a variable size suitable for sidebar modules
+/* 259 250 */
+/* 203 200 */
+/* 159 150 */
+/* 426 400 */
+/* 364 250 */
+
+div.event-list-cal-event div.event-list-cal-day {
+    background-color: #DDDDDD;
+}
+
+div.event-list-cal-event-single-link hr {
+    margin-top: 2px;
+    margin-bottom: 0px;
+}
+
+div.event-list-cal-event-single-link.eventwalkPublished a {
+    text-decoration: none;
+}
+
+div.event-list-cal-event-single-link.eventwalkCancelled a {
+    text-decoration: line-through;
+}
+/*******************************Calendar Top Navigation*********************************/
+div.ra_calendar{
+    margin:0px auto;
+    padding:0px;
+    margin-bottom:5px;
+}
+div.ra_calendar div.box{
+    position:relative;
+    top:0px;
+    left:0px;
+    width:100%;
+    background-color: #787878 ;
+    border-radius: 5px 5px 0px 0px;
+}
+div.ra_calendar div.header{
+    vertical-align:middle;
+    position:absolute;
+    left:11px;
+    top:0px;
+    text-align:center;
+}
+
+div.ra_calendar div.header a.prev,div.ra_calendar div.header a.next{
+    position:absolute;
+    top:0px;
+    display:block;
+    cursor:pointer;
+    text-decoration:none;
+    color:#FFF;
+}
+div.ra_calendar div.header span.title{
+    color:#FFF;
+    text-shadow: none;
+    font-weight: bold;
+    border: 0px;
+    box-shadow: none;
+    margin: 0px;
+}
+div.ra_calendar div.header a.prev{
+    left:0px;
+}
+
+div.ra_calendar div.header a.next{
+    right:0px;
+}
+/*******************************Calendar Content Cells*********************************/
+div.ra_calendar div.box-content{
+    border:1px solid #787878 ;
+    border-top:none;
+    border-radius: 0px 0px 5px 5px ;
+    background-color: #eeeeee;
+
+}
+div.ra_calendar ul.label{
+    float:left;
+    margin: 0px;
+    padding: 0px;
+    margin-top:5px;
+    background-color: #eeeeee;
+}
+
+div.ra_calendar ul.label li,div.ra_calendar ul.label li a{
+    margin:0px;
+    padding:0px;
+    margin-right:5px;
+    float:left;
+    list-style-type:none;
+    text-shadow: none;
+    vertical-align:middle;
+    text-align:center;
+    color:#000;
+    background-color: #aaaaaa;
+    border-radius: 5px;
+    box-shadow: none;
+    border: 0px;
+}
+div.ra_calendar ul.dates{
+    float:left;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 5px;
+}
+
+div.ra_calendar ul.dates li{
+    margin:0px;
+    padding:0px;
+    margin-right:2px;
+    margin-top: 3px;
+    vertical-align:middle;
+    float:left;
+    list-style-type:none;
+    background-color: #D0D0D0;
+    border-radius: 5px;
+    color:#999999;
+    text-align:center;
+}
+
+div.ra_calendar ul.dates li.today{
+    background-color: #aaaaaa;
+    color: #ffffff;
+}
+
+:focus{
+    outline:none;
+}
+
+div.clear{
+    clear:both;
+}
+/* mini calendar */
+div.ra_calendar div.event-list-cal-hover {
+    position: relative;
+    top: -10px;
+    width: 400px;
+    padding: 5px 10px;
+    font-weight: bold;
+    line-height: normal;
+    text-align: left;
+    font-size: 70%;
+    background: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px #aaa;
+    display: none;
+}
+div.ra_calendar li div.event-list-cal-hover {
+    text-align: right;
+}
+
+div.ra_calendar .event-list-cal-event-single-link {
+    padding: 0.5em 0;
+}
+
+div.ra_calendar li:hover div.event-list-cal-hover {
+    display: block !important;
+    z-index: 9999;
+}
+
+div.ra_calendar .event-list-cal-event {
+    color: #000;
+    font-weight: bold;
+    cursor:pointer;
+}
+/******************************* 200 *********************************/
+/*******************************Calendar Top Navigation***********************/
+
+div.ra_calsize200{
+    width: 200px;
+}
+
+div.ra_calsize200 div.box{
+    height:20px;
+}
+
+div.ra_calsize200 div.header{
+    line-height:20px;
+    width:170px;
+    height:20px;
+
+}
+
+div.ra_calsize200 div.header a.prev,div.ra_calsize200 div.header a.next{
+    height: 9px;
+}
+
+div.ra_calsize200 div.header span.title{
+    font-size:13px;
+    line-height: 13px;
+}
+
+div.ra_calsize200 div.box-content {
+    padding-left: 5px;
+}
+
+/*******************************Calendar Content Cells*********************************/
+
+div.ra_calsize200 ul.label li,div.ra_calsize200 ul.label li a{
+    width:25px;
+    height:25px;
+    line-height:25px;
+    font-size: 13px;
+    margin-left: 0px;
+    margin-right: 2px;
+}
+
+/** overall width = width+padding-right**/
+div.ra_calsize200 ul.dates li{
+    line-height:25px;
+    width:25px;
+    height:25px;
+    font-size:13px;
+}
+
+/* mini calendar */
+div.ra_calsize200 div.event-list-cal-hover {
+    top: -5px;
+    left: -300px;
+    width: 300px;
+    font-size: 100%;
+}
+
+div.ra_calsize200 .event-list-cal-event-single-link {
+    padding: 0.5em 0;
+}
+
+/******************************* 250 *********************************/
+/*******************************Calendar Top Navigation***********************/
+div.ra_calsize250{
+    width: 250px;
+}
+
+div.ra_calsize250 div.box{
+    height:20px;
+}
+
+div.ra_calsize250 div.header{
+    line-height:20px;
+    width:220px;
+    height:20px;
+
+}
+
+div.ra_calsize250 div.header a.prev,div.ra_calsize250 div.header a.next{
+    height: 9px;
+}
+
+div.ra_calsize250 div.header span.title{
+    font-size:13px;
+    line-height: 13px;
+}
+
+div.ra_calsize250 div.box-content {
+    padding-left: 3px;
+}
+/*******************************Calendar Content Cells*********************************/
+
+div.ra_calsize250 ul.label li,div.ra_calsize250 ul.label li a{
+    width:31px;
+    height:30px;
+    line-height:30px;
+    font-size: 13px;
+    margin-left: 0px;
+    margin-right: 4px;
+}
+
+/** overall width = width+padding-right**/
+div.ra_calsize250 ul.dates li{
+    line-height:30px;
+    width:31px;
+    height:30px;
+    font-size:13px;
+    margin-right: 4px;
+}
+
+/* mini calendar */
+div.ra_calsize250 div.event-list-cal-hover {
+    top: -20px;
+    left: -300px;
+    width: 300px;
+    font-size: 100%;
+}
+
+div.ra_calsize250 .event-list-cal-event-single-link {
+    padding: 0.5em 0;
+}
+
+
+/******************************* 400 *********************************/
+div.ra_calsize400{
+    width: 400px;
+}
+
+div.ra_calsize400 div.box{
+    height:40px;
+}
+
+div.ra_calsize400 div.header{
+    line-height:40px;
+    width:372px;
+    height:40px;
+}
+
+div.ra_calsize400 div.header a.prev,div.ra_calsize400 div.header a.next{
+    height: 17px;
+}
+
+div.ra_calsize400 div.header span.title{
+    font-size:18px;
+    line-height: 18px;
+}
+
+div.ra_calsize400 div.box-content {
+    padding-left: 5px;
+}
+
+/*******************************Calendar Content Cells*********************************/
+
+div.ra_calsize400 ul.label li,div.ra_calsize400 ul.label li a{
+    width:51px;
+    height:40px;
+    line-height:40px;
+    font-size: 15px;
+}
+
+
+/** overall width = width+padding-right**/
+div.ra_calsize400 ul.dates li{
+    line-height:50px;
+    width:51px;
+    height:50px;
+    font-size:25px;
+    margin-right: 5px;
+}
+
+div.ra_calsize400 .event-list-cal-event-single-link {
+    padding: 0.3em 0;
+}
+
+/******************************* Size 0 variable depends on module size ***********************/
+
+@media only screen and (min-width: 1200px) {
+    /* 259 250 */
+    /*******************************Calendar Top Navigation***********************/
+    div.ra_calsize0{
+        width: 250px;
+    }
+
+    div.ra_calsize0 div.box{
+        height:20px;
+    }
+
+    div.ra_calsize0 div.header{
+        line-height:20px;
+        width:220px;
+        height:20px;
+
+    }
+
+    div.ra_calsize0 div.header a.prev,div.ra_calsize0 div.header a.next{
+        height: 9px;
+    }
+
+    div.ra_calsize0 div.header span.title{
+        font-size:13px;
+        line-height: 13px;
+    }
+
+    div.ra_calsize0 div.box-content {
+        padding-left: 3px;
+    }
+    /*******************************Calendar Content Cells*********************************/
+
+    div.ra_calsize0 ul.label li,div.ra_calsize0 ul.label li a{
+        width:31px;
+        height:30px;
+        line-height:30px;
+        font-size: 13px;
+        margin-left: 0px;
+        margin-right: 4px;
+    }
+
+    /** overall width = width+padding-right**/
+    div.ra_calsize0 ul.dates li{
+        line-height:30px;
+        width:31px;
+        height:30px;
+        font-size:13px;
+        margin-right: 4px;
+    }
+
+    /* mini calendar */
+    div.ra_calsize0 div.event-list-cal-hover {
+        top: -5px;
+        left: -250px;
+        width: 300px;
+        font-size: 100%;
+    }
+
+    div.ra_calsize0 .event-list-cal-event-single-link {
+        padding: 0.5em 0;
+    }
+
+}
+@media only screen and (min-width: 960px) and (max-width: 1199px) {
+    /* 203 200 */
+
+    /*******************************Calendar Top Navigation***********************/
+
+    div.ra_calsize0{
+        width: 200px;
+    }
+
+    div.ra_calsize0 div.box{
+        height:20px;
+    }
+
+    div.ra_calsize0 div.header{
+        line-height:20px;
+        width:170px;
+        height:20px;
+
+    }
+
+    div.ra_calsize0 div.header a.prev,div.ra_calsize0 div.header a.next{
+        height: 9px;
+    }
+
+    div.ra_calsize0 div.header span.title{
+        font-size:13px;
+        line-height: 13px;
+    }
+
+    div.ra_calsize0 div.box-content {
+        padding-left: 5px;
+    }
+
+    /*******************************Calendar Content Cells*********************************/
+
+    div.ra_calsize0 ul.label li,div.ra_calsize0 ul.label li a{
+        width:25px;
+        height:25px;
+        line-height:25px;
+        font-size: 13px;
+        margin-left: 0px;
+        margin-right: 2px;
+    }
+
+    /** overall width = width+padding-right**/
+    div.ra_calsize0 ul.dates li{
+        line-height:25px;
+        width:25px;
+        height:25px;
+        font-size:13px;
+    }
+
+    /* mini calendar */
+    div.ra_calsize0 div.event-list-cal-hover {
+        top: -5px;
+        left: -300px;
+        width: 300px;
+        font-size: 100%;
+    }
+
+    div.ra_calsize0 .event-list-cal-event-single-link {
+        padding: 0.5em 0;
+    }
+
+
+}
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    /* 159 150 */
+    /*******************************Calendar Top Navigation***********************/
+
+    div.ra_calsize0{
+        width: 158px;
+    }
+
+    div.ra_calsize0 div.box{
+        height:20px;
+    }
+
+    div.ra_calsize0 div.header{
+        line-height:20px;
+        width:120px;
+        height:20px;
+
+    }
+
+    div.ra_calsize0 div.header a.prev,div.ra_calsize0 div.header a.next{
+        height: 9px;
+    }
+
+    div.ra_calsize0 div.header span.title{
+        font-size:13px;
+        line-height: 13px;
+    }
+
+    div.ra_calsize0 div.box-content {
+        padding-left: 1px;
+    }
+
+    /*******************************Calendar Content Cells*********************************/
+
+    div.ra_calsize0 ul.label li,div.ra_calsize0 ul.label li a{
+        width:21px;
+        height:20px;
+        line-height:20px;
+        font-size: 10px;
+        margin-left: 0px;
+        margin-right: 1px;
+    }
+
+    /** overall width = width+padding-right**/
+    div.ra_calsize0 ul.dates li{
+        line-height:21px;
+        width:21px;
+        height:21px;
+        font-size:13px;
+        margin-right: 1px;
+    }
+
+    /* mini calendar */
+    div.ra_calsize0 div.event-list-cal-hover {
+        top: -5px;
+        left: -300px;
+        width: 300px;
+        font-size: 100%;
+    }
+
+    div.ra_calsize0 .event-list-cal-event-single-link {
+        padding: 0.5em 0;
+    }
+
+}
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+    /* 426 400 */
+    div.ra_calsize0{
+        width: 400px;
+    }
+    div.ra_calsize0 div.box{
+        height:40px;
+    }
+
+    div.ra_calsize0 div.header{
+        line-height:40px;
+        width:372px;
+        height:40px;
+    }
+
+    div.ra_calsize0 div.header a.prev,div.ra_calsize0 div.header a.next{
+        height: 17px;
+    }
+
+    div.ra_calsize0 div.header span.title{
+        font-size:18px;
+        line-height: 18px;
+    }
+
+    div.ra_calsize0 div.box-content {
+        padding-left: 5px;
+    }
+
+    /*******************************Calendar Content Cells*********************************/
+
+    div.ra_calsize0 ul.label li,div.ra_calsize0 ul.label li a{
+        width:51px;
+        height:40px;
+        line-height:40px;
+        font-size: 15px;
+    }
+
+
+    /** overall width = width+padding-right**/
+    div.ra_calsize0 ul.dates li{
+        line-height:50px;
+        width:51px;
+        height:50px;
+        font-size:25px;
+        margin-right: 5px;
+    }
+
+    div.ra_calsize0 .event-list-cal-event-single-link {
+        padding: 0.3em 0;
+    }
+}
+@media only screen and (max-width: 480px) {
+    /* 364 250 */
+    /*******************************Calendar Top Navigation***********************/
+    div.ra_calsize0{
+        width: 250px;
+    }
+
+    div.ra_calsize0 div.box{
+        height:20px;
+    }
+
+    div.ra_calsize0 div.header{
+        line-height:20px;
+        width:220px;
+        height:20px;
+    }
+
+    div.ra_calsize0 div.header a.prev,div.ra_calsize0 div.header a.next{
+        height: 9px;
+    }
+
+    div.ra_calsize0 div.header span.title{
+        font-size:13px;
+        line-height: 13px;
+    }
+
+    div.ra_calsize0 div.box-content {
+        padding-left: 3px;
+    }
+    /*******************************Calendar Content Cells*********************************/
+
+    div.ra_calsize0 ul.label li,div.ra_calsize0 ul.label li a{
+        width:31px;
+        height:30px;
+        line-height:30px;
+        font-size: 13px;
+        margin-left: 0px;
+        margin-right: 4px;
+    }
+
+    /** overall width = width+padding-right**/
+    div.ra_calsize0 ul.dates li{
+        line-height:30px;
+        width:31px;
+        height:30px;
+        font-size:13px;
+        margin-right: 4px;
+    }
+
+    /* mini calendar */
+    div.ra_calsize0 div.event-list-cal-hover {
+        top: -5px;
+        left: -300px;
+        width: 300px;
+        font-size: 100%;
+    }
+
+    div.ra_calsize0 .event-list-cal-event-single-link {
+        padding: 0.5em 0;
+    }
+
+}
+
+/**- See more at: http://www.startutorial.com/articles/view/how-to-build-a-web-calendar-in-php#sthash.dyuf6D75.dpuf **/

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="2.5" method="upgrade">
+	<name>Ramblers Library</name>
+	<author>Chris Vaughan</author>
+	<creationDate>3 April 2026</creationDate>
+	<copyright>Copyright (C) 2026 by Chris Vaughan</copyright>
+	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<packagename>ra_library</packagename>
+	<version>1.0.0</version>
+	<url></url>
+	<packager>Chris Vaughan</packager>
+	<packagerurl></packagerurl>
+	<description>Ramblers Library successfully installed!&lt;br /&gt;&lt;br /&gt;&lt;div&gt;This package contains all extensions constituting the Ramblers Library functionality. .&lt;/div&gt;&lt;br /&gt;&lt;div&gt;&lt;em&gt;If you have any questions or problems, please visit the &lt;a href='https:www.ramblers-webs.org.uk'&gt;&lt;/a&gt;.&lt;br /&gt;In case you want to uninstall Ramblers Library, please use the Package to uninstall all extensions at once!&lt;br /&gt;Ramblers Library is published under the &lt;a target='_blank' title='GNU General Public License' href='http://www.gnu.org/copyleft/gpl.html'&gt;GNU General Public License&lt;/a&gt;.&lt;/div&gt;</description>
+	<files folder="packages">
+		<file type="component" id="com_ra_library">com_ra_library.zip</file>
+		</files>
+    <updateservers>
+        <server type="extension" name="RA Library Package" priority="1">https://raw.githubusercontent.com/ramblerswebs/updates/master/updates/pkg-ra-library.xml</server>
+    </updateservers>
+</extension>
