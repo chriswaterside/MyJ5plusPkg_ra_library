@@ -11,7 +11,8 @@ namespace Ramblers\Component\Ra_library\Site\Library\Leaflet;
 use Joomla\CMS\Component\ComponentHelper;
 use Ramblers\Component\Ra_eventbooking\Site\Helper\Ra_eventbookingHelper;
 use Ramblers\Component\Ra_library\Site\Library\Load\Load;
-use Joomla\CMS\Version\Version;
+use Ramblers\Component\Ra_library\Site\Helper\Ra_libraryHelper as helper;
+//use Joomla\CMS\Version\Version;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 
@@ -21,7 +22,7 @@ class Script {
     private $dataObject = null;
 
     public function __construct() {
-        
+         helper::setData();
     }
 
     public function setCommand($command) {

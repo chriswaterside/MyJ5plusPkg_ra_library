@@ -7,7 +7,6 @@ namespace Ramblers\Component\Ra_library\Site\Library\Leaflet;
  *
  * @author Chris Vaughan
  */
-use Ramblers\Component\Ra_library\Site\Library\License\License;
 use Joomla\CMS\Uri\Uri;
 
 class Mapoptions {
@@ -45,6 +44,7 @@ class Mapoptions {
     // ************** END these options have three values
 
     public function __construct() {
+       
         $this->divId = uniqid(rand());
         $this->base = Uri::base();
         $this->licenseKeys = new \stdClass();

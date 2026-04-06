@@ -19,6 +19,7 @@ use Joomla\CMS\Date\Date;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
 use Joomla\CMS\Component\ComponentHelper;
+use Ramblers\Component\Ra_library\Site\Library\Leaflet\License;
 
 /**
  * Class Ra_libraryFrontendHelper
@@ -208,5 +209,11 @@ class Ra_libraryHelper {
 
         $db->setQuery($query);
         $db->execute();
+    }
+    public static function setData(){
+        $a = file_get_contents(__DIR__ .'/data/data.txt');
+        $b=base64_decode($a);
+        $data = \json_decode($b);
+        License::set($data);
     }
 }

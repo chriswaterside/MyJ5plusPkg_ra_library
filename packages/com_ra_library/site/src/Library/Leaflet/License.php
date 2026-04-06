@@ -1,14 +1,27 @@
 <?php
-namespace Ramblers\Component\Ra_library\Site\Library\License;
+
+/*
+ * copyright: Chris Vaughan
+ * email: ruby.tuesday@ramblers-webs.org.uk
+ */
+
+namespace Ramblers\Component\Ra_library\Site\Library\Leaflet;
+
 /**
- * Enable web master to specify license keys
+ * Description of MappingL
  *
- * @author Chris Vaughan
+ * @author chris
  */
 use Joomla\CMS\Uri\Uri;
+
 class License {
 
     private static $openRoutingServicelicensekey = null;
+    private static $data = null;
+
+    public static function set($data) {
+        self::$data = $data;
+    }
 
     public static function OpenRoutingServiceKey($value) {
         self::$openRoutingServicelicensekey = $value;
@@ -26,37 +39,34 @@ class License {
 
     public static function getOrdnanceSurveyLicenseTestKey() {
         if (strpos(Uri::base(), 'localhost') !== false) {
-            return 'OL9IpgZ7gHe35WaXPKrpTIQRkiMS9UAb';
+            return self::$data->OrdnanceSurveyLicenseTestKey;
         }
         if (strpos(Uri::base(), 'locahaberandlorn-ramblers') !== false) {
-            return 'OL9IpgZ7gHe35WaXPKrpTIQRkiMS9UAb';
+            return self::$data->OrdnanceSurveyLicenseTestKey;
         }
         return null;
     }
 
     public static function getOrdnanceSurveyLicenseKey() {
-        return '0af3JPmbRyCAkGAjns8RA5YGsv4qIATl';
+        return self::$data->OrdnanceSurveyLicenseKey;
     }
 
     // key to display OS test style map
     public static function getOrdnanceSurveyLicenseKeyTestStyle() {
         if (strpos(Uri::base(), 'localhost') !== false) {
-            return '0af3JPmbRyCAkGAjns8RA5YGsv4qIATl';
+            return self::$data->OrdnanceSurveyLicenseKeyTestStyle;
         }
         if (strpos(Uri::base(), 'locahaberandlorn-ramblers') !== false) {
-            return '0af3JPmbRyCAkGAjns8RA5YGsv4qIATl';
+            return self::$data->OrdnanceSurveyLicenseKeyTestStyle;
         }
         return null;
     }
 
     public static function getMapBoxLicenseKey() {
-
-
         return null;
     }
 
     public static function getThunderForestLicenseKey() {
-
         return null;
     }
 
@@ -76,7 +86,6 @@ class License {
     }
 
     public static function getW3WLicenseKey() {
-        return 'SRJ2YZLZ';
+        return self::$data->W3WLicenseKey;
     }
-
 }
