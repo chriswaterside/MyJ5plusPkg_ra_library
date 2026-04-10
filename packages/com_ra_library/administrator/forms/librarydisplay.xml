@@ -1,20 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
-  <fieldset>
-    <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
-    <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
-      <option value="1">JPUBLISHED</option>
-      <option value="0">JUNPUBLISHED</option>
-      <option value="2">JARCHIVED</option>
-      <option value="-2">JTRASHED</option>
-    </field>
-    <field name="ordering"/>
-    <field name="checked_out" type="hidden" filter="unset"/>
-    <field name="checked_out_time" type="hidden" filter="unset"/>
-    <field name="created_by" type="createdby" default="0" label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_CREATED_BY"/>
-    <field name="modified_by" type="modifiedby" default="0" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" description="JGLOBAL_FIELD_MODIFIED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_MODIFIED_BY"/>
-    <field name="title" filter="safehtml" type="text" required="true" message="You must give this item a name" label="JGLOBAL_TITLE" description="JFIELD_TITLE_DESC" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"/>
-    <field name="options" type="editor" buttons="true" class="inputbox" filter="safehtml" label="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_OPTIONS" description="COM_RA_LIBRARY_FORM_DESC_LIBRARYDISPLAY_OPTIONS" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_OPTIONS"/>
-    <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
-  </fieldset>
+    <fieldset>
+        <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
+        <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+            <option value="2">JARCHIVED</option>
+            <option value="-2">JTRASHED</option>
+        </field>
+        <field name="ordering"/>
+        <field name="checked_out" type="hidden" filter="unset"/>
+        <field name="checked_out_time" type="hidden" filter="unset"/>
+        <field name="created_by" type="createdby" default="0" label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_CREATED_BY"/>
+        <field name="modified_by" type="modifiedby" default="0" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" description="JGLOBAL_FIELD_MODIFIED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_MODIFIED_BY"/>
+        <field name="title" filter="safehtml" type="text" required="true" message="You must give this item a name" label="JGLOBAL_TITLE" description="JFIELD_TITLE_DESC" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"/>
+     
+        <fields name="options" label="Options" description="Nested options structure">
+            <fieldset name="basics" label="Basic Options" description="Basic options">
+                <field name="displaytype" 
+                       type="list" 
+                       validate="options"
+                       label="What to display" 
+                       description="What do you wish to display" 
+                >
+                    <option value="events">Display Walks/Events programme</option>
+                    <option value="eventarea">Display Walks/Events in geographic area</option>
+                    <option value="plot">Plot a walking route</option>
+                    <option value="table">Display data from a table</option>
+                    <option value="gpx">Display GPX walking route(s)</option>
+                    <option value="weprogramme">Draft Walks Programme</option>
+                    <option value="wesubmit">Walk submission form</option>
+                </field>
+            </fieldset>
+            <fieldset name="eventssettings" label="Events display" description="Events display">
+                        
+                <field name="walksdisplayoption" 
+                       type="groupedlist" 
+                       showon="options.displaytype:events"  
+                       default="" 
+                       label="Select a display type" 
+                       description="">
+                    <group label="Recommended">
+                        <option value="nextwalks">Next walks</option>
+                        <option value="display">Display - tabbed format</option>
+                        <option value="calendar">Calendar</option>
+                    </group>
+                    <group label="Legacy">
+                        <option value="table">Table</option>
+                        <option value="list">List</option>
+                        <option value="map">Map</option>
+                        <option value="fulldetails">Full details</option>
+                    </group>
+                    <group label="Group custom displays">
+                        <option value="av01a">AV01 Processwalks</option>
+                        <option value="BU51a">BU51 Fulldetails </option>
+                        <option value="BU51b">BU51 Groupstabs </option>
+                        <option value="BU51c">BU51 Microtabs </option>
+                        <option value="BU51d">BU51 Tabs </option>
+                        <option value="MLa">ML Print</option>
+                        <option value="NSa">NS Walksprinted</option>
+                        <option value="SR02a">SR02 Display</option>
+                        <option value="SR02b">SR02 Nextwalks</option>
+                        <option value="SR02c">SR02 Table2</option>
+                    </group>
+                    
+                </field>
+                <field name="ramblersgroups" 
+                       type="GroupSelect" 
+                       showon="options.displaytype:events,weprogramme,wesubmit" 
+                       label="Select Group(s)/Area" 
+                       multiple="true" 
+                       class="com_ra_library ramblers-group-select"
+                       cache_lifetime="3600" 
+                />    
+                <field name="nextnumberofwalks"
+                       showon="options.walksdisplayoption:nextwalks"  
+                       type="integer"
+                       default="7"
+                       first="1"
+                       last="200"
+                       step='1'
+                       label="Select number of walks"
+                       description="Select maximum number of walks/events to display"
+                       
+                />   
+    
+                <field name="tabs" 
+                       showon="options.displaytype:eventsxxx" 
+                       type="sortablelist" 
+                       label="Tabs" 
+                       multiple="true"
+                       default="normal">
+                    <option value="grades">Grades</option>
+                    <option value="table">Table</option>
+                    <option value="list">List</option>
+                    <option value="calendar">Calendar</option>
+                    <option value="map">Map</option>
+                    <option value="contacts">Contacts</option>
+                </field>
+                <field name="table_headers" type="tableheaders" 
+                       showon="options.displaytype:eventsxxx"
+                       label="Table Headings (Add + Sort)" 
+                       description="Add column headers and drag to reorder" 
+                />
+                <field name="table_items" type="tableitems" 
+                       showon="options.displaytype:eventsxxx"
+                       fieldsperitem ="3"
+                       fieldnames='["Name","Price","Description"]'
+                       label="Table Items (Add + Sort)" 
+                       description="Add column headers and drag to reorder" 
+                />
+            </fieldset>
+            <fieldset name="plotsettings" label="Plot routes" description="Plot routes">
+                <field name="routingkey"
+                       showon="options.displaytype:plot"  
+                       type="text"
+                       default=""
+                       label="Smart Routing key"
+                       description="Enable smart routing by providing open routing key"
+                       filter="raw"
+                />
+                <field name="latitude"
+                       showon="options.displaytype:plot"  
+                       type="number"
+                       default="52.891"
+                       max="90"
+                       min="-90"
+                       label="Centre map latitude"
+                       description="Latitude in the format 52.891"
+                       filter="raw"
+                />
+                <field name="longitude"
+                       showon="options.displaytype:plot"  
+                       type="number"
+                       default="-1.234"
+                       max="180"
+                       min="-180"
+                       label="Centre map longitude"
+                       description="Longitude in the format -1.234"
+                       filter="raw"
+                />
+                <field name="zoomlevel"
+                       showon="options.displaytype:plot"  
+                       type="number"
+                       default="10"
+                       max="20"
+                       min="1"
+                       step=".1"
+                       label="Zoom level"
+                       description="Initial zoom level of the map"
+                       filter="raw"
+                />
+            </fieldset> 
+            <fieldset name="Walks prog and form" label="Walks prog or form">
+                <field
+                    showon="options.displaytype:wesubmit" 
+                    name="programmecoords"
+                    type="text"
+                    label="Programme co-ords"
+                    description="Specify one or more users as a list of ids seperated by commas"
+                    size="10"
+                />
+            </fieldset>
+            <field name="addarticles" 
+                   type="list" 
+                   default="0"
+                   label="Display text before or after the display" 
+                   description="Display text before or after the display" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>  
+             
+            <fieldset name="articledata" label="Added text">
+                <field name="before" 
+                       showon="options.addarticles:1"
+                       type="editor" 
+                       buttons="true" 
+                       class="inputbox" 
+                       filter="safehtml" 
+                       label="Add text before display" 
+                       description="Add text before display" 
+                       height="250"
+                />
+                <field name="after" 
+                       showon="options.addarticles:1"
+                       type="editor" 
+                       buttons="true" 
+                       class="inputbox" 
+                       filter="safehtml" 
+                       label="Add text after display" 
+                       description="Add text after display" 
+                       
+                />
+            </fieldset>            
+       
+            
+        </fields>
+       
+     
+        <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
+    </fieldset>
 </form>

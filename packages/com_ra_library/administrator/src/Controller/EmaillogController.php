@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version    CVS: 1.0.0
  * @package    Com_Ra_library
@@ -18,7 +19,7 @@ use Joomla\CMS\MVC\Controller\FormController;
  *
  * @since  1.0.0
  */
-class EmaillogController extends FormController
-{
-	protected $view_list = 'emaillogs';
+class EmaillogController extends FormController {
+
+    protected $view_list = 'emaillogs';
 }
