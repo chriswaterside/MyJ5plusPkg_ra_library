@@ -1,0 +1,188 @@
+/*
+copyright: Chris Vaughan
+email: ruby.tuesday@ramblers-webs.org.uk
+*/
+/* 
+    Created on : 6 Apr 2026, 20:07:12
+    Author     : chris
+*/
+/* TableItemsField - Complete Styles */
+.table-items-container {
+    max-width: 100%;
+    margin: 10px 0;
+    font-family: inherit;
+}
+
+.field-header {
+    margin-bottom: 10px;
+}
+
+.add-item-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.items-list {
+    min-height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.item-row:hover {
+    background: #f8f9fa;
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.handle {
+    cursor: grab;
+    font-size: 18px;
+    color: #6c757d;
+    padding: 4px 8px;
+    user-select: none;
+    flex-shrink: 0;
+    width: 30px;
+    text-align: center;
+}
+
+.handle:active {
+    cursor: grabbing;
+}
+
+.inputs {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+    min-width: 0; /* Allow flex shrink */
+}
+
+.inputs input {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 14px;
+    min-height: 32px;
+    box-sizing: border-box;
+}
+
+.inputs input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.field-1 {
+    /* Single field: full width */
+}
+
+.field-2, .field-3 {
+    /* Equal split for 2-3 fields */
+}
+
+/* Button styling */
+.remove-item {
+    font-size: 16px;
+    padding: 4px 8px;
+    flex-shrink: 0;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Sortable ghost/ghost-class */
+.item-row.sortable-ghost {
+    opacity: 0.4;
+    background: #e9ecef;
+}
+
+.item-row.sortable-drag {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsive: Stack inputs on small screens */
+@media (max-width: 768px) {
+    .item-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .handle {
+        align-self: flex-start;
+        order: -1;
+    }
+    
+    .inputs {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .remove-item {
+        align-self: flex-end;
+        order: 99;
+    }
+}
+
+/* Joomla admin theme compatibility */
+.table-items-container .chzn-container {
+    width: 100% !important;
+}
+
+/* Empty state */
+.items-list:empty::after {
+    content: "No rows added. Click 'Add Row' to start.";
+    display: block;
+    color: #6c757d;
+    text-align: center;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .handle {
+        border: 1px solid;
+        border-radius: 2px;
+        background: rgba(0,0,0,0.1);
+    }
+}
+
+/* Kill Joomla validation classes on custom inputs */
+.table-items-container .field-input.valid,
+.table-items-container .field-input.form-control-success,
+.table-items-container .field-input.form-control-error {
+    background-image: none !important;
+    background: transparent !important;
+    border-color: #ced4da !important;
+    box-shadow: none !important;
+}
+
+/* Force writable */
+.table-items-container .field-input {
+    pointer-events: auto !important;
+    -webkit-user-modify: read-write-plaintext-only !important;
+}
+
+/* Remove aria-invalid binding */
+.table-items-container .field-input[aria-invalid] {
+    aria-invalid: false !important;
+}

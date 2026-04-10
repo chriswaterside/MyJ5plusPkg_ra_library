@@ -5,10 +5,10 @@
  * email: ruby.tuesday@ramblers-webs.org.uk
  */
 
-namespace Ramblers\Component\Ra_library\Site\Library\Leaflet;
+namespace Ramblers\Component\Ra_library\Site\Library\License;
 
 /**
- * Description of MappingL
+ * Description of License
  *
  * @author chris
  */

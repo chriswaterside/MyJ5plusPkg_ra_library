@@ -8,6 +8,7 @@ namespace Ramblers\Component\Ra_library\Site\Library\Leaflet;
  * @author Chris Vaughan
  */
 use Joomla\CMS\Uri\Uri;
+use Ramblers\Component\Ra_library\Site\Library\License\License;
 
 class Mapoptions {
 

@@ -20,9 +20,9 @@ ra.display.walksTabs = function (mapOptions, data) {
     this.settings = {
         walkClass: "walk",
         displayClass: "detailsView",
-        displayStartTime: true,
-        displayStartDescription: true,
-        displayDetailsPrompt: true,
+      //  displayStartTime: true,// not supported?
+      //  displayStartDescription: true,// not supported?
+        displayDetailsPrompt: true,// not supported?
         tabOrder: ["Grades", "Table", "List", "Calendar", "Map"],
         tableFormat: [{"title": "Date", "items": ["{dowddmm}"]}, {"title": "Meet", "items": ["{meet}", "{,meetGR}", "{,meetPC}"]}, {"title": "Start", "items": ["{start}", "{,startGR}", "{,startPC}"]}, {"title": "Title", "items": ["{title}", "{mediathumbr}"]}, {"title": "Difficulty", "items": ["{difficulty+}"]}, {"title": "Contact", "items": ["{contact}"]}],
         listFormat: ["{dowdd}", "{,meet}", "{,start}", "{,title}", "{,distance}", "{,contactname}", "{,telephone}"],

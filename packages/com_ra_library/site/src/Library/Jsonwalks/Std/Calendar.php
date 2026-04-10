@@ -1,5 +1,5 @@
 <?php
-
+namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std;
 /**
  * Description of Calendar
  *
@@ -7,8 +7,9 @@
  */
 // no direct access
 defined("_JEXEC") or die("Restricted access");
+use \Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Displaybase;
 
-class RJsonwalksStdCalendarDEL extends RJsonwalksDisplaybase {
+class Calendar extends Displaybase {
 
     public $tag = "p";
     public $startText = "Number of walks: ";

@@ -13,13 +13,13 @@ namespace Ramblers\Component\Ra_library\Site\Helper;
 defined('_JEXEC') or die;
 
 use \Joomla\CMS\Factory;
-use \Joomla\CMS\MVC\Model\BaseDatabaseModel;
+//use \Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\Date\Date;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
 use Joomla\CMS\Component\ComponentHelper;
-use Ramblers\Component\Ra_library\Site\Library\Leaflet\License;
+use Ramblers\Component\Ra_library\Site\Library\License\License;
 
 /**
  * Class Ra_libraryFrontendHelper

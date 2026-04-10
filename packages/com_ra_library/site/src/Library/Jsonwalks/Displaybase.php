@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
 
 /**
@@ -9,21 +10,20 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Script;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Mapoptions;
 
-
 abstract class Displaybase {
 
-    protected $displayStartTime = false;
-    protected $displayStartDescription = false;
+    //   protected $displayStartTime = false;// not supported?
+    //   protected $displayStartDescription = false;// not supported?
     //   protected $printOn = false;
-    public $displayGradesIcon = true;
-    public $displayGradesSidebar = true;
-    public $emailDisplayFormat = 1;
+    //   public $displayGradesIcon = true;// not supported?
+    //   public $displayGradesSidebar = true;// not supported?
+    //   public $emailDisplayFormat = 1;
     // 1 display mailto link to contact, Obfuscated to prevent harvesting by bots and spammers, without visible changes to the address for human visitors.
     // 2 link to ramblers.org.uk form to email contact 
     // 3 do not display
     // 4 display as name (at) domain
-//    protected $dispMenu = 0;
-//    protected $dispArticle = 0;
+    //    protected $dispMenu = 0;
+    //    protected $dispArticle = 0;
     private $script = null;
     private $options = null;
 
@@ -43,11 +43,11 @@ abstract class Displaybase {
         $this->script->add($this->options);
     }
 
-    public function alwaysDisplayStartTime($value) {
-        $this->displayStartTime = $value;
-    }
-
-    public function alwaysDisplayStartDescription($value) {
-        $this->displayStartDescription = $value;
-    }
+//    public function alwaysDisplayStartTime($value) {
+//        $this->displayStartTime = $value;
+//    }
+//
+//    public function alwaysDisplayStartDescription($value) {
+//        $this->displayStartDescription = $value;
+//    }
 }

@@ -1,0 +1,55 @@
+/*
+copyright: Chris Vaughan
+email: ruby.tuesday@ramblers-webs.org.uk
+*/
+/* 
+    Created on : 6 Apr 2026, 17:17:57
+    Author     : chris
+*/
+.sortable-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.sortable-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sortable-item input:checked + .sortable-handle {
+    color: #4caf50;
+}
+
+.sortable-checkbox {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    cursor: move;
+}
+
+.sortable-checkbox input {
+    margin-right: 10px;
+    order: -1;
+}
+
+.sortable-handle {
+    margin-right: 10px;
+    font-weight: bold;
+    cursor: grab;
+    min-width: 20px;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.sortable-item:hover {
+    background: #e3f2fd;
+}

@@ -15,9 +15,9 @@ use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 class Mapmarker extends Displaybase {
 
     private $map;
-    private $walkClass = "walk";
+   // private $walkClass = "walk";
     private $legendposition = "top";
-    public $displayGradesSidebar = true;
+   // public $displayGradesSidebar = true;// not supported?
 
     public function __construct() {
         $this->map = new Map;
