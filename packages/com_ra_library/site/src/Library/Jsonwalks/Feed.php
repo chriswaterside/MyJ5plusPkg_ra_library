@@ -7,10 +7,12 @@
  * @copyright           Copyright (c) 2021 Chris Vaughan. All rights reserved.
  * @license		GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
  */
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
 use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 use Joomla\CMS\Factory;
 
@@ -87,10 +89,12 @@ class Feed {
         $this->walks->filterDistance(floatval($minDistance), floatval($maxDistance));
     }
 
-    public function filterDistanceFrom($easting, $northing, $distanceKm) {
-        $app = Factory::getApplication();
-        $app->enqueueMessage('WEBMASTER: \$feed->filterDistanceFrom no longer supported', 'error');
-        //   $this->walks->filterDistanceFrom($easting, $northing, $distanceKm);
+    public function filterWalksDistanceBelow($minDistance) {
+        $this->walks->filterDistanceBelow(floatval($minDistance));
+    }
+
+    public function filterWalksDistanceAbove($maxDistance) {
+        $this->walks->filterDistanceAbove(floatval($maxDistance));
     }
 
     public function filterDistanceFromLatLong($lat, $lon, $distanceKm) {
@@ -99,11 +103,6 @@ class Feed {
 
     public function filterGroups($filter) {
         $this->walks->filterGroups($filter);
-    }
-
-    public function filterStrands($filter) {
-        $app = Factory::getApplication();
-        $app->enqueueMessage("WEBMASTER: \$feed->filterStrands() is no longer supported", 'error');
     }
 
     public function filterEvents() {
@@ -152,6 +151,26 @@ class Feed {
         $dateto->setTime(0, 0, 0);
         $datefrom->setTime(0, 0, 0);
         $this->walks->filterDateRange($datefrom, $dateto);
+    }
+
+    public function filterDateBefore($datefrom) {
+        if (!is_a($datefrom, 'DateTime')) {
+            $app = Factory::getApplication();
+            $app->enqueueMessage("feed->filterDateBefore: parameter is NOT Datetime", 'error');
+            return;
+        }
+        $datefrom->setTime(0, 0, 0);
+        $this->walks->filterDateBefore($datefrom);
+    }
+
+    public function filterDateAfter($dateto) {
+        if (!is_a($dateto, 'DateTime')) {
+            $app = Factory::getApplication();
+            $app->enqueueMessage("feed->filterDateAfter: parameter is NOT Datetime", 'error');
+            return;
+        }
+        $dateto->setTime(0, 0, 0);
+        $this->walks->filterDateAfter($dateto);
     }
 
     public function filterDayofweek($days) {

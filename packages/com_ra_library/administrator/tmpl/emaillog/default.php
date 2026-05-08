@@ -1,8 +1,8 @@
 <?php
 /**
  * @version    CVS: 1.0.0
- * @package    Com_Anand
- * @author     Super User <dev@component-creator.com>
+ * @package    Com_ra_library
+ * @author     ruby.tuesday@ramblers-webs.org.uk
  * @copyright  2023 Super User
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */

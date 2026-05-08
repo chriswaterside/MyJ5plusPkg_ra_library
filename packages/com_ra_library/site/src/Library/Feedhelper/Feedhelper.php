@@ -10,7 +10,7 @@ namespace Ramblers\Component\Ra_library\Site\Library\Feedhelper;
 //
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-use Ramblers\Component\Ra_library\Site\Library\Errors;
+use Ramblers\Component\Ra_library\Site\Library\Errors\Errors;
 
 class Feedhelper {
 
@@ -30,7 +30,7 @@ class Feedhelper {
         if (isset($cacheLocation)) {
             $this->createCacheFolder();
         } else {
-            die("Invalid call to RJsonwalksFeedhelper");
+            die("Invalid call to Jsonwalks Feedhelper");
         }
     }
 
@@ -72,7 +72,6 @@ class Feedhelper {
 
     // Get remote file
     private function createCachedFileFromUrl($url, $title) {
-        \jimport('joomla.filesystem.file');
         $result = '';
         $tmpFile = $this->getCacheName($url);
         // Check if a cached copy exists 
@@ -84,10 +83,10 @@ class Feedhelper {
         $fgcOutput = $this->file_get_contents($url);
         if ($fgcOutput === false) {
             $response = "Error from file_get_contents";
-            RErrors::notifyError('FETCH: Unable to fetch ' . $title . ', data may be out of date', $url, 'warning', $response);
+            Errors::notifyError('FETCH: Unable to fetch ' . $title . ', data may be out of date', $url, 'warning', $response);
             $fgcOutput = "[]";
         } else {
-            \JFile::write($tmpFile, $fgcOutput);
+            file_put_contents($tmpFile, $fgcOutput);
         }
 
         // if cached file exists (new or old) then return it.

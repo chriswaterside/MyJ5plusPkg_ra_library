@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `#__ra_library_displays` (
 `created_by` INT(11)  NULL  DEFAULT 0,
 `modified_by` INT(11)  NULL  DEFAULT 0,
 `title` VARCHAR(255)  NOT NULL ,
+`displayoption` VARCHAR(255)  DEFAULT "none" ,
 `options` MEDIUMTEXT NULL  DEFAULT "",
 PRIMARY KEY (`id`)
 ,KEY `idx_state` (`state`)
@@ -44,3 +45,10 @@ SELECT * FROM ( SELECT 'Library display','com_ra_library.librarydisplay','{"spec
 WHERE NOT EXISTS (
 	SELECT type_alias FROM `#__content_types` WHERE (`type_alias` = 'com_ra_library.librarydisplay')
 ) LIMIT 1;
+
+INSERT INTO `#__mail_templates` 
+(`template_id`, `extension`, `language`, `subject`, `body`, `htmlbody`, `attachments`, `params`) 
+VALUES 
+('com_ra_library.upload_notification', 'com_ra_library', '', 'COM_RA_LIBRARY_MAIL_UPLOAD_NOTIFICATION_SUBJECT', 'COM_RA_LIBRARY_MAIL_UPLOAD_NOTIFICATION_BODY', 'COM_RA_LIBRARY_MAIL_UPLOAD_NOTIFICATION_BODY_HTML', '', '{"tags":["sitename","filename","filepath","username"]}')
+ON DUPLICATE KEY UPDATE 
+`extension` = VALUES(`extension`);

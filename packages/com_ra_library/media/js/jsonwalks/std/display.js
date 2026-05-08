@@ -20,19 +20,26 @@ ra.display.walksTabs = function (mapOptions, data) {
     this.settings = {
         walkClass: "walk",
         displayClass: "detailsView",
-      //  displayStartTime: true,// not supported?
-      //  displayStartDescription: true,// not supported?
-        displayDetailsPrompt: true,// not supported?
         tabOrder: ["Grades", "Table", "List", "Calendar", "Map"],
-        tableFormat: [{"title": "Date", "items": ["{dowddmm}"]}, {"title": "Meet", "items": ["{meet}", "{,meetGR}", "{,meetPC}"]}, {"title": "Start", "items": ["{start}", "{,startGR}", "{,startPC}"]}, {"title": "Title", "items": ["{title}", "{mediathumbr}"]}, {"title": "Difficulty", "items": ["{difficulty+}"]}, {"title": "Contact", "items": ["{contact}"]}],
-        listFormat: ["{dowdd}", "{,meet}", "{,start}", "{,title}", "{,distance}", "{,contactname}", "{,telephone}"],
-        gradesFormat: ["{gradeimg}", "{dowddmm}", "{,title}", "{,distance}", "{,contactname}"],
-        calendarFormat: ["{gradeimgMiddle}", "{title}", "{,distance}", ",", " ", "{meetTime}", "{< or >startTime}"],
-        withMonth: ["{dowShortddmm}", "{dowddmm}", "{dowddmmyyyy}"],
+        tableFormat: [{"title": "Date", "items": "{dowddmm}"},
+            {"title": "Meet", "items": "{meet}{, ?meetGR}{, ?meetPC} "},
+            {"title": "Start", "items": "{start}{, ?startGR}{, ?startPC}"},
+            {"title": "Title", "items": "{title}{mediathumbr}"},
+            {"title": "Difficulty", "items": "{difficulty+}"},
+            {"title": "Contact", "items": "{contact}"}],
+        listFormat: "{dowdd}{, ?meet}{, ?start}{, ?title}{, ?distance}{, ?contactname}{, ?telephone} ",
+        gradesFormat: "{gradeimg}{dowddmm}{, ?title}{, ?distance}{, ?contactname}",
+        calendarFormat: "{gradeimgMiddle}{title}{, ?distance}, {meetTime}{ or ?meetTime}{startTime} ",
+        withMonth: ["dowShortddmm", "dowddmm", "dowddmmyyyy"],
         itemsPerPage: 20,
         options: null,
         displayBookingsTable: false
     };
+
+    this.listTemplate = {};
+    this.gradesTemplate = {};
+    this.calendarTemplate = {};
+
     this.paginationOptions = {pagination: {
             "10 per page": 10,
             "20 per page": 20,
@@ -60,13 +67,31 @@ ra.display.walksTabs = function (mapOptions, data) {
         this.settings.tableFormat = data.customTableFormat;
     }
     if (data.customCalendarFormat !== null) {
-        this.settings.CalendarFormat = data.customCalendarFormat;
+        this.settings.calendarFormat = data.customCalendarFormat;
     }
-    this.legendposition = data.legendposition;
+
     if (data.displayClass !== "") {
         this.settings.displayClass = data.displayClass;
     }
+
     this.settings.displayBookingsTable = data.displayBookingsTable;
+
+    //  set up simpleTemplate for each layout format
+    this.gradesTemplate.template = new ra.SimpleTemplate(this.settings.gradesFormat);
+    this.gradesTemplate.fields = this.gradesTemplate.template.getFields();
+
+    this.listTemplate.template = new ra.SimpleTemplate(this.settings.listFormat);
+    this.listTemplate.fields = this.listTemplate.template.getFields();
+
+    this.calendarTemplate.template = new ra.SimpleTemplate(this.settings.calendarFormat);
+    this.calendarTemplate.fields = this.calendarTemplate.template.getFields();
+
+    this.settings.tableFormat.forEach((col) => {
+        var columnTemplate = {};
+        columnTemplate.template = new ra.SimpleTemplate(col.items);
+        columnTemplate.fields = columnTemplate.template.getFields();
+        col.template = columnTemplate;
+    });
 
     data.walks.forEach(phpwalk => {
         var newEvent = new ra.event();
@@ -235,7 +260,7 @@ ra.display.walksTabs = function (mapOptions, data) {
     };
     this.displayWalksCalendar = function (tag) {
         var events = [];
-        var $items = this.settings.calendarFormat;
+        var template = this.calendarTemplate;
         var tags = [
             {name: 'legend', parent: 'root', tag: 'div'},
             {name: 'content', parent: 'root', tag: 'div'}
@@ -250,7 +275,7 @@ ra.display.walksTabs = function (mapOptions, data) {
             if ($walk.basics.multiDate) {
                 event.end = $walk.basics.finishDate;
             }
-            event.raContent = '<div class="ra calendar event">' + $walk.getEventValues($items, false) + '</div>';
+            event.raContent = '<div class="ra calendar event">' + $walk.getWalkText(template, false) + '</div>';
             event.textColor = '#111111';
             if ($walk.admin.status === 'Cancelled') {
                 event.textColor = 'red';
@@ -262,8 +287,6 @@ ra.display.walksTabs = function (mapOptions, data) {
 
             event.classNames = ['pointer'];
             event.display = 'block';
-            //    event.eventContent = {html: '<div class="fc-event-main-frame"><span class="ra wrap">' + $walk.getEventValues( $items, false) + '</span></div>'};
-            //  event.eventContent = {html: '<div class="fc-event-main-frame"><span class="ra wrap">xgbdfhngdnhg</span></div>'};
             event.eventContent = {html: ''};
             events.push(event);
         });
@@ -362,33 +385,37 @@ ra.display.walksTabs = function (mapOptions, data) {
     };
 
     this.shouldDisplayMonth = function (view) {
-        var result = true;
+        var $template = "";
         switch (view) {
             case "Grades":
-                this.settings.gradesFormat.forEach($item => {
-                    if (this.settings.withMonth.includes($item)) {
-                        result = false;
-                    }
-                });
+                $template = this.gradesTemplate;
                 break;
             case "List":
-                this.settings.listFormat.forEach($item => {
-                    if (this.settings.withMonth.includes($item)) {
-                        result = false;
-                    }
-                });
+                $template = this.listTemplate;
                 break;
             case "Table":
-                this.settings.tableFormat.forEach($col => {
-                    $col.items.forEach($item => {
-                        if (this.settings.withMonth.includes($item)) {
-                            result = false;
-                        }
-                    });
-                });
+                var $cols = this.settings.tableFormat;
+                for (let i = 0; i < $cols.length; i++) {
+                    if (this.groupByMonth($cols[i].template)) {
+                        return true;
+                    }
+                }
+                return false;
                 break;
+            default:
+                return false;
         }
-        return  result;
+        return this.groupByMonth($template);
+    };
+    this.groupByMonth = function ($template) {
+        $temp = $template;
+        $fields = $template.fields;
+        for (let i = 0; i < this.settings.withMonth.length; i++) {
+            if ($fields.includes(this.settings.withMonth[i])) {
+                return false;
+            }
+        }
+        return true;
     };
 
     this.displayWalk_Grades = function (walk, displayMonth) {
@@ -408,13 +435,13 @@ ra.display.walksTabs = function (mapOptions, data) {
         if (typeof displayGradesRowClass === 'function') {
             span.classList.add(displayGradesRowClass(walk));
         }
-        out = walk.getEventValues(this.settings.gradesFormat);
+        out = walk.getWalkText(this.gradesTemplate);
         span.innerHTML = walk.addTooltip(out);
         div.appendChild(span);
         return div;
     };
     this.displayWalk_List = function (walk, displayMonth) {
-        var items = this.settings.listFormat;
+        var template = this.listTemplate;
         var div = document.createElement('div');
         if (displayMonth) {
             var month = document.createElement('h3');
@@ -423,7 +450,7 @@ ra.display.walksTabs = function (mapOptions, data) {
             div.appendChild(month);
         }
         var span = document.createElement('span');
-        span.innerHTML = walk.addTooltip(walk.getEventValues(items));
+        span.innerHTML = walk.addTooltip(walk.getWalkText(template));
         span.classList.add("walk" + walk.admin.status);
         span.classList.add("walkdetail");
         if (typeof displayListRowClass === 'function') {
@@ -441,7 +468,7 @@ ra.display.walksTabs = function (mapOptions, data) {
             tr.classList.add(displayTableRowClass(walk));
         }
         this.settings.tableFormat.forEach($col => {
-            table.tableRowItem(walk.addTooltip(walk.getEventValues($col.items)));
+            table.tableRowItem(walk.addTooltip(walk.getWalkText($col.template)));
         });
         var monthDisplay = null;
         if (displayMonth) {

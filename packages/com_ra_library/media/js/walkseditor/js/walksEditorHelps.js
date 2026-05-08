@@ -128,7 +128,7 @@ ra.walkseditor.help = (function () {
         return "Estimate of likely time duration of walk (optional)";
     };
     help.contactName = function () {
-        return "Enter name as you would like it displayed, e.g. Chris V, first name and initial of surname<br>If the walk is to be uploaded to Walks Manager then your surname is required";
+        return "Enter name as you would like it displayed, e.g. Chris V, first name and initial of last name<br>If the walk is to be uploaded to Walks Manager then your full last name is required";
     };
     help.contactEmail = function () {
         return "If you wish people to ask via email about the walk then enter an email address. NOTE: the email address will not be displayed via the group web site or seen by the public, it will only be used to send the email.(Optional)";
@@ -155,15 +155,15 @@ ra.walkseditor.help = (function () {
         return  '<h4>Preview walk</h4><p>View the walk as a whole to review the information you have entered</p>' +
                 '<h4>Email walk to group</h4><p>Email the walk to your group\'s Programme Secretary/Walks coordinators</p>' +
                 '<h4>Save walk</h4><p>Save the walk so you can upload it later and add additional information.</p>' +
-                '<h4>Upload walk</h4><p>Upload a previously saved walk, so you can change or add information</p>' +
+                '<h4>Read walk</h4><p>Read and upload a previously saved walk, so you can change or add information</p>' +
                 '<p>Please note that any existing information in the form will be overwritten.</p>';
     };
     help.programmeOptions = function () {
-        return  '<h4>Preview walk</h4><p>View the walk as a whole to review the information you have entered</p>' +
-                '<h4>Save walk</h4><p>Save the walk so you can upload it later and add additional information.</p>' +
-                '<h4>Upload walk</h4><p>Upload a previously saved walk, so you can change or add information</p>' +
-                '<p>Please note that any existing information in the form will be overwritten.</p>' +
-                '<h4>WM Export</h4><p>Save the walk in a CSV file suitable for uploading to Walks Manager</p>';
+        return  '<h4>Create new walk</h4><p>Create a new draft walk</p>' +
+                '<h4>Save walks programme</h4><p>Save the walks programme so you can upload it later and add additional information.</p>' +
+                '<h4>Upload walks programme</h4><p>Upload a previously saved walks programme or walk, so you can change or add information</p>' +
+                '<p>Note the new walks will be added to the walks programme</p>' +
+                '<h4>Export to WM</h4><p>Save the walk in a CSV file suitable for uploading to Walks Manager</p>';
     };
 
     return help;

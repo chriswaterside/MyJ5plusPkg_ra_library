@@ -1448,17 +1448,17 @@ ra.walkseditor.walk = function () {
         }
         var startTime = ra.getObjProperty(this.data, 'start.location.time', '');
         if (startTime === '') {
-            return '20:00';
+            return '';
         }
         var walks = ra.getObjProperty(this.data, 'walks', null);
         if (walks.length === 0) {
-            return '20:00';
+            return '';
         }
         var walk = walks[0];
         var distance = ra.getObjProperty(walk, 'distance', null);
         var units = ra.getObjProperty(walk, 'units', null);
         if (distance === null || units === null) {
-            return '20:00';
+            return '';
         }
         var duration = 0;
         switch (units) {
@@ -1469,7 +1469,7 @@ ra.walkseditor.walk = function () {
                 duration = distance * 0.621371 * 60 / 2;
                 break;
             default:
-                return '20:00';
+                return '';
         }
         var t = new Time().setTime(startTime);
         t.addMinutes(duration);

@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
+
 use Joomla\CMS\Component\ComponentHelper;
 use \Ramblers\Component\Ra_eventbooking\Site\Helper\Ra_eventbookingHelper;
 
@@ -55,7 +57,7 @@ class Walks {
         if (!ComponentHelper::isEnabled('com_ra_eventbooking')) {
             return;
         }
-        $ids=Ra_eventbookingHelper::getEventsWithBooking();
+        $ids = Ra_eventbookingHelper::getEventsWithBooking();
         $items = $this->allWalks();
         foreach ($items as $walk) {
             $walk->setBookings($ids);
@@ -114,6 +116,22 @@ class Walks {
         }
     }
 
+    public function filterDateBefore($fromdate) {
+        foreach ($this->arrayofwalks as $key => $walk) {
+            if ($walk->filterDateBefore($fromdate)) {
+                unset($this->arrayofwalks[$key]);
+            }
+        }
+    }
+
+    public function filterDateAfter($todate) {
+        foreach ($this->arrayofwalks as $key => $walk) {
+            if ($walk->filterDateAfter($todate)) {
+                unset($this->arrayofwalks[$key]);
+            }
+        }
+    }
+
     public function filterTitle($filter, $option = 'remove') {
         foreach ($this->arrayofwalks as $key => $walk) {
             if ($option === 'remove') {
@@ -156,6 +174,22 @@ class Walks {
         foreach ($this->arrayofwalks as $key => $walk) {
             // if outside of the range then remove the walk
             if ($walk->filterDistance($distanceMin, $distanceMax)) {
+                unset($this->arrayofwalks[$key]);
+            }
+        }
+    }
+     public function filterDistanceBelow($distanceMin) {
+        foreach ($this->arrayofwalks as $key => $walk) {
+            // if outside of the range then remove the walk
+            if ($walk->filterDistanceBelow($distanceMin)) {
+                unset($this->arrayofwalks[$key]);
+            }
+        }
+    }
+     public function filterDistanceAbove( $distanceMax) {
+        foreach ($this->arrayofwalks as $key => $walk) {
+            // if outside of the range then remove the walk
+            if ($walk->filterDistanceAbove( $distanceMax)) {
                 unset($this->arrayofwalks[$key]);
             }
         }
@@ -234,7 +268,7 @@ class Walks {
         if ($val1 == $val2) {
             return $this->sortData2($a, $b);
         }
-        return ($val1 < $val2 ) ? -1 : 1;
+        return ($val1 < $val2) ? -1 : 1;
     }
 
     private function sortData2($a, $b) {
@@ -243,7 +277,7 @@ class Walks {
         if ($val1 == $val2) {
             return $this->sortData3($a, $b);
         }
-        return ($val1 < $val2 ) ? -1 : 1;
+        return ($val1 < $val2) ? -1 : 1;
     }
 
     private function sortData3($a, $b) {
@@ -252,7 +286,7 @@ class Walks {
         if ($val1 == $val2) {
             return 0;
         }
-        return ($val1 < $val2 ) ? -1 : 1;
+        return ($val1 < $val2) ? -1 : 1;
     }
 
     public function allWalks() {

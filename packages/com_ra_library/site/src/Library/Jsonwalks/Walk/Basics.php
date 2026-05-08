@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
+
 /**
  * Description of basics
  *
@@ -7,6 +9,7 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
  */
 use \Ramblers\Component\Ra_library\Site\Library\Html\Html;
 use Joomla\CMS\Factory;
+
 class Basics implements \JsonSerializable {
 
     private $admin;
@@ -146,6 +149,14 @@ class Basics implements \JsonSerializable {
 
     public function filterDateRange($fromdate, $todate) {
         return ($this->walkDate < $fromdate || $this->walkDate > $todate);
+    }
+
+    public function filterDateBefore($fromdate) {
+        return $this->walkDate < $fromdate;
+    }
+
+    public function filterDateAfter($todate) {
+        return $this->walkDate > $todate;
     }
 
     public function titleIs($filter) {

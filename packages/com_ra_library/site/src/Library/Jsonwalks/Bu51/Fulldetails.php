@@ -16,9 +16,7 @@ class Fulldetails extends Simplelist {
 
     public $walkClass = "bu51Nextwalk";
     public $feedClass = "walksfeed"; // not used?
-    private $listFormat = ["{gradeimg}", "{title}", "{lf}",
-        "{dowddmmyyyy}", "{[ meet at ]meetTime}", "{[ start at ]startTime}", "{[ estimated finish at ]finishTime}",
-        "{,distance}", "{,nationalGrade}","{,type}","{ walk}"];
+    private $listFormat = "{gradeimg}{title}{lf}{dowddmmyyyy}{ meet at ?meetTime}{ start at ?startTime}{ estimated finish at ?finishTime}{, ?distance}{, ?nationalGrade}{, ?type}{ walk}"; 
     private $nowalks = 20;
 
     public function __construct() {

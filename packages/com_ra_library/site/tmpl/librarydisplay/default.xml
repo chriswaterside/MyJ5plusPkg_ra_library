@@ -2,7 +2,7 @@
 <metadata>
     <layout title="COM_RA_LIBRARY_TITLE_ITEM_VIEW_LIBRARYDISPLAY" option="View">
         <message>
-                        <![CDATA[COM_RA_LIBRARY_TITLE_ITEM_VIEW_LIBRARYDISPLAY_DESC]]>
+         <![CDATA[COM_RA_LIBRARY_TITLE_ITEM_VIEW_LIBRARYDISPLAY_DESC]]>
         </message>
     </layout>
     <fields name="request">

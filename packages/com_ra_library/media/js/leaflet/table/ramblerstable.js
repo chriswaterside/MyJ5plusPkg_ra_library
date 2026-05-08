@@ -16,6 +16,7 @@ ra.display.tableList = (function () {
         this.numberOfRows = this.items[0].values.length;
         this.recordDiv;
         this.masterdiv = document.getElementById(options.divId);
+        this.iconpath = ra.baseDirectory() + "images/";
         this.defaultIcon = L.icon({
             iconUrl: ra.baseDirectory() + "media/com_ra_library/images/marker-route.png",
             iconSize: [33, 50],
@@ -286,14 +287,14 @@ ra.display.tableList = (function () {
                             icon = L.divIcon({className: xclass, iconSize: null, html: title, popupAnchor: [10, 30]});
                         case "icon":
                             xclass = icons.class;
-                            var xclass = "ra-table-text-marker";
+                            var xclass = "ra-table-icon-marker";
                             if (icons.class) {
                                 xclass = icons.class;
                             }
                             if (icons.values) {
                                 if (icons.values[title]) {
                                     icon = L.icon({
-                                        iconUrl: ra.baseDirectory() + icons.values[title],
+                                        iconUrl: this.iconpath + icons.values[title],
                                         iconSize: [33, 50],
                                         iconAnchor: [16, 47],
                                         popupAnchor: [0, -44]

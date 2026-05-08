@@ -23,63 +23,239 @@ $wa->registerAndUseStyle(
         'com_ra_library.custom',
         'administrator/components/com_ra_library/assets/css/ra_library.css'
 );
+$wa->registerAndUseScript(
+    'my.script',
+    'media/com_ra_library/js/ra.js',
+    [],
+    ['defer' => true],
+    ['core']
+);
 HTMLHelper::_('bootstrap.tooltip');
+$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+$wa->addInlineStyle('div.ra-form-section{
+   background-color: #f2f2f2;
+   border-radius: 5px;
+   padding: 5px;
+   margin-bottom:10px;
+}');
+$wa->useStyle('com_ra_library.filters');
+$wa->useScript('com_ra_library.layoutcheck');
 ?>
 
 <form
     action="<?php echo Route::_('index.php?option=com_ra_library&layout=edit&id=' . (int) $this->item->id); ?>"
     method="post" enctype="multipart/form-data" name="adminForm" id="librarydisplay-form" class="form-validate form-horizontal">
 
+    <div class="main-card">
+        <?php
+        //     HTMLHelper::_('script', 'com_ra_library/fields/toggleDisplayoptionsnote.js', ['version' => 'auto', 'relative' => true]);
+        HTMLHelper::_('script', 'com_ra_library/fields/toggleDisplayoptionsnote.js', ['relative' => true]);
+
+        // $displayOption = $this->form->getValue('displayoption');
+        $displayOption = $this->item->displayoption;
+        $this->document->addScriptOptions('form', [
+            'originalDisplayoption' => (string) $this->item->displayoption,
+        ]);
+        echo HTMLHelper::_('uitab.startTabSet', 'myTab', array('active' => 'option'));
+
+        echo HTMLHelper::_('uitab.addTab', 'myTab', 'option', Text::_('Display Option'));
+
+        echo $this->form->renderField('title');
+        echo $this->form->renderField('displayoption');
+        echo $this->form->renderField('displayoption_note');
+        echo $this->form->renderField('displaymethods');
+        echo HTMLHelper::_('uitab.endTab');
+
+        switch ($displayOption) {
+            case 'future_display':
+            case "future_nextwalks":
+            case "future_calendar":
+            case "future_table":
+            case "future_list":
+            case "future_map":
+            case "future_fulldetails":
+            case "future_AV01a":
+            case "future_BU51a":
+            case "future_BU51b":
+            case "future_BU51c":
+            case "future_BU51d":
+            case "future_MLa":
+            case "future_NSa":
+            case "future_SR02a":
+            case "future_SR02b":
+            case "future_SR02c":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Define Walks/Events', Text::_('Walks/Events Source'));
+                echo $this->form->renderFieldset('loadwalks');
+                echo HTMLHelper::_('uitab.endTab');
+
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'filters', 'Walk/event Filters');
+                echo '<div class="row">';
+                echo $this->form->renderFieldset('filters');
+                echo '</div>';
+                echo HTMLHelper::_('uitab.endTab');
+        }
+        switch ($displayOption) {
+            case 'future_display':
+
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                echo $this->form->renderField('custom_tabs', 'options');
+                displayLayoutHelp();
+                echo $this->form->renderField('custom_grades', 'options');
+                echo $this->form->renderField('custom_table', 'options');
+                echo $this->form->renderField('custom_list', 'options');
+                echo $this->form->renderField('custom_calendar', 'options');
+
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case "future_table":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                displayLayoutHelp();
+                echo $this->form->renderField('custom_table', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case "future_list":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                displayLayoutHelp();
+                echo $this->form->renderField('custom_simplelist', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case "future_nextwalks":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                displayLayoutHelp();
+                echo $this->form->renderField('custom_nextwalks', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case "future_fulldetails":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                displayLayoutHelp();
+                echo $this->form->renderField('custom_fulldetails', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+        }
+        switch ($displayOption) {
+            case 'routes_plot':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Plot Option', Text::_('Plot route options'));
+                echo '<div class="ra-form-section">';
+                echo '<h3>Define initial display area of map</h3>';
+                echo $this->form->renderField('routes_latitude', 'options');
+                echo $this->form->renderField('routes_longitude', 'options');
+                echo $this->form->renderField('routes_zoomlevel', 'options');
+                echo '</div>';
+                echo '<div class="ra-form-section">';
+                echo $this->form->renderField('routes_smartroutingnote', 'options');
+                echo $this->form->renderField('routes_smartroutingkey', 'options');
+                echo '</div>';
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_display_single':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('routes_file', 'options');
+                echo $this->form->renderField('routes_linecolour', 'options');
+                echo $this->form->renderField('routes_download', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_display_multi':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('routes_folder', 'options');
+                echo $this->form->renderField('routes_linecolour', 'options');
+                echo $this->form->renderField('routes_download', 'options');
+                echo $this->form->renderField('routes_displaytitle', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case'table_csv':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('table_file', 'options');
+                echo $this->form->renderField('table_markertype', 'options');
+                echo $this->form->renderField('table_markercolumn', 'options');
+                echo $this->form->renderField('table_textmarkerclass', 'options');
+                echo $this->form->renderField('table_iconmarkers', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case'table_sql':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('table_sqlselect', 'options');
+                echo $this->form->renderField('table_options', 'options');
+                echo $this->form->renderField('table_markertype', 'options');
+                echo $this->form->renderField('table_markercolumn', 'options');
+                echo $this->form->renderField('table_textmarkerclass', 'options');
+                echo $this->form->renderField('table_iconmarkers', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+
+                break;
+            case'table_json':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('table_json', 'options');
+                echo $this->form->renderField('table_options', 'options');
+                echo $this->form->renderField('table_markertype', 'options');
+                echo $this->form->renderField('table_textmarker', 'options');
+                echo $this->form->renderField('table_textmarkerclass', 'options');
+                echo $this->form->renderField('table_iconmarkers', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case'documents_folder':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'document options', Text::_('Document options'));
+                echo $this->form->renderFieldset('documents');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case'draft_submit':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('draft_ragroups', 'options');
+                echo $this->form->renderField('draft_coords', 'options');
+                echo $this->form->renderField('draft_localgrades', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case'draft_programme':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('draft_ragroups', 'options');
+                echo $this->form->renderField('draft_localgrades', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+        }
+        echo HTMLHelper::_('uitab.addTab', 'myTab', 'Article', Text::_('Article'));
+        echo $this->form->renderField('addarticles', 'options');
+        echo $this->form->renderField('before', 'options');
+        echo $this->form->renderField('after', 'options');
+        echo HTMLHelper::_('uitab.endTab');
+
+        echo HTMLHelper::_('uitab.endTabSet');
+        ?>
+    </div>
 
     <?php
     echo HTMLHelper::_('uitab.startTabSet', 'myTab', array('active' => 'programme'));
-    ?>
-    <?php echo HTMLHelper::_('uitab.addTab', 'myTab', 'programme', Text::_('COM_RA_LIBRARY_TAB_PROGRAMME', true)); ?>
-    <div class="row-fluid">
-        <div class="col-md-12 form-horizontal">
-            <fieldset class="adminform">
-                <legend><?php echo Text::_('COM_RA_LIBRARY_FIELDSET_PROGRAMME'); ?></legend>
-                <?php
-                echo $this->form->renderField('title');
 
-// Get ALL fields in your "options" group
-                $optionsFields = $this->form->getGroup('options');
-
-                if ($optionsFields && count($optionsFields)) {
-                    echo '<div class="card">';
-                    echo '<div class="card-header">';
-                    echo '<h3>' . Text::_('Options') . '</h3>';
-                    echo '</div>';
-                    echo '<div class="card-body">';
-                    foreach ($optionsFields as $field) {
-                      echo  $field->renderField();
-                    }
-                    echo '</div>';
-                    echo '</div>';
-                }
-
-                if ($this->state->params->get('save_history', 1)) :
-                    ?>
-                    <div class="control-group">
-                        <div class="control-label"><?php echo $this->form->getLabel('version_note'); ?></div>
-                        <div class="controls"><?php echo $this->form->getInput('version_note'); ?></div>
-                    </div>
-                <?php endif; ?>
-            </fieldset>
+    if ($this->state->params->get('save_history', 1)) :
+        ?>
+        <div class="control-group">
+            <div class="control-label"><?php echo $this->form->getLabel('version_note'); ?></div>
+            <div class="controls"><?php echo $this->form->getInput('version_note'); ?></div>
         </div>
-    </div>
-    <?php echo HTMLHelper::_('uitab.endTab'); ?>
-    <input type="hidden" name="jform[id]" value="<?php echo isset($this->item->id) ? $this->item->id : ''; ?>" />
+    <?php endif; ?>
+</fieldset>
+</div>
+</div>
+<?php echo HTMLHelper::_('uitab.endTab'); ?>
+<input type="hidden" name="jform[id]" value="<?php echo isset($this->item->id) ? $this->item->id : ''; ?>" />
 
-    <input type="hidden" name="jform[state]" value="<?php echo isset($this->item->state) ? $this->item->state : ''; ?>" />
+<input type="hidden" name="jform[state]" value="<?php echo isset($this->item->state) ? $this->item->state : ''; ?>" />
 
-    <?php echo $this->form->renderField('created_by'); ?>
-    <?php echo $this->form->renderField('modified_by'); ?>
+<?php echo $this->form->renderField('created_by'); ?>
+<?php echo $this->form->renderField('modified_by'); ?>
 
 
-    <?php echo HTMLHelper::_('uitab.endTabSet'); ?>
+<?php echo HTMLHelper::_('uitab.endTabSet'); ?>
 
-    <input type="hidden" name="task" value=""/>
-    <?php echo HTMLHelper::_('form.token'); ?>
+<input type="hidden" name="task" value=""/>
+<?php echo HTMLHelper::_('form.token'); ?>
 
 </form>
+<?php
+
+function displayLayoutHelp() {
+    echo '<details>';
+    echo "<summary><b>Defining your own layout</b></summary>";
+    $helpFile = __DIR__ . '\layouthelp.html';
+    // echo $helpFile;
+    echo file_get_contents($helpFile);
+    echo "</details>";
+}

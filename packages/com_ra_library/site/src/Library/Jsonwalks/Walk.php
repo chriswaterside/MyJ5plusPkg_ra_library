@@ -1,12 +1,17 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk\Items;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk\Flags;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk\Bookings;
+use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\SimpleTemplate;
+use Ramblers\Component\Ra_library\Site\Library\Html\Html;
 use Joomla\CMS\Factory;
+
 class Walk implements \JsonSerializable {
 
     private $admin = null;
@@ -20,7 +25,7 @@ class Walk implements \JsonSerializable {
     private $flags = null;                  // flags to describe walk 
     private $media = [];                  // array of image information
     private $icsDayEvents = false;
-    private static $withMonth = ["{dowShortddmm}", "{dowddmm}", "{dowddmmyyyy}"];
+    private static $withMonth = ["dowShortddmm", "dowddmm", "dowddmmyyyy"];
     private static $customValuesClass = null;
     private static $customValuesMethod = null;
 
@@ -201,6 +206,14 @@ class Walk implements \JsonSerializable {
         return $this->basics->filterDateRange($fromdate, $todate);
     }
 
+    public function filterDateBefore($fromdate) {
+        return $this->basics->filterDateBefore($fromdate);
+    }
+
+    public function filterDateAfter($todate) {
+        return $this->basics->filterDateAfter($todate);
+    }
+
     public function _getWalkSchema() {
         $description = $this->getIntValue("basics", "description");
         $postcode = $this->getIntValue("start", "postcode");
@@ -224,8 +237,10 @@ class Walk implements \JsonSerializable {
     }
 
     public function EventText() {
-        $calendarFormat = ["{meetTime}", "{< meet, >startTime}", "{,title}", "{,distance}"];
-        $text = $this->getWalkValues($calendarFormat);
+      //  $calendarFormat = ["{meetTime}", "{< meet, >startTime}", "{,title}", "{,distance}"];
+
+        $calendarFormat = "{meetTime}{ meet, ?meetTime}{startTime}{, ?title}{, ?distance}";
+        $text = $this->getWalkText($calendarFormat);
         return $text;
     }
 
@@ -288,7 +303,7 @@ class Walk implements \JsonSerializable {
             $description = $before . $this->getIntValue("basics", "description") . $after;
             $altDescription = $before . $this->getIntValue("basics", "descriptionHtml") . $after;
         }
-        $icsfile->addRecord("SUMMARY:", RHtml::convertToText($summary));
+        $icsfile->addRecord("SUMMARY:", Html::convertToText($summary));
         $icsfile->addRecord("DESCRIPTION:", $description);
         $icsfile->addRecord("X-ALT-DESC;FMTTYPE=text/html:", $altDescription, true);
         $icsfile->addRecord("CATEGORIES:", "Walk," . $this->getIntValue("admin", "groupName"));
@@ -303,8 +318,8 @@ class Walk implements \JsonSerializable {
     }
 
     private function dateTimetoUTC($date) {
-        $utcdate = new DateTime($date->format('Ymd His'));
-        $utcdate->setTimezone(new DateTimeZone('UTC'));
+        $utcdate = new \DateTime($date->format('Ymd His'));
+        $utcdate->setTimezone(new \DateTimeZone('UTC'));
         return $utcdate->format('Ymd\THis\Z');
     }
 
@@ -345,7 +360,7 @@ class Walk implements \JsonSerializable {
             $durationFullMins += 60; // add time to allow for travelling
         }
         $intervalFormat = "PT" . $durationFullMins . "M";
-        $interval = new DateInterval($intervalFormat);
+        $interval = new \DateInterval($intervalFormat);
         return $lasttime->add($interval);
     }
 
@@ -374,6 +389,30 @@ class Walk implements \JsonSerializable {
         $outside = false;
         foreach ($walks as $walk) {
             $out = $walk->filterDistance($distanceMin, $distanceMax);
+            if ($out) {
+                $outside = true;
+            }
+        }
+        return $outside;
+    }
+
+    public function filterDistanceBelow($distanceMin) {
+        $walks = $this->walks->getItems();
+        $outside = false;
+        foreach ($walks as $walk) {
+            $out = $walk->filterDistanceBelow($distanceMin);
+            if ($out) {
+                $outside = true;
+            }
+        }
+        return $outside;
+    }
+
+    public function filterDistanceAbove($distanceMax) {
+        $walks = $this->walks->getItems();
+        $outside = false;
+        foreach ($walks as $walk) {
+            $out = $walk->filterDistanceAbove($distanceMax);
             if ($out) {
                 $outside = true;
             }
@@ -411,17 +450,11 @@ class Walk implements \JsonSerializable {
         return $out;
     }
 
-    public static function groupByMonth($items) {
-        $check = "";
-        foreach ($items as $value) {
-            if (is_array($value)) {
-                $check .= implode(",", $value['items']) . ",";
-            } else {
-                $check .= $value . ",";
-            }
-        }
+    public static function groupByMonth($template) {
+        $temp = new SimpleTemplate($template);
+        $fields = $temp->getFields();
         foreach (self::$withMonth as $value) {
-            if (strpos($check, $value) !== false) {
+            if (in_array($value, $fields)) {
                 return false;
             }
         }
@@ -436,6 +469,26 @@ class Walk implements \JsonSerializable {
     public static function setCustomValues($clss, $method) {
         self::$customValuesClass = $clss;
         self::$customValuesMethod = $method;
+    }
+
+    public function getWalkText($template, $link = true) {
+        $temp = new SimpleTemplate($template);
+        $fields = $temp->getFields();          // → ['name', 'company']
+        $values = $this->fetchValues($fields); // your Joomla‑style fetch logic
+        $out = $temp->render($values);
+        if ($link) {
+            return $this->addWalkLink($this->getIntValue("admin", "id"), $out);
+        } else {
+            return $out;
+        }
+    }
+
+    private function fetchValues($fields) {
+        $values = [];
+        foreach ($fields as $field) {
+            $values[$field] = $this->getWalkValue("{" . $field . "}");
+        }
+        return $values;
     }
 
     public function getWalkValues($items, $link = true) {

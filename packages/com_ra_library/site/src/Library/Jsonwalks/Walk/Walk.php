@@ -1,9 +1,13 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
+
 class Walk implements \JsonSerializable {
 
     private $shape;
@@ -28,7 +32,7 @@ class Walk implements \JsonSerializable {
             case "figure of eight":
                 $this->shape = "Figure of Eight";
                 break;
-           case "event":
+            case "event":
                 $this->shape = "";
                 break;
             default:
@@ -180,6 +184,16 @@ class Walk implements \JsonSerializable {
         return $this->distanceMiles < $distanceMin || $this->distanceMiles > $distanceMax;
     }
 
+    public function filterDistanceBelow($distanceMin) {
+        // if outside of the range then remove the walk
+        return $this->distanceMiles < $distanceMin;
+    }
+
+    public function filterDistanceAbove($distanceMax) {
+        // if outside of the range then remove the walk
+        return $this->distanceMiles > $distanceMax;
+    }
+
     private function getGradeSpan($class) {
         $tag = "";
         $img = $this->getGradeImg();
@@ -280,5 +294,4 @@ class Walk implements \JsonSerializable {
             'ascent' => $this->ascent
         ];
     }
-
 }

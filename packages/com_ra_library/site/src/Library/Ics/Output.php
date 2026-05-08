@@ -1,5 +1,5 @@
 <?php
-use Ramblers\Component\Ra_library\Site\Library\Ics;
+namespace Ramblers\Component\Ra_library\Site\Library\Ics;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -51,7 +51,7 @@ class Output {
     }
 
     public function addSequence($dateUpdated) {
-        $date = new DateTime('2010-01-01');
+        $date = new \DateTime('2010-01-01');
         $interval = $date->diff($dateUpdated);
         $days = $interval->days;
         // Fix added to include number of seconds since midnight, forcing an update on each download. 

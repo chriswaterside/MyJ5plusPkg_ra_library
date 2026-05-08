@@ -13,8 +13,8 @@ class Nextwalks extends Simplelist {
 
     public $walkClass = "nextwalk";
     public $feedClass = "walksfeed"; // not used?
-    private $listFormat = ["{gradeimg}", "{dowddmm}",
-        "{,title}", "{,distance}"];
+    private $listFormat = "{gradeimg}{dowddmm}{, ?title}{, ?distance}";
+
     private $nowalks = 5;
 
     public function __construct() {

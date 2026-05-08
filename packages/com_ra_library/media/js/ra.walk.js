@@ -147,10 +147,18 @@ ra.event = function () {
     this.flags = new ra.event.flags();
     this.bookings = null;
     this.general = new ra.event.general();
-    var mapSummary = ["{dowddmm}", "{;title}", "{,distance}"];
-    var mapLinks = ["{startOSMap}", "{startDirections}"];
-    var mapGrade = ["{mapGrade}"];
-    var mapTitle = ["{mapDowShortddmm}", "{,distance}"];
+    var mapSummary = {};
+    mapSummary.template = new ra.SimpleTemplate("{dowddmm}{lf}{title}{, ?distance}");
+    mapSummary.fields = mapSummary.template.getFields();
+    var mapLinks = {};
+    mapLinks.template = new ra.SimpleTemplate("{startOSMap}{startDirections}");
+    mapLinks.fields = mapLinks.template.getFields();
+    var mapGrade = {};
+    mapGrade.template = new ra.SimpleTemplate("{mapGrade}");
+    mapGrade.fields = mapGrade.template.getFields();
+    var mapTitle = {};
+    mapTitle.template = new ra.SimpleTemplate("{mapDowShortddmm}{, ?distance}");
+    mapTitle.fields = mapTitle.template.getFields();
 
     let mapLayer = null;
     this.isCancelled = function () {
@@ -260,7 +268,42 @@ ra.event = function () {
         var t = JSON.stringify(this, null, 4);
         elements.pre.innerHTML = "Times are in UTC so may be 1 hr out<br/>" + ra.syntaxHighlight(t);
     };
-    this.getEventValues = function (items, link = true) {
+    /**
+     * Get walk text from template
+     * @param {object} layout - Obj with templat and fields
+     * @param {boolean} link - Whether to add walk link (default: true)
+     * @returns {string} Rendered output
+     */
+    this.getWalkText = function (layout, link) {
+        if (link === undefined) {
+            link = true;
+        }
+        var values = this.fetchValues(layout.fields);  // your fetch logic
+        var out = layout.template.render(values);
+        if (link) {
+            return this.addWalkLink(out);
+        } else {
+            return out;
+        }
+    };
+
+    /**
+     * Fetch values for template fields
+     * @param {Array} fields - Array of field names
+     * @returns {Object} Object with field values
+     */
+    this.fetchValues = function (fields) {
+        var values = {};
+        var i, field;
+
+        for (i = 0; i < fields.length; i++) {
+            field = fields[i];
+            values[field] = this.getEventValue("{" + field + "}");
+        }
+
+        return values;
+    };
+    this.getEventValuesDEL = function (items, link = true) {
         var out, lastItem, thisItem;
         var options;
         out = "";
@@ -811,10 +854,10 @@ ra.event = function () {
             var id = this.admin.id;
             var isCancelled = this.isCancelled();
             var isEvent = this.eventType === "Event";
-            var summary = this.getEventValues(mapSummary, false);
-            var link = this.getEventValues(mapLinks, false);
-            var grade = this.getEventValues(mapGrade, false);
-            var title = this.getEventValues(mapTitle, false);
+            var summary = this.getWalkText(mapSummary, false);
+            var link = this.getWalkText(mapLinks, false);
+            var grade = this.getWalkText(mapGrade, false);
+            var title = this.getWalkText(mapTitle, false);
             loc.addWalkMarker(cluster, walkClass, id, isEvent, isCancelled, summary, link, grade, title);
         });
     };

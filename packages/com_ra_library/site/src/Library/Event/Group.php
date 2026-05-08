@@ -28,7 +28,7 @@ class Group {
             $this->arrayofevents[] = $walk;
         }
 
-        Script::registerWalks(array_values($arrayofwalks));
+     //   Script::registerWalks(array_values($arrayofwalks));
     }
 
     // used by Download ICS

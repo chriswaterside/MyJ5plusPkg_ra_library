@@ -23,16 +23,16 @@ class Walktable extends Displaybase {
     private $rowClassClass = null;
     private $rowClassMethod = null;
     public $link = true;
-    public $addDescription = true;
-    public $addGroupName = false;
-    public $addLocation = true;
+    //public $addDescription = true;
+    //public $addGroupName = false;
+    //public $addLocation = true;
     private $tableFormat = [
-        ['title' => 'Date', 'items' => ["{dowddmm}"]],
-        ['title' => 'Meet', 'items' => ["{meet}", "{,meetGR}", "{,meetPC}"]],
-        ['title' => 'Start', 'items' => ["{start}", "{,startGR}", "{,startPC}"]],
-        ['title' => 'Title', 'items' => ["{title}", "{mediathumbr}"]],
-        ['title' => 'Difficulty', 'items' => ["{difficulty+}"]],
-        ['title' => 'Contact', 'items' => ["{contact}"]]];
+        ['title' => 'Date', 'items' => "{dowddmm}"],
+        ['title' => 'Meet', 'items' => "{meet}{, ?meetGR}{, ?meetPC}"],
+        ['title' => 'Start', 'items' =>"{start}{, ?startGR}{, ?startPC}"],
+        ['title' => 'Title', 'items' =>"{title}{mediathumbr}"],
+        ['title' => 'Difficulty', 'items' =>"{difficulty+}"],
+        ['title' => 'Contact', 'items' =>"{contact}"]];
 
     public function customFormat($format) {
         $this->customFormat = $format;
@@ -45,7 +45,13 @@ class Walktable extends Displaybase {
         if ($this->customFormat !== null) {
             $this->tableFormat = $this->customFormat;
         }
-        $groupByMonth = Walk::groupByMonth($this->tableFormat);
+        $groupByMonth=false;
+        foreach ($this->tableFormat as $key => $value) {
+          $groupByMonth = Walk::groupByMonth($value["items"]);
+          if ($groupByMonth){
+              break;
+          }
+        }
         $odd = false;
         $lastValue = "";
         echo "<table class='" . $this->tableClass . "' >" . PHP_EOL;
@@ -130,8 +136,8 @@ class Walktable extends Displaybase {
             } else {
                 $out .= "<td>";
             }
-            $items = $col['items'];
-            $out .= $walk->addTooltip($walk->getWalkValues($items));
+            $layout = $col['items'];
+            $out .= $walk->addTooltip($walk->getWalkText($layout));
             $out .= "</td>";
         }
         $out .= "</tr>";

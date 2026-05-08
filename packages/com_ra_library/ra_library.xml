@@ -31,6 +31,14 @@
         <folder>src</folder>
         <folder>tmpl</folder>
     </files>
+    <files folder="images" destination="images/gpxsymbols">
+        <folder>letter</folder>
+        <folder>number</folder>
+        <folder>number_white</folder>
+        <folder>office</folder>
+        <folder>transport</folder>
+    </files>
+
     <media destination="com_ra_library" folder="media">
         <folder>css</folder>
         <folder>images</folder>
@@ -44,7 +52,7 @@
         <menu>COM_RA_LIBRARY</menu>
         <submenu>
             <menu link="option=com_ra_library&amp;view=emaillogs" view="emaillogs" alt="Ra_library/Emaillogs">COM_RA_LIBRARY_TITLE_EMAILLOGS</menu>
-            <menu link="option=com_ra_library&amp;view=librarydisplays" view="librarydisplays" alt="Ra_library/Librarydisplays">Display walks etc</menu>
+            <menu link="option=com_ra_library&amp;view=librarydisplays" view="librarydisplays" alt="Ra_library/Librarydisplays">Display Options</menu>
         </submenu>
         <files folder="administrator">
             <filename>access.xml</filename>
@@ -74,6 +82,6 @@
     
 
     <updateservers>
-        <server type="extension" priority="1" name="com_ra_library">https://nocdn.component-creator.com/index.php?task=builder.preupdatecheckhook&amp;option=com_combuilder&amp;component=NzYyMDYtMjE3MDk1</server>
+        <server type="extension" priority="1" name="Ramblers-webs Update Site">https://raw.githubusercontent.com/ramblerswebs/updates/master/updates/pkg_ra_library.xml</server>
     </updateservers>
 </extension>

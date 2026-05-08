@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Bu51;
 
 /**
@@ -12,14 +13,11 @@ defined("_JEXEC") or die("Restricted access");
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Display;
 use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 
-
 class Tabs extends Display {
 
     public $feedClass = "walksfeed"; // not used?
     public $tabOrder = ['List', 'Calendar', 'Map'];
-    public $listFormat = ['{gradeimg}', '{title}', '{lf}',
-        '{dowdd}', '{[ meet at ]meetTime}', '{[ start at ]startTime}', '{[ estimated finish at ]finishTime}',
-        '{,distance}', '{,nationalGrade}', '{,shape}', '{ walk}'];
+    public $listFormat = "{gradeimg}{title}{lf}{dowdd}{ meet at ?meetTime}{ start at ?startTime}{ estimated finish at ?finishTime}{, ?distance}{, ?nationalGrade}{, ?shape}{walk} ";
 
     public function __construct() {
         parent::__construct();

@@ -7,6 +7,7 @@ email: ruby.tuesday@ramblers-webs.org.uk
     Author     : chris
 */
 /* TableItemsField - Complete Styles */
+
 .table-items-container {
     max-width: 100%;
     margin: 10px 0;
@@ -23,7 +24,7 @@ email: ruby.tuesday@ramblers-webs.org.uk
 }
 
 .items-list {
-    min-height: 100px;
+    min-height: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background: #fff;
@@ -72,7 +73,7 @@ email: ruby.tuesday@ramblers-webs.org.uk
 }
 
 .inputs input {
-    flex: 1;
+  
     padding: 6px 8px;
     border: 1px solid #ced4da;
     border-radius: 3px;
@@ -154,6 +155,7 @@ email: ruby.tuesday@ramblers-webs.org.uk
     color: #6c757d;
     text-align: center;
     padding: 40px 20px;
+    padding: 0px;
     font-style: italic;
 }
 

@@ -101,11 +101,11 @@ class LibrarydisplayTable extends Table implements VersionableTableInterface, Ta
             $array['modified_by'] = Factory::getUser()->id;
         }
 
-        if (isset($array['params']) && is_array($array['params'])) {
-            $registry = new Registry;
-            $registry->loadArray($array['params']);
-            $array['params'] = (string) $registry;
-        }
+//        if (isset($array['selectedgroup']) && is_array($array['selectedgroup'])) {
+//            $registry = new Registry;
+//            $registry->loadArray($array['selectedgroup']);
+//            $array['selectedgroup'] = (string) $registry;
+//        }
 
         if (isset($array['metadata']) && is_array($array['metadata'])) {
             $registry = new Registry;

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<form addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
+<form 
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+    addrulepath="/administrator/components/com_ra_library/models/rule"
+>
     <fieldset>
         <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
         <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
@@ -13,155 +16,346 @@
         <field name="checked_out_time" type="hidden" filter="unset"/>
         <field name="created_by" type="createdby" default="0" label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_CREATED_BY"/>
         <field name="modified_by" type="modifiedby" default="0" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" description="JGLOBAL_FIELD_MODIFIED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_MODIFIED_BY"/>
-        <field name="title" filter="safehtml" type="text" required="true" message="You must give this item a name" label="JGLOBAL_TITLE" description="JFIELD_TITLE_DESC" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"/>
-     
+        <field name="title" filter="safehtml" 
+               type="text" 
+               required="true" 
+               message="You must give this item a name" 
+               label="JGLOBAL_TITLE" 
+               description="Title of this displayed, must be unique" 
+               hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"
+        />
+        <field
+            name="displayoption_note" 
+            type="note" 
+            class="alert alert-error displayoption-note"
+            label="When you change the display option, you must SAVE the form so the correct fields are shown." 
+            description=""
+              
+        />
+        <field
+            name="displaymethods" 
+            type="note" 
+            class="alert alert-info w-100"
+            label="How to add display to site" 
+            description="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_DISPLAYMETHODS"
+              
+        />
+        <field name="selectedgroup" 
+               type="feedcheckboxes" 
+               feedurl="https://groups.theramblers.org.uk/" 
+               scope="global" 
+               cache_lifetime="3600" 
+               label="Select Groups" 
+        />
+        <field name="displayoption" 
+               type="Nestedgroupedlist" 
+               default="" 
+               label="Select a display type" 
+               description="">
+            <option value="invalid">Select a display option</option>
+            <group label="Future led walks and events">
+                <group label="Recommended">
+                    <option value="future_display">Display of led walks (tabbed layout)</option>
+                    <option value="future_nextwalks">Next led walks</option>
+                    <option value="future_calendar">Calendar</option>
+                </group>
+                <group label="Legacy formats">
+                    <option value="future_table">Table of led walks</option>
+                    <option value="future_list">List of led walks</option>
+                    <option value="future_map">Map of led walks</option>
+                    <option value="future_fulldetails">Full details</option>
+                </group>
+                <group label="Group custom displays">
+                    <option value="future_AV01a">AV01 Processwalks</option>
+                    <option value="future_BU51a">BU51 Fulldetails </option>
+                    <option value="future_BU51b">BU51 Groupstabs </option>
+                    <option value="future_BU51c">BU51 Microtabs </option>
+                    <option value="future_BU51d">BU51 Tabs </option>
+                    <option value="future_MLa">ML Print</option>
+                    <option value="future_NSa">NS Walksprinted</option>
+                    <option value="future_SR02a">SR02 Display</option>
+                    <option value="future_SR02b">SR02 Nextwalks</option>
+                    <option value="future_SR02c">SR02 Table2</option>
+                </group>
+            </group>
+            <group label="Walking routes">
+                <option value="routes_plot">Plot a walking route</option>
+                <option value="routes_display_single">Display single walking route(GPX)</option>
+                <option value="routes_display_multi">Display mutliple walking routes(GPX)</option>
+            </group>
+            <group label="Display table of data">     
+                <option value="table_csv">Display data from a CSV file</option>
+                <option value="table_sql">Display data from an SQL table</option>
+                <option value="table_json">Display data from a JSON feed</option>
+            </group>
+            <group label="Documents">     
+                <option value="documents_folder">Display list of documents in folder</option>
+            </group>
+           
+            <group label="Draft Walks Programme">     
+                <option value="draft_submit">Submit a draft walk form</option>
+                <option value="draft_programme">Draft walks programme form</option>
+            </group>
+        </field>
+       
         <fields name="options" label="Options" description="Nested options structure">
-            <fieldset name="basics" label="Basic Options" description="Basic options">
-                <field name="displaytype" 
-                       type="list" 
-                       validate="options"
-                       label="What to display" 
-                       description="What do you wish to display" 
-                >
-                    <option value="events">Display Walks/Events programme</option>
-                    <option value="eventarea">Display Walks/Events in geographic area</option>
-                    <option value="plot">Plot a walking route</option>
-                    <option value="table">Display data from a table</option>
-                    <option value="gpx">Display GPX walking route(s)</option>
-                    <option value="weprogramme">Draft Walks Programme</option>
-                    <option value="wesubmit">Walk submission form</option>
-                </field>
-            </fieldset>
-            <fieldset name="eventssettings" label="Events display" description="Events display">
-                        
-                <field name="walksdisplayoption" 
-                       type="groupedlist" 
-                       showon="options.displaytype:events"  
-                       default="" 
-                       label="Select a display type" 
-                       description="">
-                    <group label="Recommended">
-                        <option value="nextwalks">Next walks</option>
-                        <option value="display">Display - tabbed format</option>
-                        <option value="calendar">Calendar</option>
-                    </group>
-                    <group label="Legacy">
-                        <option value="table">Table</option>
-                        <option value="list">List</option>
-                        <option value="map">Map</option>
-                        <option value="fulldetails">Full details</option>
-                    </group>
-                    <group label="Group custom displays">
-                        <option value="av01a">AV01 Processwalks</option>
-                        <option value="BU51a">BU51 Fulldetails </option>
-                        <option value="BU51b">BU51 Groupstabs </option>
-                        <option value="BU51c">BU51 Microtabs </option>
-                        <option value="BU51d">BU51 Tabs </option>
-                        <option value="MLa">ML Print</option>
-                        <option value="NSa">NS Walksprinted</option>
-                        <option value="SR02a">SR02 Display</option>
-                        <option value="SR02b">SR02 Nextwalks</option>
-                        <option value="SR02c">SR02 Table2</option>
-                    </group>
-                    
-                </field>
-                <field name="ramblersgroups" 
-                       type="GroupSelect" 
-                       showon="options.displaytype:events,weprogramme,wesubmit" 
-                       label="Select Group(s)/Area" 
-                       multiple="true" 
-                       class="com_ra_library ramblers-group-select"
-                       cache_lifetime="3600" 
-                />    
-                <field name="nextnumberofwalks"
-                       showon="options.walksdisplayoption:nextwalks"  
-                       type="integer"
-                       default="7"
-                       first="1"
-                       last="200"
-                       step='1'
-                       label="Select number of walks"
-                       description="Select maximum number of walks/events to display"
-                       
-                />   
-    
-                <field name="tabs" 
-                       showon="options.displaytype:eventsxxx" 
-                       type="sortablelist" 
-                       label="Tabs" 
-                       multiple="true"
-                       default="normal">
-                    <option value="grades">Grades</option>
-                    <option value="table">Table</option>
-                    <option value="list">List</option>
-                    <option value="calendar">Calendar</option>
-                    <option value="map">Map</option>
-                    <option value="contacts">Contacts</option>
-                </field>
-                <field name="table_headers" type="tableheaders" 
-                       showon="options.displaytype:eventsxxx"
-                       label="Table Headings (Add + Sort)" 
-                       description="Add column headers and drag to reorder" 
-                />
-                <field name="table_items" type="tableitems" 
-                       showon="options.displaytype:eventsxxx"
-                       fieldsperitem ="3"
-                       fieldnames='["Name","Price","Description"]'
-                       label="Table Items (Add + Sort)" 
-                       description="Add column headers and drag to reorder" 
-                />
-            </fieldset>
-            <fieldset name="plotsettings" label="Plot routes" description="Plot routes">
-                <field name="routingkey"
-                       showon="options.displaytype:plot"  
-                       type="text"
-                       default=""
-                       label="Smart Routing key"
-                       description="Enable smart routing by providing open routing key"
-                       filter="raw"
-                />
-                <field name="latitude"
-                       showon="options.displaytype:plot"  
-                       type="number"
-                       default="52.891"
-                       max="90"
-                       min="-90"
-                       label="Centre map latitude"
-                       description="Latitude in the format 52.891"
-                       filter="raw"
-                />
-                <field name="longitude"
-                       showon="options.displaytype:plot"  
-                       type="number"
-                       default="-1.234"
-                       max="180"
-                       min="-180"
-                       label="Centre map longitude"
-                       description="Longitude in the format -1.234"
-                       filter="raw"
-                />
-                <field name="zoomlevel"
-                       showon="options.displaytype:plot"  
-                       type="number"
-                       default="10"
-                       max="20"
-                       min="1"
-                       step=".1"
-                       label="Zoom level"
-                       description="Initial zoom level of the map"
-                       filter="raw"
-                />
-            </fieldset> 
-            <fieldset name="Walks prog and form" label="Walks prog or form">
-                <field
-                    showon="options.displaytype:wesubmit" 
-                    name="programmecoords"
-                    type="text"
-                    label="Programme co-ords"
-                    description="Specify one or more users as a list of ids seperated by commas"
-                    size="10"
-                />
-            </fieldset>
+                                  
+            <field name="custom_tabs" 
+                   type="Sortablelist" 
+                   label="Customise Tabs" 
+                   multiple="true"
+                   default=""
+                   description="Select the tabs you want and then sort into order, deselect them all to have the default order which is Grades, Table, List, Calendar, Map" 
+            >
+                <option value="Grades">Grades</option>
+                <option value="Table">Table</option>
+                <option value="List">List</option>
+                <option value="Calendar">Calendar</option>
+                <option value="Map">Map</option>
+                <option value="Contacts">Contacts</option>
+            </field>
+            <field name="custom_grades" 
+                   type="text" 
+                   class="layout-check"
+                   label="Customise Grades layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}{, ?contactname}"
+            />
+            <field name="custom_list" 
+                   type="text"     
+                   label="Customise List layout" 
+                   class="layout-check"
+                   description="Default is {dowdd}{, ?meet}{, ?start}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}" 
+            />
+            <field name="custom_table" 
+                   type="tableitems" 
+                   fieldsperitem ="2"
+                   fieldnames='["heading","layout"]'
+                   classes='["","layout-check"]' 
+                   widths='["25%","75%"]' 
+                   inputtypes='["text","text"]'
+                   hints='["Column heading","Custom layout"]'
+                   label="Customise Table layout" 
+                   description='Add column headers/layouts and drag to reorder&lt;br /&gt;
+Default is&lt;br /&gt;
+.  Date -  {dowddmm}&lt;br /&gt;
+.  Meet -  {meet}{, ?meetGR}{, ?meetPC}&lt;br /&gt;
+.  Start -  {start}{, ?startGR}{, ?startPC}&lt;br /&gt;
+.  Title -  {title}{mediathumbr}&lt;br /&gt;
+.  Difficulty -  {difficulty+}&lt;br /&gt;
+.  Contact -  {contact} '
+            />
+           
+            <field
+                name="custom_calendar"
+                type="text"
+                class="layout-check"
+                label="Customise Calendar layout"
+                description="Default is {gradeimgMiddle}{title}{, ?distance}, {meetTime}{ or ?meetTime}{startTime}"
+            />
+  
+            <field name="custom_nextwalks" 
+                   type="text"  
+                   class="layout-check"   
+                   label="Customise layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance} "
+            />
+            <field name="custom_simplelist" 
+                   type="text" 
+                   class="layout-check"    
+                   label="Customise layout" 
+                   description="Default is {dowdd}{, ?meet}{, ?meetGR}{, ?start}{, ?startGR}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}"
+            />
+            <field name="custom_fulldetails" 
+                   type="text"  
+                   class="layout-check"   
+                   label="Customise layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}"
+            />
+            <field
+                name="routes_smartroutingnote"
+                type="note"
+                label="Smart Routing"
+                description="&lt;p&gt;The option can also support a smart routing option. When enabled, this option follows the paths, roads, etc. as defined on OpenStreetMap. This is instead of drawing a straight line between points. To enable this option, which is highly recommended, you need to take out a license from OpenRouteService as below:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Visit &lt;a href=&quot;https://openrouteservice.org/terms-of-service/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://openrouteservice.org/terms-of-service/&lt;/a&gt; and review the terms and conditions.&lt;/li&gt;
+    &lt;li&gt;If you are happy with these, sign up for an account at &lt;a href=&quot;https://openrouteservice.org/dev/#/signup&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://openrouteservice.org/dev/#/signup&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;Then take out a key/token and copy and save that key below.&lt;/li&gt;
+&lt;/ul&gt;"
+            />
+            <field name="routes_smartroutingkey"
+                   type="text"
+                   default=""
+                   label="Smart Routing key"
+                   description="Enable smart routing by providing open routing key"
+                   filter="raw"
+            />  
+ 
+            <field name="routes_latitude"
+                   type="number"
+                   default="52.891"
+                   max="90"
+                   min="-90"
+                   label="Map centre: Latitude"
+                   description="Latitude in the format 52.891"
+                   filter="raw"
+            />
+            <field name="routes_longitude"
+                   type="number"
+                   default="-1.234"
+                   max="180"
+                   min="-180"
+                   label="Map centre: Longitude"
+                   description="Longitude in the format -1.234"
+                   filter="raw"
+            />
+            <field name="routes_zoomlevel"
+                   type="number"
+                   default="10"
+                   max="13"
+                   min="5"
+                   step=".1"
+                   label="Zoom level"
+                   description="Initial zoom level of the map, between 5 and 13, default is 10"
+                   filter="raw"
+            />
+            
+            <field name="routes_file"
+                   type="file" 
+                   label="Enter some text" 
+                   description="Choose an image from your computer with maximum 100KB" 
+                   size="10" 
+                   accept="image/*"
+            />  
+            <field name="routes_folder"
+                   type="folderlist"
+                   default=""
+                   label="Select a folder"
+                   directory="administrator"
+                   folderFilter=""
+                   exclude=""
+                   stripext=""
+            />   
+            <field name="routes_linecolour"
+                   type="color" 
+                   default="#782327" 
+                   format="rgba"
+                   label="Walking route: Track colour"
+                   description=""
+            />   
+            <field name="routes_download"
+                   type="list" 
+                   default="None"
+                   label="Can GPX files be downloaded" 
+                   description="" 
+            >
+                <option value="None">None - no gpx download available</option>
+                <option value="Users">Users - only logged on users can download</option>
+                <option value="Public">Public - everyone can download gpx files</option>
+            </field>  
+            <field name="routes_displaytitle"
+                   type="list" 
+                   default="1"
+                   label="Display a title" 
+                   description="Display a title above display" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>    
+            </field>  
+            
+            <field name="table_file"
+                   type="media"
+                   default=""
+                   label="Select a csv file"
+                   types="documents"
+                   preview="false"
+            />  
+            <field name="table_sqlselect" filter="safehtml" 
+                   type="text" 
+                   message="You must give this item a name" 
+                   label="SQL statement" 
+                   description="SQL to retrieve required database table" 
+                   hint="Select * from #__ra_faults"
+            />      
+            <field
+                name="table_json" 
+                type="url" 
+                default="" 
+                label="Enter URL of json feed" 
+                description="" 
+            />   
+                 
+                 
+            <field name="table_options" 
+                   type="tableitems" 
+                   fieldsperitem ="3"
+                   fieldnames='["heading","column","options"]'
+                   hints='["Heading","Column","Options"]'
+                   label="Table options" 
+                   description="Add Heading,Column and Options for each SQL field" 
+            />
+            <field name="table_markertype" 
+                   type="list" 
+                   default="0"
+                   label="Customise markers" 
+                   description="Customise markers either as text or by value of column" 
+            >
+                <option value="default">Default markers</option>
+                <option value="text">Text markers</option>
+                <option value="icons">Icon markers</option>
+            </field>  
+            <field name="table_markercolumn" 
+                   filter="safehtml" 
+                   type="text" 
+                   label="Column" 
+                   description="Which column's text value should be used as marker" 
+                   hint=""
+            />
+            <field name="table_textmarkerclass" 
+                   filter="safehtml" 
+                   type="text" 
+                   showon="table_markertype:text"
+                   label="Option class" 
+                   description="You can optionally add a CSS class to the text to add custom styling" 
+                   hint=""
+            />
+            <field
+                name="table_iconmarkers" 
+                type="tableitems" 
+                showon="table_markertype:icons"
+                fieldsperitem ="2"
+                fieldnames='["value","icon"]'
+                hints='["Column value","Required Icon"]'
+                label="Define custom icons" 
+                description="Add " 
+            /> 
+           
+             
+            <field name="draft_ragroups" 
+                   type="feedcheckboxes" 
+                   feedurl="https://groups.theramblers.org.uk/" 
+                   scope="global" 
+                   cache_lifetime="3600" 
+                   showon="load_type:wm" 
+                   label="Select Group(s)/Area" 
+                   multiple="true" 
+            />    
+            <field name="draft_coords"  
+                   type="multiUser" 
+                   label="Programme co-ords"
+                   description="Specify one or more users as a list of ids separated by commas"
+                   multiple="true" 
+                   groupselector="true"
+                   userGroup="Registered" 
+            />
+            <field name="draft_localgrades" 
+                   type="tableitems" 
+                   fieldsperitem ="2"
+                   fieldnames='["code","description"]'
+                   hints='["Grade code","Description of grade"]'
+                   label="Define local grading system" 
+                   description="Optional, One or more local grades, their codes and description" 
+            />
+ 
             <field name="addarticles" 
                    type="list" 
                    default="0"
@@ -172,28 +366,28 @@
                 <option value="1">JYES</option>
             </field>  
              
-            <fieldset name="articledata" label="Added text">
-                <field name="before" 
-                       showon="options.addarticles:1"
-                       type="editor" 
-                       buttons="true" 
-                       class="inputbox" 
-                       filter="safehtml" 
-                       label="Add text before display" 
-                       description="Add text before display" 
-                       height="250"
-                />
-                <field name="after" 
-                       showon="options.addarticles:1"
-                       type="editor" 
-                       buttons="true" 
-                       class="inputbox" 
-                       filter="safehtml" 
-                       label="Add text after display" 
-                       description="Add text after display" 
+          
+            <field name="before" 
+                   showon="options.addarticles:1"
+                   type="editor" 
+                   buttons="true" 
+                   class="inputbox" 
+                   filter="safehtml" 
+                   label="Add text before display" 
+                   description="Add text before display" 
+                   height="250"
+            />
+            <field name="after" 
+                   showon="options.addarticles:1"
+                   type="editor" 
+                   buttons="true" 
+                   class="inputbox" 
+                   filter="safehtml" 
+                   label="Add text after display" 
+                   description="Add text after display" 
                        
-                />
-            </fieldset>            
+            />
+                    
        
             
         </fields>
@@ -201,4 +395,60 @@
      
         <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
     </fieldset>
+    
+    
+    <fieldset name="filters" label="Event Filters" description="Define additional filters to apply to the library events feed.">
+        <field
+            name="filters"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/filterrow.xml"         
+            
+            description="Each row defines one filter condition."
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+    <fieldset 
+        name="loadwalks" 
+        label="Retrieve Walk and Events" 
+        description="Define source of walks and events"
+    >
+        <field
+            name="eventsources"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/loadwalksrow.xml"         
+            label="Define source of walks and events"
+            description="Each row defines a extra source of walks and events"
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+    <fieldset 
+        name="documents" 
+        label="Display index of documents" 
+        description="Display an index of docuements from folder"
+    >
+        <field
+            name="document_sources"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/documentsrow.xml"         
+            label="Display list of documents in folder"
+            description="Each row defines a extra set of documents"
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+   
 </form>

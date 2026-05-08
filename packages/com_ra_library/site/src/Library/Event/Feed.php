@@ -9,9 +9,10 @@ namespace Ramblers\Component\Ra_library\Site\Library\Event;
  */
 // no direct access
 defined("_JEXEC") or die("Restricted access");
-use Ramblers\Component\Ra_library\Site\Library\Ics\Output;
+use Ramblers\Component\Ra_library\Site\Library\Ics\Output as IcsOutput;
 
-class Feed extends Output {
+class Feed extends IcsOutput {
+//class Feed  {
 
     public function __construct() {
         
@@ -23,7 +24,7 @@ class Feed extends Output {
     }
 
     public function getText($events) {
-        $icsfile = new Output();
+        $icsfile = new IcsOutput();
         $events->getIcalendarFile($icsfile);
         return $icsfile->text();
     }

@@ -1,0 +1,190 @@
+<form
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+>
+    <fieldset name="controls" label="">
+        <field name="enabled" 
+               type="checkbox" 
+               checked="1" 
+               label="Enabled" 
+               class="col-sm-12" />
+        <field name="filter_type" 
+               type="list" 
+               label="Filter Type" 
+               class="col-sm-12">
+            <option value="">Select</option>
+            <option value="by_number">Limit number of walks</option>
+            <option value="by_days_of_week">Limit by Days of the week</option>
+            <option value="by_grades">Limit by Grade of walk</option>
+            <option value="by_before_date">Events before a date</option>
+            <option value="by_after_date">Filter Events after a date</option>
+            <option value="by_time_period">Only display events this number of days into future</option>
+            <option value="by_walks">Filter walks, only leave events</option>
+            <option value="by_events">Filter events, only leave walks</option>
+            <option value="by_groups">Filter by groups (remove events by other groups)</option>
+            <option value="by_cancelled">Remove cancelled walks and events</option>
+            <option value="by_outside_area">Filter walks and events outside area</option>
+            <option value="by_dist_shorter">Filter walks shorter than limit</option>
+            <option value="by_dist_longer">Filter walks longer than limit</option>
+            <option value="by_title">Filter walks and events by title</option>
+            <option value="by_flags">Filter walks and events by facility</option>
+        </field>
+    </fieldset>
+    
+    
+    
+    
+    <!-- Column 2: Dynamic Value (showon hides irrelevant fields) -->
+    <fieldset name="filter_value" label="">
+        <field name="by_number" 
+               type="integer" 
+               label="Limit to number of walks and events" 
+               first="1"
+               last="100"
+               step="1"
+               showon="filter_type:by_number" 
+               class="col-sm-12" 
+        />
+        <field name="days_of_week" 
+               type="checkboxes" 
+               label="Days" 
+               showon="filter_type:by_days_of_week" 
+               class="col-sm-12">
+            <option value="monday">Monday</option>
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="friday">Friday</option>
+            <option value="saturday">Saturday</option>
+            <option value="sunday">Sunday</option>
+        </field>
+        <field name="grades" 
+               type="checkboxes" 
+               label="Grades" 
+               showon="filter_type:by_grades" 
+               class="col-sm-12">
+            <option value="easy">Easy</option>
+            <option value="Easy Access">Easy Access</option>
+            <option value="leisurely">Leisurely</option>
+            <option value="moderate">Moderate</option>
+            <option value="strenuous">Strenuous</option>
+            <option value="technical">Technical</option>
+        </field>
+        <field name="before_date" 
+               type="calendar" 
+               label="Remove event before this date" 
+               showon="filter_type:by_before_date" 
+               class="col-sm-12" 
+        />
+        <field name="after_date" 
+               type="calendar" 
+               label="Remove events after this date" 
+               showon="filter_type:by_after_date" 
+               class="col-sm-12" 
+        />
+        <field name="time_period" 
+               type="integer" 
+               showon="filter_type:by_time_period" 
+               label="Only display events this number of days into the future" 
+               first="1"
+               last="200"
+               step="1"
+               class="col-sm-12"
+        />
+        <field name="keep_groups" 
+               type="feedcheckboxes" 
+               showon="filter_type:by_groups" 
+               feedurl="https://groups.theramblers.org.uk/" 
+               scope="global" 
+               cache_lifetime="3600"                           
+               label="Select Group(s)/Area" 
+               multiple="true" 
+        />       
+        <field name="dist_shorter" 
+               type="number" 
+               label="Remove walks shorter than the specified Km" 
+               first="1"
+               last="100"
+               step="1"
+               showon="filter_type:by_dist_shorter" 
+               class="col-sm-12" 
+        />
+        <field name="dist_longer" 
+               type="number" 
+               label="Remove walks longer than the specified Km" 
+               first="1"
+               last="100"
+               step="1"
+               showon="filter_type:by_dist_longer" 
+               class="col-sm-12" 
+        />
+        <field name="titletext"
+               type="text"
+               default=""
+               label="Text"
+               showon="filter_type:by_title" 
+               description="Match titles with this text string"
+               filter="raw"
+        />  
+        <field name="titlekeep" 
+               type="list" 
+               default="keep"
+               label=""
+               showon="filter_type:by_title"  
+               description="" 
+        >
+            <option value="keep">Keep matching walks and events</option>
+            <option value="remove">Remove matching walks and events</option>
+        </field>  
+        <field name="titlecontains" 
+               type="list" 
+               default="contains"
+               label=""
+               showon="filter_type:by_title"  
+               description="" 
+        >
+            <option value="contains">Match if title just contains text</option>
+            <option value="equal">Match if title is equal to text</option>
+        </field> 
+        <field name="flagskeep" 
+               type="list" 
+               default="keep"
+               label=""
+               showon="filter_type:by_flags"  
+               description="" 
+        >
+            <option value="keep">Keep walks and events with selected flags</option>
+            <option value="remove">Remove walks and events with selected flags</option>
+        </field> 
+        <field name="flags" 
+               type="GroupedCheckboxes" 
+               multiple="true" 
+               class="chzn-select" 
+               default="" 
+               showon="filter_type:by_flags" 
+               label="" 
+               description="Select one or more flags">
+    
+            <group label= "Facilities">
+                <option value="refresh">Refreshments available (Pub/cafe)</option>
+                <option value="toilet">Toilets available</option>
+            </group>
+            <group label="Transport">
+                <option value="access">Accessible by public transport</option>
+                <option value="park">Car parking available</option>
+                <option value="share">Car sharing available</option>
+                <option value="coach">Coach trip</option>
+            </group>
+            <group label= "Access" >
+                <option value="dog"> Dog friendly</option>
+                <option value="family">Family-Friendly</option>
+                <option value="intro">Introductory walk</option>
+                <option value="nostiles">No Stiles</option>
+                <option value="muddy">May be muddy</option>
+                <option value="uneven">Uneven ground</option>
+                <option value="inclines">Some inclines</option>
+                <option value="rest">Rest stop available</option>
+                <option value="wheelchair">Wheelchair accessible</option>
+            </group>
+        </field>
+    </fieldset>
+</form>

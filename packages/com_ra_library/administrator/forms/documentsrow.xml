@@ -1,0 +1,60 @@
+<form
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+>
+    <fieldset name="controls" label="">
+        <field name="enabled" 
+               type="checkbox" 
+               checked="1" 
+               label="Enabled" 
+               class="col-sm-12" 
+        />
+              <field name="introduction"
+                   type="list" 
+                   default="0"
+                   label="Add introduction before list" 
+                   description="" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>    
+            </field> 
+             <field name="introductiontext" 
+                   showon="introduction:1"
+                   type="editor" 
+                   buttons="true" 
+                   class="inputbox" 
+                   filter="safehtml" 
+                   label="Text to display" 
+                   description="" 
+                   height="250"
+            />
+        <field name="document_folder"
+               type="folderlist"
+               default=""
+               label="Select a folder"
+               directory="images"
+               recursive="true"
+               folderFilter=""
+               exclude=""
+               stripext=""
+        />  
+           <field name="sort"
+                   type="list" 
+                   default="0"
+                   label="Sort order" 
+                   description="" 
+            >
+                <option value="0">Ascending</option>
+                <option value="1">Descending</option>    
+            </field> 
+        <field name="documents_exts" 
+               type="tableitems" 
+               sort='false'
+               fieldsperitem ="1"
+               fieldnames='["Extension"]'
+               label="Allowed extension" 
+               description="specify which file extensions you wish to display, pdf, doc, etc" 
+        />
+    </fieldset>
+    
+   
+</form>

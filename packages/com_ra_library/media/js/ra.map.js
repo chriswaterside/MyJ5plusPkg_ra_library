@@ -246,24 +246,26 @@ ra.map = (function () {
                 return;
             }
 
-            marker.file = ra.baseDirectory() + "media/com_ra_library/js/gpxsymbols/" + name + ".png";
-            var file = ra.baseDirectory() + "media/com_ra_library/js/gpxsymbols/exists.php?file=" + name + ".png";
+            marker.file = ra.baseDirectory() + "images/gpxsymbols/" + name + ".png";
+            var file = ra.baseDirectory() + "?option=com_ra_library&view=checkimage&format=json&file=" + name + ".png";
             ra.ajax.getUrl(file, "", marker, function (marker, response) {
                 var url = marker.file;
                 var icon1;
+                response = JSON.parse(response);
                 marker.file = null;
-                if (response === "false") {
-                    icon1 = L.icon({
-                        iconUrl: ra.baseDirectory() + 'media/com_ra_library/js/leaflet/images/redmarker.png',
-                        iconSize: [36, 41], // size of the icon
-                        iconAnchor: [18, 41],
-                        popupAnchor: [0, -41]
-                    });
-                } else {
+                if (response.data.exists) {
                     icon1 = L.icon({
                         iconUrl: url,
                         iconSize: [32, 37],
                         iconAnchor: [16, 37],
+                        popupAnchor: [0, -41]
+                    });
+
+                } else {
+                    icon1 = L.icon({
+                        iconUrl: ra.baseDirectory() + 'media/com_ra_library/js/leaflet/images/redmarker.png',
+                        iconSize: [36, 41], // size of the icon
+                        iconAnchor: [18, 41],
                         popupAnchor: [0, -41]
                     });
                 }

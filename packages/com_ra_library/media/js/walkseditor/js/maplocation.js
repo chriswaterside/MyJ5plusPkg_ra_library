@@ -100,7 +100,7 @@ ra.walkseditor.mapLocationInput = function (tag, raobject, location) {
         tag.appendChild(editorDiv);
         var tags = [
             {name: 'drag', parent: 'root', tag: 'p'},
-            {name: 'map', parent: 'root', tag: 'div', attrs: {class: 'ra walksweditor mapcontainer'}}
+            {name: 'map', parent: 'root', tag: 'div', attrs: {class: 'ra walkseditor mapcontainer'}}
         ];
         this.elements = ra.html.generateTags(editorDiv, tags);
         this.elements.drag.innerHTML = "To change location <b>drag marker</b> and/or use <b>Move marker to location</b>";

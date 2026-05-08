@@ -3,16 +3,20 @@ if (typeof (ra) === "undefined") {
     ra = {};
 }
 ra.feedhandler = function () {
+    this.modal = null;
+
     this.modalSearchForm = function (eventTag) {
-        var searchDiv = document.createElement('div');
-        searchDiv.setAttribute('class', 'search');
+        const searchDiv = document.createElement('div');
+        searchDiv.className = 'search';
         this.modal = ra.modals.createModal(searchDiv, false);
-        var _this = this;
+
         this.getSearchTags(eventTag, searchDiv);
-        eventTag.addEventListener("locationfound", function (e) {
-            _this.modal.close();
-        });
+
+        eventTag.addEventListener('locationfound', () => {
+            this.modal.close();
+        }, {once: true});
     };
+
 
     this.getSearchTags = function (eventTag, contentTag) {
         var formDiv = document.createElement("div");

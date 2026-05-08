@@ -57,3 +57,22 @@ div.form-check.group{
     padding-left: 50px;
 
 }
+
+/* nestedGroupedList field                */
+
+
+/* Style options by depth */
+optgroup.level-0 {
+    font-weight: 600;
+    font-style: normal;
+    color: #404040;
+    background-color: #9BC8AB;
+}
+optgroup.level-1 {
+    font-weight: 400;
+    color:#606060s;
+}
+optgroup.level-0 option,
+optgroup.level-1 option{
+    color:black;
+}

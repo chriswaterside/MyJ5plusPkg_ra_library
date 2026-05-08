@@ -18,12 +18,9 @@ use \Joomla\CMS\Factory;
 use \Joomla\CMS\Language\Text;
 use \Joomla\CMS\Plugin\PluginHelper;
 use \Joomla\CMS\MVC\Model\AdminModel;
-use \Joomla\CMS\Helper\TagsHelper;
-use \Joomla\CMS\Filter\OutputFilter;
-use \Joomla\CMS\Event\Model;
 use Joomla\CMS\Event\AbstractEvent;
 use \Joomla\Database\DatabaseInterface;
-use Ramblers\Component\Ra_library\Administrator\Field\GroupSelectField;
+use Joomla\CMS\Filter\OutputFilter;
 
 /**
  * Librarydisplay model.
@@ -52,6 +49,7 @@ class LibrarydisplayModel extends AdminModel {
      * @since  1.0.0
      */
     protected $item = null;
+    protected $moveProperties = ['filters', 'eventsources', 'document_sources'];
 
     /**
      * Returns a reference to the a Table object, always creating it.
@@ -135,14 +133,6 @@ class LibrarydisplayModel extends AdminModel {
             }
 
             // Do any procesing on fields here if needed
-            if ($item && $item->options) {
-                $newOptions = json_decode($item->options);
-                if ($newOptions->ramblersgroups) {
-                    // remove group names, convert to array of group codes
-                    $newOptions->ramblersgroups = array_column($newOptions->ramblersgroups, 'code');
-                    $item->options = json_encode($newOptions);
-                }
-            }
         }
 
         return $item;
@@ -242,10 +232,9 @@ class LibrarydisplayModel extends AdminModel {
      */
     #[\Override]
     protected function prepareTable($table) {
-        jimport('joomla.filter.output');
 
         if (empty($table->id)) {
-            if (@$table->ordering === '') {
+            if ($table->ordering === '') {
                 $db = Factory::getContainer()->get(DatabaseInterface::class);
                 $db->setQuery('SELECT MAX(ordering) FROM #__ra_library_displays');
                 $max = $db->loadResult();
@@ -253,66 +242,108 @@ class LibrarydisplayModel extends AdminModel {
             }
         }
 
-        // FIXED: Direct JSON fetch - no field instantiation
         $jinput = Factory::getApplication()->input;
         $data = $jinput->get('jform', [], 'array');
-
-        // add group names to options->ramblersgroups
-        if (isset($data['options']['ramblersgroups'])) {
-            $codes = $data['options']['ramblersgroups'];
-
-            // YOUR exact fetchJsonData logic (cached!)
-            $url = 'https://groups.theramblers.org.uk/';
-            $cacheGroup = 'groups_' . md5($url);
-            $cache = Factory::getCache($cacheGroup, 'callback');
-            $cache->setLifeTime(3600);
-            $optionsData = $cache->get(function ($url) {
-                $http = \Joomla\CMS\Http\HttpFactory::getHttp();
-                $response = $http->get($url);
-                if ($response->code === 200) {
-                    return json_decode($response->body, true) ?: [];
-                }
-                return [];
-            }, [$url], md5($url));
-
-            $options = [];
-            if (is_array($optionsData)) {
-                foreach ($optionsData as $item) {
-                    $options[] = (object) [
-                                'value' => $item['groupCode'],
-                                'text' => $item['name']
-                    ];
-                }
-            }
-
-            $selected = [];
-            foreach ((array) $codes as $code) {
-                foreach ($options as $option) {
-                    if ($option->value === $code) {
-                        $selected[] = [
-                            'code' => $code,
-                            'name' => $option->text
-                        ];
-                        break;
-                    }
-                }
-            }
-            $newOptions = json_decode($table->options);
-            $newOptions->ramblersgroups = $selected;
-            $table->options = json_encode($newOptions);
-        }
 
         parent::prepareTable($table);
     }
 
     protected function preloadFormData($item) {
+
         $data = [];
         if ($item) {
             $data['id'] = $item->id;
             $data['title'] = $item->title;
+            $data['displayoption'] = $item->displayoption;
             $data['options'] = json_decode($item->options, true) ?: [];
-            $data['table_items'] = json_decode($item->table_items, true) ?: [];
+            // move items from options field
+            $data = $this->moveFieldsOutofOptions($data);
         }
         return $data;
+    }
+
+    public function save($data) {
+        // move items into options rather than at base level
+        $data = $this->moveFieldsIntoOptions($data);
+        $data['options']['draft_coords'] = $this->flattenIds($data['options'], 'draft_coords');
+        // convert some items to objects rather then json strings
+        $this->scanAndDecode($data);
+        return parent::save($data);
+    }
+
+    private function moveFieldsIntoOptions($data) {
+        foreach ($this->moveProperties as $property) {
+            if (array_key_exists($property, $data)) {
+                $data['options'][$property] = $data[$property];
+                unset($data[$property]);
+            }
+        }
+        return $data;
+    }
+
+    private function moveFieldsOutofOptions($data) {
+        foreach ($this->moveProperties as $property) {
+            if (array_key_exists($property, $data['options'])) {
+                $data[$property] = $data['options'][$property];
+                unset($data['options'][$property]);
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Extract an array of integer IDs from a field inside the options object.
+     * Field must be stored as an array, even for single values.
+     *
+     * Example:
+     *   $coordIds = $this->flattenIds($options, 'programmecoords');
+     *   // → [123] or [985, 976, 983]
+     *
+     * @param   array   $data    Decoded object
+     * @param   string  $fieldName  Name of the field (e.g. 'programmecoords')
+     *
+     * @return  int[]
+     */
+    public function flattenIds(array $data, string $fieldName): array {
+        // Handle draft_coords (or any multi-user field)
+        if (isset($data[$fieldName]) && is_array($data[$fieldName])) {
+            // Flatten: [["976"],["983"]] → ["976","983"] (handles subform nesting)
+            $flatIds = [];
+            foreach ($data[$fieldName] as $nested) {
+                if (is_array($nested) && isset($nested[0])) {
+                    $flatIds[] = (string) $nested[0];  // Single ID per sub-array
+                }
+            }
+            return array_filter($flatIds);  // Clean empty
+        }
+        return [];
+    }
+
+    /**
+     * scan & decode specific field names anywhere recursively
+     * 
+     */
+    protected $targetDecodeFields = ['walkseditor',
+        'documents_exts', 'ramblersgroups', 'draft_ragroups',
+        'draft_localgrades', 'custom_table', 'keep_groups',
+        'table_options', 'table_iconmarkers'];  // Add your unique fields
+
+    /**
+     * Recursive scan: find & decode target fields
+     */
+
+    /**
+     * Scan arrays only (Joomla form data) - recurse & decode target fields
+     */
+    protected function scanAndDecode(&$data) {
+        foreach ($data as $k => &$v) {
+            if (in_array($k, $this->targetDecodeFields) && is_string($v)) {
+                $data[$k] = json_decode($v, true) ?: [];
+            }
+            if (is_array($v)) {
+                $this->scanAndDecode($v);  // Recurse nested arrays
+            }
+        }
+        unset($v);  // Critical: clear foreach ref leak
     }
 }

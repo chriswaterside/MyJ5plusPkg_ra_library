@@ -22,10 +22,11 @@ class Micronextwalks extends Simplelist {
     public $walkClass = "bu51-nextwalk";
     public $feedClass = "walksfeed"; // not used
     // Fields: date, time, title, startPC, nationalGrade, distance
-    private $listFormat = [
-        "{mediathumbl}", "{dowShortddmm}", " ", "{startTime}",
-        "{,title}", "{,startPC}", "{,nationalGrade}", "{,distance}"
-    ];
+//    private $listFormat = [
+//        "{mediathumbl}", "{dowShortddmm}", " ", "{startTime}",
+//        "{,title}", "{,startPC}", "{,nationalGrade}", "{,distance}"
+//    ];
+    private $listFormat  ="{mediathumbl}{dowShortddmm} {startTime}{, ?title}{, ?startPC}{, ?nationalGrade}{, ?distance}"; 
     // Number of walks to display
     private $nowalks = 5;
     // Detail page URL (e.g. 'walkdetail.php')
@@ -74,7 +75,7 @@ class Micronextwalks extends Simplelist {
         echo "<div class='" . $this->walksClass . "'>" . PHP_EOL;
         foreach ($items as $walk) {
             $id = $walk->getIntValue('admin', 'id');
-            $text = $walk->getWalkValues($this->listFormat, false);
+            $text = $walk->getWalkText($this->listFormat, false);
             $url = $this->pageName . '?walkid=' . $id . '#futurewalks';
             echo "<div class='" . $this->walkClass . " clear'><a href='" . $url . "'>" . $text . "</a></div>" . PHP_EOL;
         }

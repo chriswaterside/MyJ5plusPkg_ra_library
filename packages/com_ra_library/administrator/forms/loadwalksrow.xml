@@ -1,0 +1,66 @@
+<form
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+>
+    <fieldset name="controls" label="">
+        <field name="enabled" 
+               type="checkbox" 
+               checked="1" 
+               label="Enabled" 
+               class="col-sm-12" />
+        <field name="load_type" type="list" label="Source of walks/events" class="col-sm-12">
+            <option value="">Select</option>
+            <option value="wm">Walks Manager: Load led walks and events for one or more groups</option>
+            <option value="wmarea">Walks Manager: Load led walks and events in a geographic area for any group</option>
+            <option value="we">Load walks defined by Walks Editor</option>
+        </field>
+    
+        <field name="ramblersgroups" 
+               type="feedcheckboxes" 
+               feedurl="https://groups.theramblers.org.uk/" 
+               scope="global" 
+               cache_lifetime="3600"                           
+               showon="load_type:wm" 
+               label="Select Group(s)/Area" 
+               multiple="true" 
+                       />    
+        
+        <field name="arealatitude"
+               type="number"
+               default=""
+               max="90"
+               min="-90"
+               showon="load_type:wmarea" 
+               label="Centre of area: Latitude"
+               description="Latitude in the format 52.891"
+               filter="raw"
+        />
+        <field name="arealongitude"
+               type="number"
+               default=""
+               max="180"
+               min="-180"
+               showon="load_type:wmarea" 
+               label="Centre of area: Longitude"
+               description="Longitude in the format -1.234"
+               filter="raw"
+        />
+        <field name="arearadius" 
+               type="integer" 
+               label="Led walks up to this distance, in Km, from the centre" 
+               first="5"
+               last="100"
+               step="5"
+               default=""
+               showon="load_type:wmarea" 
+               class="col-sm-12" />
+       
+        <field name="walkseditor" 
+               type="tableitems" 
+               fieldsperitem ="3"
+               showon="load_type:we" 
+               fieldnames='["Code","Name","Website"]'
+               label="Walks Editor " 
+               description="e.g NY07, Richmondshire Ramblers, https://richmondshireramblers.org.uk/" 
+        />
+    </fieldset>
+</form>

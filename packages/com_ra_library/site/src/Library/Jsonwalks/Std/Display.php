@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std;
 
 /**
@@ -14,25 +15,12 @@ use \Ramblers\Component\Ra_library\Site\Library\Load\Load;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Addschema;
 
-
 // no direct access
 defined("_JEXEC") or die("Restricted access");
 
 class Display extends Displaybase {
 
-    public $nationalGradeHelp = ""; // not used
-    public $localGradeHelp = ""; // not used
-    public $nationalGradeTarget = "_parent"; // not used
-    public $localGradeTarget = "_parent"; // not used
-    public $legendposition = "top";
-    public $addContacttoHeader = false;  // not used
-    public $displayGroup = null;  // should the Group name be displayed
     public $displayClass = "";
-    public $paginationTop = true;
-    public $paginationBottom = true;
-    public $noPagination = false;
-    public $displayDetailsPrompt = true;
-    public $filterCancelled = true;
     private $map = null;
     private $id;
     private $customListFormat = null;
@@ -57,7 +45,7 @@ class Display extends Displaybase {
         $options->settings = true;
         $options->rightclick = true;
         $options->calendar = true;
-        $walks->sort(Walk::SORT_DATE,Walk::SORT_TIME, Walk::SORT_DISTANCE);
+        $walks->sort(Walk::SORT_DATE, Walk::SORT_TIME, Walk::SORT_DISTANCE);
 
         $items = $walks->allWalks();
         $display = new Cancelledwalks();
@@ -74,11 +62,7 @@ class Display extends Displaybase {
         };
         $data->walks = array_values($items);
 
-//  $data->walks = [];
         $data->displayClass = $this->displayClass;
-        $data->noPagination = $this->noPagination;
-        $data->displayDetailsPrompt = $this->displayDetailsPrompt;
-        $data->legendposition = $this->legendposition;
         $data->customGradesFormat = $this->customGradesFormat;
         $data->customCalendarFormat = $this->customCalendarFormat;
         $data->customListFormat = $this->customListFormat;

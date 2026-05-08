@@ -47,6 +47,7 @@ class LibrarydisplaysModel extends ListModel
 				'created_by', 'a.created_by',
 				'modified_by', 'a.modified_by',
 				'title', 'a.title',
+				'displayoption', 'a.displayoption',
 				'options', 'a.options',
 			);
 		}

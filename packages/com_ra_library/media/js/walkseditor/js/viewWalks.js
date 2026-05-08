@@ -29,10 +29,10 @@ ra.walkseditor.viewWalks = function (tag, mapOptions, programme, loggedOn = fals
     this.load = function () {
         var self = this;
         this.option = 'table';
-        var head = document.createElement('h3');
-        head.innerHTML = 'Walks editor: ';
-
-        tag.appendChild(head);
+//        var head = document.createElement('h3');
+//        head.innerHTML = 'Walks editor: ';
+//
+//        tag.appendChild(head);
         var options = {
             tabClass: 'walksView',
             tabs: {table: {title: 'Table'},

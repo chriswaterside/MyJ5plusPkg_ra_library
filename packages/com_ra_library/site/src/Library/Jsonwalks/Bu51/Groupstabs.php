@@ -17,9 +17,7 @@ class Groupstabs extends Display {
     public $walkClass = "bu51Nextwalk";
     public $feedClass = "walksfeed"; // not used?
     public $tabOrder = ['List', 'Map'];
-    public $listFormat = ['{gradeimg}', '{group}', '{,title}', '{lf}',
-        '{dowdd}', '{[ meet at ]meetTime}', '{[ start at ]startTime}', '{[ estimated finish at ]finishTime}',
-        '{,distance}', '{,nationalGrade}','{,type}','{ walk}'];
+    public $listFormat = "{gradeimg}{group}{, ?title}{lf}{dowdd}{ meet at ?meetTime}{ start at ?startTime}{ estimated finish at ?finishTime}{, ?distance}{, ?nationalGrade}{, ?type}{ walk} ";
 
     public function __construct() {
         parent::__construct();

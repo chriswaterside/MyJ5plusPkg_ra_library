@@ -2893,3 +2893,259 @@ ra.previousNext = function (tag, items, fnc) {
         nav.appendChild(div);
     };
 };
+/**
+ * SimpleTemplate - JavaScript implementation (ES5-compatible)
+ * Namespaced as ra.SimpleTemplate
+ */
+
+// Create ra namespace if it doesn't exist
+var ra = ra || {};
+
+ra.SimpleTemplate = function(template) {
+    // check old format and convert it
+    if (Array.isArray(template)){
+        template=this.convertOldTemplate(template);
+    }
+    
+    // {from ?company} → {if:company}from {company}{/if}
+    this.template = template.replace(
+        /\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/gi,
+        '{if:$2}$1{$2}{/if}'
+    );
+    this.values = {};
+    this.pos = 0;
+};
+/**
+ * Convert old array-based template to new SimpleTemplate string format
+ * @param {Array} oldTemplate - Array of template parts
+ * @returns {string} New template string (using shorthand syntax)
+ */
+ra.SimpleTemplate.prototype.convertOldTemplate = function(oldTemplate) {
+    var result = '';
+    var previousField = null;
+    var i, part, match, field, prefix, conditionalText;
+
+    for (i = 0; i < oldTemplate.length; i++) {
+        part = oldTemplate[i];
+        
+        // Handle literal strings (no braces)
+        if (part.indexOf('{') === -1) {
+            result += part;
+            continue;
+        }
+
+        // {,name} → {, ?name}
+        if ((match = part.match(/^\{,([a-z_][a-z0-9_+]*)\}$/i))) {
+            field = match[1];
+            result += '{, ?' + field + '}';
+            previousField = field;
+            continue;
+        }
+
+        // {[prefix text ]field} → {prefix text ?field}
+        if ((match = part.match(/^\{\[(.+?)\]([a-z_][a-z0-9_+]*)\}$/i))) {
+            prefix = match[1];
+            field = match[2];
+            result += '{' + prefix + '?' + field + '}';
+            previousField = field;
+            continue;
+        }
+
+        // {<conditional text>field} → {conditional text?previousField}{field}
+        if ((match = part.match(/^\{<(.+?)>([a-z_][a-z0-9_+]*)\}$/i))) {
+            conditionalText = match[1];
+            field = match[2];
+
+            if (previousField !== null) {
+                result += '{' + conditionalText + '?' + previousField + '}{' + field + '}';
+            } else {
+                result += '{' + field + '}';
+            }
+            previousField = field;
+            continue;
+        }
+
+        // Simple {name} → {name}
+        if ((match = part.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+            field = match[1];
+            result += '{' + field + '}';
+            previousField = field;
+            continue;
+        }
+
+        // If nothing matched, keep as-is
+        result += part;
+        previousField = null;
+    }
+
+    return result;
+};
+
+/**
+ * Tokenize the template string
+ */
+ra.SimpleTemplate.prototype.tokenize = function() {
+    var tokens = [];
+    var pos = 0;
+    var len = this.template.length;
+
+    while (pos < len) {
+        var ch = this.template[pos];
+
+        if (ch === '{') {
+            var match = this.template.substring(pos).match(
+                /^(\{(?:[a-z_][a-z0-9_+]*|if:[a-z_][a-z0-9_+]*|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i
+            );
+            
+            if (match) {
+                tokens.push({ type: 'tag', value: match[1] });
+                pos += match[1].length;
+                continue;
+            }
+            
+            // Invalid tag - find the closing brace and treat as text
+            var closeBrace = this.template.indexOf('}', pos);
+            if (closeBrace !== -1) {
+                tokens.push({ type: 'text', value: this.template.substring(pos, closeBrace + 1) });
+                pos = closeBrace + 1;
+                continue;
+            }
+        }
+
+        var next = this.template.indexOf('{', pos);
+        if (next === -1) {
+            tokens.push({ type: 'text', value: this.template.substring(pos) });
+            break;
+        }
+
+        tokens.push({ type: 'text', value: this.template.substring(pos, next) });
+        pos = next;
+    }
+
+    return tokens;
+};
+
+/**
+ * Get list of fields used in the template
+ */
+ra.SimpleTemplate.prototype.getFields = function() {
+    var tokens = this.tokenize();
+    var fields = {};
+    var i, token, tag, match;
+
+    for (i = 0; i < tokens.length; i++) {
+        token = tokens[i];
+        
+        if (token.type !== 'tag') {
+            continue;
+        }
+
+        tag = token.value;
+
+        if ((match = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+            fields[match[1]] = true;
+        }
+
+        if ((match = tag.match(/^\{if:([a-z_][a-z0-9_+]*)\}$/i))) {
+            fields[match[1]] = true;
+        }
+
+        if ((match = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+            fields[match[1]] = true;
+        }
+    }
+
+    return Object.keys(fields);
+};
+
+/**
+ * Render the template with given values
+ */
+ra.SimpleTemplate.prototype.render = function(values) {
+    var tokens = this.tokenize();
+    this.pos = 0;
+    this.values = values || {};
+
+    return this.parseBlock(tokens);
+};
+
+/**
+ * Parse a block of tokens recursively
+ */
+ra.SimpleTemplate.prototype.parseBlock = function(tokens) {
+    var output = '';
+    var token, tag, match, field, fieldName, sub;
+    var safetyCounter = 0;
+    var maxIterations = tokens.length * 100; // Safety limit
+
+    while (this.pos < tokens.length) {
+        // Safety check to prevent infinite loops
+        safetyCounter++;
+        if (safetyCounter > maxIterations) {
+            console.error('SimpleTemplate: Infinite loop detected at position ' + this.pos);
+            break;
+        }
+
+        token = tokens[this.pos];
+
+        if (token.type === 'text') {
+            output += token.value;
+            this.pos++;
+            continue;
+        }
+
+        if (token.type === 'tag') {
+            tag = token.value;
+
+            // Simple field replacement {name}
+            if ((match = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+                field = match[1];
+                output += this.values[field] !== undefined ? this.values[field] : '';
+                this.pos++;
+                continue;
+            }
+
+            // {if:field}
+            if ((match = tag.match(/^\{if:([a-z_][a-z0-9_+]*)\}$/i))) {
+                this.pos++;
+                fieldName = match[1];
+                sub = this.parseBlock(tokens);
+
+                if (this.values[fieldName]) {
+                    output += sub;
+                }
+                continue;
+            }
+
+            // {if_not:field}
+            if ((match = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+                this.pos++;
+                fieldName = match[1];
+                sub = this.parseBlock(tokens);
+
+                if (!this.values[fieldName]) {
+                    output += sub;
+                }
+                continue;
+            }
+
+            // {/if} or {/if_not}
+            if (tag === '{/if}' || tag === '{/if_not}') {
+                this.pos++;
+                break;
+            }
+
+            // Unrecognized tag - skip it with warning
+            console.warn('SimpleTemplate: Unrecognized tag "' + tag + '" at position ' + this.pos);
+            output += tag;
+            this.pos++;
+            continue;
+        }
+        
+        // Unknown token type - skip it
+        console.warn('SimpleTemplate: Unknown token type at position ' + this.pos);
+        this.pos++;
+    }
+
+    return output;
+};

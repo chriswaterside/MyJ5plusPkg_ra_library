@@ -1,6 +1,7 @@
-# J5-Com_ra_library
-
-Start of converting Ramblers-webs library software to J5/J6
-to use namespaces and easier set up of standard displays
-
-Addition of an email view for use by javascript functions.
+Ramblers Library
+Display of 
+Led walks
+Walking routes
+Tables of data from csv, sql or json
+Index of documents from a folder
+Submission of draft led walks
