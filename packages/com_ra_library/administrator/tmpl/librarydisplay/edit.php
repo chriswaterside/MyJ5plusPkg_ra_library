@@ -24,11 +24,11 @@ $wa->registerAndUseStyle(
         'administrator/components/com_ra_library/assets/css/ra_library.css'
 );
 $wa->registerAndUseScript(
-    'my.script',
-    'media/com_ra_library/js/ra.js',
-    [],
-    ['defer' => true],
-    ['core']
+        'my.script',
+        'media/com_ra_library/js/ra.js',
+        [],
+        ['defer' => true],
+        ['core']
 );
 HTMLHelper::_('bootstrap.tooltip');
 $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
@@ -87,7 +87,6 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Define Walks/Events', Text::_('Walks/Events Source'));
                 echo $this->form->renderFieldset('loadwalks');
                 echo HTMLHelper::_('uitab.endTab');
-
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'filters', 'Walk/event Filters');
                 echo '<div class="row">';
                 echo $this->form->renderFieldset('filters');
@@ -96,7 +95,6 @@ $wa->useScript('com_ra_library.layoutcheck');
         }
         switch ($displayOption) {
             case 'future_display':
-
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 echo $this->form->renderField('custom_tabs', 'options');
                 displayLayoutHelp();
@@ -104,31 +102,44 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo $this->form->renderField('custom_table', 'options');
                 echo $this->form->renderField('custom_list', 'options');
                 echo $this->form->renderField('custom_calendar', 'options');
-
+                echo $this->form->renderField('css_file', 'options');
+                echo $this->form->renderField('js_file', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
             case "future_table":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 displayLayoutHelp();
                 echo $this->form->renderField('custom_table', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo $this->form->renderField('walks_class', 'options');
+                echo $this->form->renderField('walk_class', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
             case "future_list":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 displayLayoutHelp();
                 echo $this->form->renderField('custom_simplelist', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo $this->form->renderField('walks_class', 'options');
+                echo $this->form->renderField('walk_class', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
             case "future_nextwalks":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 displayLayoutHelp();
                 echo $this->form->renderField('custom_nextwalks', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo $this->form->renderField('walks_class', 'options');
+                echo $this->form->renderField('walk_class', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
             case "future_fulldetails":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 displayLayoutHelp();
                 echo $this->form->renderField('custom_fulldetails', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo $this->form->renderField('walks_class', 'options');
+                echo $this->form->renderField('walk_class', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
         }
@@ -180,7 +191,6 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo $this->form->renderField('table_textmarkerclass', 'options');
                 echo $this->form->renderField('table_iconmarkers', 'options');
                 echo HTMLHelper::_('uitab.endTab');
-
                 break;
             case'table_json':
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
@@ -211,7 +221,7 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
         }
-        echo HTMLHelper::_('uitab.addTab', 'myTab', 'Article', Text::_('Article'));
+        echo HTMLHelper::_('uitab.addTab', 'myTab', 'Articles', Text::_('Articles'));
         echo $this->form->renderField('addarticles', 'options');
         echo $this->form->renderField('before', 'options');
         echo $this->form->renderField('after', 'options');

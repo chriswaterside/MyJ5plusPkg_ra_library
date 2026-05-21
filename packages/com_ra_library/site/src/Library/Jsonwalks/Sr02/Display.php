@@ -25,7 +25,7 @@ class Display extends StdDisplay {
     public function __construct() {
         parent::__construct();
         parent::setCustomTableFormat($this->tableFormat);
-        Load::addScript("media/com_ra_library/js/jsonwalks/sr02/display.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/jsonwalks/sr02/display.js");
         Load::addStyleSheet("media/com_ra_library/js/jsonwalks/sr02/style.css");
     }
 }

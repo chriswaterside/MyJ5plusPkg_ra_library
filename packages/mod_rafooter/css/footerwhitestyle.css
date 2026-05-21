@@ -1,0 +1,20 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20-Sep-2014, 12:11:00
+    Author     : Chris Vaughan
+*/
+#rt-footer,#rt-copyright {
+    color: #FFFFFF;
+}
+#rt-footer a, #rt-copyright a {
+    color: #CCCCCC
+}
+
+#rt-footer h1,#rt-footer h2,#rt-footer h3,#rt-footer h4,#rt-footer h5,#rt-footer h6 {
+    color: #FFFFFF;
+}
+

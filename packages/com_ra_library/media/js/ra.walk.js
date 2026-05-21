@@ -403,7 +403,6 @@ ra.event = function () {
             case "{meetGR}":
             case "{meetPC}":
             case "{meetOLC}":
-            case "{meetMapCode}":
             case "{meetw3w}":
             case "{meetOSMap}":
             case "{meetDirections}":
@@ -415,7 +414,6 @@ ra.event = function () {
             case "{startGR}":
             case "{startPC}":
             case "{startOLC}":
-            case "{startMapCode}":
             case "{startw3w}":
             case "{startOSMap}":
             case "{startDirections}":
@@ -1380,15 +1378,8 @@ ra.event.timelocation = function () {
                 break;
             case "{OLC}":
                 break;
-            case "{MapCode}":
-                break;
             case "{w3w}":
                 out = this.w3w;
-                break;
-            case "{OSMap}":
-                //    var $lat = this.latitude;
-                //   var $long = this.longitude;
-                //   out = ra.link.getOSMap($lat, $long, "OS Map");
                 break;
             case "{Directions}":
                 var $lat = this.latitude;
@@ -1505,10 +1496,6 @@ ra.event.timelocation = function () {
             var w3w = document.createElement('div');
             tag.appendChild(w3w);
             w3w.innerHTML = ra.w3w.toText(this.w3w, "");
-//            var span1 = document.createElement('span');
-//            span1.title = "Click to see new window showing location using Streetmap.co.uk";
-//            tag.appendChild(span1);
-//            span1.innerHTML = ra.link.getOSMap(this.latitude, this.longitude, "Streetmap/OS Map");
             var a = document.createElement('a');
             tag.appendChild(a);
             a.classList.add("mappopup");
@@ -1817,13 +1804,6 @@ ra.event.contact = function (id) {
                 out = this.telephone2;
                 break;
             case "{email}":
-            case "{emailat}":
-                var $contact = "";
-                if (this.email !== "") {
-                    $contact += this.getValue("{emaillink}");
-                }
-                out = $contact;
-                break;
             case "{emaillink}":
                 if (this.email !== "") {
                     if (this.contactForm !== "") {

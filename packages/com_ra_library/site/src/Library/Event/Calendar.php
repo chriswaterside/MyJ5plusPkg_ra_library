@@ -38,7 +38,7 @@ class Calendar extends Displaybase {
 
     function Display($events) {
         Load::addStyleSheet('media/com_ra_library/js/calendar/calendar.css');
-        Load::addScript("media/com_ra_library/js/ra.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/ra.js");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
         $cal = new displayCalendar($this->size, $this->mDisplayAll);
         $cal->setMonthFormat($this->monthFormat);

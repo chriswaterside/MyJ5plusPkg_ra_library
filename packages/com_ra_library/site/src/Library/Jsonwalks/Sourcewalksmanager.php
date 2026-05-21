@@ -53,7 +53,7 @@ class Sourcewalksmanager extends Sourcebase {
         $feed = new Feed();
         $items = $feed->getGroupEventItems($this->groups, $this->readwalks, $this->readevents, $this->wellbeingWalks, $this->period);
         foreach ($items as $item) {
-            $walk = new walk();
+            $walk = new Walk();
 
             if ($this->convertToInternalFormat($walk, $item)) {
                 $walks->addWalk($walk);

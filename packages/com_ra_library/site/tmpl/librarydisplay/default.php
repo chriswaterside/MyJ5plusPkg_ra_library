@@ -18,9 +18,9 @@ if ($this->params->get('show_page_heading')) {
     echo '<h1>' . $this->escape($this->params->get('page_heading')) . '</h1>';
     echo '</div>';
 }
-$displayoption=$this->item->displayoption; 
-$options=$this->item->options;
-$display = new DisplayHelper($displayoption,$options);
+$displayoption = $this->item->displayoption;
+$options = $this->item->options;
+$display = new DisplayHelper($displayoption, $options);
 $display->Display();
 
 echo '</div>';

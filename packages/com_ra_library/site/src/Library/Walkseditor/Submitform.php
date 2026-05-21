@@ -95,7 +95,7 @@ class Submitform extends LeafletMap {
         $this->data->localGrades = $this->localGrades;
 
         $path = "media/com_ra_library/js/walkseditor/";
-        Load::addScript($path . "js/form/submitwalk.js", "text/javascript");
+        Load::addScript($path . "js/form/submitwalk.js");
         parent::setCommand('ra.walkseditor.form.submitwalk');
         parent::setDataObject($this->data);
         parent::display();

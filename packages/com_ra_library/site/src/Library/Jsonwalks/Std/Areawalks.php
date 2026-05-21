@@ -16,8 +16,8 @@ class Areawalks extends Displaybase {
     public function DisplayWalks() {
 
         $app = Factory::getApplication();
-        Load::addScript("media/com_ra_library/js/ra.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/ramblerswalks.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/ra.js");
+        Load::addScript("media/com_ra_library/js/ramblerswalks.js");
 
         // Set the cookie
         //   $time = time() + 604800; // 1 week

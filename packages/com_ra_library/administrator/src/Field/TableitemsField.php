@@ -1,5 +1,4 @@
 <?php
-
 /*
  * copyright: Chris Vaughan
  * email: ruby.tuesday@ramblers-webs.org.uk
@@ -33,13 +32,14 @@ class TableitemsField extends TextField {
     protected $classes;
     protected $widths;
     protected $inputTypes;
+    protected $filters;  // NEW: Per-field filters
 
     protected function getInput() {
         if (!is_array($this->value)) {
             $value = [];
+        } else {
+            $value = $this->value;
         }
-
-        $value = $this->value;
 
         $this->fieldsPerItem = (int) ($this->element['fieldsperitem'] ?? 2);
         if ($this->fieldsPerItem < 1 || $this->fieldsPerItem > 3) {
@@ -57,7 +57,8 @@ class TableitemsField extends TextField {
         if (count($this->hints) !== $this->fieldsPerItem) {
             $this->hints = $this->fieldNames;
         }
-        // New attributes
+
+        // Existing attributes
         $classesJson = (string) ($this->element['classes'] ?? '');
         $this->classes = $classesJson ? json_decode($classesJson, true) : [];
         if (count($this->classes) !== $this->fieldsPerItem) {
@@ -67,7 +68,7 @@ class TableitemsField extends TextField {
         $widthsJson = (string) ($this->element['widths'] ?? '');
         $this->widths = $widthsJson ? json_decode($widthsJson, true) : [];
         if (count($this->widths) !== $this->fieldsPerItem) {
-            $this->widths = array_fill(0, $this->fieldsPerItem, ''); // Default full width
+            $this->widths = array_fill(0, $this->fieldsPerItem, '');
         }
 
         $inputTypesJson = (string) ($this->element['inputtypes'] ?? '');
@@ -76,6 +77,12 @@ class TableitemsField extends TextField {
             $this->inputTypes = array_fill(0, $this->fieldsPerItem, 'text');
         }
 
+        // NEW: filters attribute
+        $filtersJson = (string) ($this->element['filters'] ?? '');
+        $this->filters = $filtersJson ? json_decode($filtersJson, true) : [];
+        if (count($this->filters) !== $this->fieldsPerItem) {
+            $this->filters = array_fill(0, $this->fieldsPerItem, 'normal');
+        }
 
         $sort = filter_var((string) ($this->element['sort'] ?? 'true'), FILTER_VALIDATE_BOOLEAN);
 
@@ -89,11 +96,10 @@ class TableitemsField extends TextField {
         $html .= ' data-sort="' . ($sort ? 'true' : 'false') . '"';
         $html .= ' data-fieldnames="' . htmlspecialchars(json_encode($this->fieldNames), ENT_QUOTES, 'UTF-8') . '"';
         $html .= ' data-hints="' . htmlspecialchars(json_encode($this->hints), ENT_QUOTES, 'UTF-8') . '"';
-        // Pass to JS data attributes
         $html .= ' data-classes="' . htmlspecialchars(json_encode($this->classes), ENT_QUOTES, 'UTF-8') . '"';
         $html .= ' data-widths="' . htmlspecialchars(json_encode($this->widths), ENT_QUOTES, 'UTF-8') . '"';
         $html .= ' data-inputtypes="' . htmlspecialchars(json_encode($this->inputTypes), ENT_QUOTES, 'UTF-8') . '"';
-        $html .= '>';
+        $html .= ' data-filters="' . htmlspecialchars(json_encode($this->filters), ENT_QUOTES, 'UTF-8') . '">';  // NEW
         $html .= '<div class="field-header">';
         $html .= '<button type="button" class="btn btn-sm btn-success add-item-btn"><i class="icon-plus"></i> Add Row</button>';
         $html .= '</div>';
@@ -117,13 +123,28 @@ class TableitemsField extends TextField {
 
         foreach ($this->fieldNames as $f => $name) {
             $hint = $this->hints[$f] ?? $name;
-            $val = $itemData[$name] ?? '';
+            $val = (string) ($itemData[$name] ?? '');
             $inputType = $this->inputTypes[$f] ?? 'text';
             $fieldClass = trim($this->classes[$f] ?? '');
             $fieldClass = $fieldClass ? ' ' . htmlspecialchars($fieldClass) : '';
             $style = $this->widths[$f] ? ' style="width: ' . htmlspecialchars($this->widths[$f]) . ';"' : '';
+            $filter = $this->filters[$f] ?? 'normal';
+            $isRaw = ($filter === 'raw');
 
-            $html .= '<input type="' . htmlspecialchars($inputType) . '" class="field-input field-' . ($f + 1) . $fieldClass . '" data-fieldname="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($val) . '" placeholder="' . htmlspecialchars($hint) . '"' . $style . '>';
+            if ($isRaw) {
+                // NEW: Textarea for raw HTML
+                $html .= '<textarea class="field-input field-' . ($f + 1) . $fieldClass . '" '
+                    . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
+                    . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>'
+                    . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</textarea>';
+            } else {
+                // Existing input
+                $html .= '<input type="' . htmlspecialchars($inputType, ENT_QUOTES, 'UTF-8') . '" '
+                    . 'class="field-input field-' . ($f + 1) . $fieldClass . '" '
+                    . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
+                    . 'value="' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '" '
+                    . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>';
+            }
         }
 
         $html .= '</div>
@@ -132,3 +153,4 @@ class TableitemsField extends TextField {
         return $html;
     }
 }
+?>

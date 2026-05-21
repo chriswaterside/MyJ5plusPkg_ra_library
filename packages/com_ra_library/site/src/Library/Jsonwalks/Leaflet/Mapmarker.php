@@ -62,6 +62,6 @@ class Mapmarker extends Displaybase {
         $data->legendposition = $this->legendposition;
         $this->map->setDataObject($data);
         $this->map->display();
-        Load::addScript("media/com_ra_library/js/jsonwalks/leaflet/mapmarker.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/jsonwalks/leaflet/mapmarker.js");
     }
 }

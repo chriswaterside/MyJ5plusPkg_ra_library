@@ -400,8 +400,8 @@ div.js-modal.ramblers {
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: #333; 
-   
+    background-color: #333;
+
 }
 div.clear,
 div.ra-clear{
@@ -1075,4 +1075,17 @@ iframe.ra.contactForm {
     width:95%;
     height:480px;
     border-width: 0px;
+}
+
+button.print-button{
+    border-color: #888;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    margin-right: 10px;
+    background-color: #fff;
+}
+.vertalign {
+    display: flex;
+    align-items: center; /* vertical alignment */
 }

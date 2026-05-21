@@ -115,13 +115,14 @@
                 <option value="Contacts">Contacts</option>
             </field>
             <field name="custom_grades" 
-                   type="text" 
+                   type="textarea" 
                    class="layout-check"
                    label="Customise Grades layout" 
                    description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}{, ?contactname}"
             />
             <field name="custom_list" 
-                   type="text"     
+                   type="textarea"  
+                   filter="raw"   
                    label="Customise List layout" 
                    class="layout-check"
                    description="Default is {dowdd}{, ?meet}{, ?start}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}" 
@@ -129,10 +130,12 @@
             <field name="custom_table" 
                    type="tableitems" 
                    fieldsperitem ="2"
+                   filter="raw"
                    fieldnames='["heading","layout"]'
                    classes='["","layout-check"]' 
                    widths='["25%","75%"]' 
                    inputtypes='["text","text"]'
+                   filters='["normal","raw"]'
                    hints='["Column heading","Custom layout"]'
                    label="Customise Table layout" 
                    description='Add column headers/layouts and drag to reorder&lt;br /&gt;
@@ -147,30 +150,62 @@ Default is&lt;br /&gt;
            
             <field
                 name="custom_calendar"
-                type="text"
+                type="textarea"
                 class="layout-check"
+                filter="raw"  
                 label="Customise Calendar layout"
                 description="Default is {gradeimgMiddle}{title}{, ?distance}, {meetTime}{ or ?meetTime}{startTime}"
             />
   
             <field name="custom_nextwalks" 
-                   type="text"  
-                   class="layout-check"   
+                   type="textarea"  
+                   class="layout-check" 
+                   filter="raw"    
                    label="Customise layout" 
                    description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance} "
             />
             <field name="custom_simplelist" 
-                   type="text" 
-                   class="layout-check"    
+                   type="textarea" 
+                   class="layout-check"  
+                   filter="raw"    
                    label="Customise layout" 
                    description="Default is {dowdd}{, ?meet}{, ?meetGR}{, ?start}{, ?startGR}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}"
             />
             <field name="custom_fulldetails" 
-                   type="text"  
-                   class="layout-check"   
+                   type="textarea"  
+                   class="layout-check"  
+                   filter="raw"   
                    label="Customise layout" 
                    description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}"
             />
+            <field name="css_file"
+                   type="text" 
+                   label="Add your own CSS Stylesheet file" 
+                   description="Enter a relative path to a CSS file" 
+                   size="10" 
+                   accept=".css,text/css"
+            />  
+            <field name="js_file"
+                   type="text" 
+                   label="Add your own JavaScript file" 
+                   description="Enter a relative path to a JavaScript file" 
+                   size="10" 
+                   accept=".js,application/javascript"
+            />  
+            <field name="walks_class"
+                   type="text" 
+                   label="Custom overall CSS Class" 
+                   description="Optional custom overall CSS Class" 
+                   size="10" 
+                   
+            />  
+            <field name="walk_class"
+                   type="text" 
+                   label="Custom CSS Class for each walk" 
+                   description="Optional custom CSS Class for each walk" 
+                   size="10" 
+                   
+            />  
             <field
                 name="routes_smartroutingnote"
                 type="note"
@@ -226,7 +261,7 @@ Default is&lt;br /&gt;
                    size="10" 
                    accept="image/*"
             />  
-            <field name="routes_folder"
+            <field name="OLDroutes_folder"
                    type="folderlist"
                    default=""
                    label="Select a folder"
@@ -235,12 +270,22 @@ Default is&lt;br /&gt;
                    exclude=""
                    stripext=""
             />   
+            <field
+                name="routes_folder"
+                type="SelectFolder"
+                label="Select folder"
+                description="Browse folders and choose one"
+                select="true"
+                clear="true"
+                titleSelect="Select folder"
+                urlSelect="index.php?option=com_ra_library&amp;view=folder&amp;layout=modal&amp;tmpl=component"
+            />
             <field name="routes_linecolour"
                    type="color" 
                    default="#782327" 
                    format="rgba"
                    label="Walking route: Track colour"
-                   description=""
+                   description="Default colour is #782327, just blank the field to get the default"
             />   
             <field name="routes_download"
                    type="list" 
@@ -269,6 +314,7 @@ Default is&lt;br /&gt;
                    types="documents"
                    preview="false"
             />  
+     
             <field name="table_sqlselect" filter="safehtml" 
                    type="text" 
                    message="You must give this item a name" 
@@ -296,17 +342,18 @@ Default is&lt;br /&gt;
             <field name="table_markertype" 
                    type="list" 
                    default="0"
-                   label="Customise markers" 
+                   label="Location markers" 
                    description="Customise markers either as text or by value of column" 
             >
-                <option value="default">Default markers</option>
+                <option value="default">Default Icon markers</option>
                 <option value="text">Text markers</option>
-                <option value="icons">Icon markers</option>
+                <option value="icons">Custom Icon markers</option>
             </field>  
             <field name="table_markercolumn" 
                    filter="safehtml" 
                    type="text" 
                    label="Column" 
+                   showon="table_markertype:text[OR]table_markertype:icons"
                    description="Which column's text value should be used as marker" 
                    hint=""
             />
@@ -326,7 +373,7 @@ Default is&lt;br /&gt;
                 fieldnames='["value","icon"]'
                 hints='["Column value","Required Icon"]'
                 label="Define custom icons" 
-                description="Add " 
+                description="" 
             /> 
            
              

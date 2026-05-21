@@ -188,8 +188,7 @@ ra.display.walksTabs = function (mapOptions, data) {
             self.paginationOptions.itemsPerPage = e.cvList.itemsPerPage;
             self.paginationOptions.currentPage = e.cvList.currentPage;
         });
-        this.addPrintButton(elements.legend);
-        this.addToDiaryButton(elements.legend);
+        addPrintCalButtons(elements.legend);
         var month = "";
         var div;
         var should = this.shouldDisplayMonth('Grades');
@@ -219,8 +218,8 @@ ra.display.walksTabs = function (mapOptions, data) {
             self.paginationOptions.currentPage = e.cvList.currentPage;
 
         });
-        this.addPrintButton(elements.legend);
-        this.addToDiaryButton(elements.legend);
+        this.addPrintCalButtons(elements.legend);
+
         var list = new ra.paginatedList(elements.content, this.paginationOptions);
         this.events.forEachFiltered($walk => {
             var displayMonth = month !== $walk.getIntValue("basics", "displayMonth") && should;
@@ -246,8 +245,8 @@ ra.display.walksTabs = function (mapOptions, data) {
             self.paginationOptions.currentPage = e.cvList.currentPage;
 
         });
-        this.addPrintButton(elements.legend);
-        this.addToDiaryButton(elements.legend);
+        this.addPrintCalButtons(elements.legend);
+
         var table = new ra.paginatedTable(elements.content, this.paginationOptions);
         table.tableHeading(this.settings.tableFormat);
         this.events.forEachFiltered($walk => {
@@ -478,10 +477,17 @@ ra.display.walksTabs = function (mapOptions, data) {
         table.tableRowEnd(monthDisplay, 'ra walk month');
         return tr;
     };
+    this.addPrintCalButtons = function (tag) {
+        var container = document.createElement('div');
+        container.setAttribute('class', 'vertalign');
+        tag.appendChild(container);
+        this.addPrintButton(container);
+        this.addToDiaryButton(container);
+    };
 
     this.addPrintButton = function (tag) {
         var printButton = document.createElement('button');
-        printButton.setAttribute('class', 'link-button tiny button mintcake right');
+        printButton.setAttribute('class', 'print-button');
         printButton.textContent = 'Print';
         tag.appendChild(printButton);
         var _this = this;
@@ -501,19 +507,50 @@ ra.display.walksTabs = function (mapOptions, data) {
         ra.html.printHTML(content);
     };
     this.addToDiaryButton = function (tag) {
-        var diary = document.createElement('button');
-        diary.setAttribute('class', 'link-button tiny button mintcake right');
-        diary.title = 'Download an .ICS file, import to Diary';
-        diary.textContent = 'Add to Calendar';
-        tag.appendChild(diary);
+        var config = {classes: 'ra calendar', title: 'Download or subscribe to our walks',
+            options: [
+                {text: 'Add to calendar options:-', value: 'none'},
+                {text: 'Subscribe to calendar', value: 'webcal'},
+                {text: 'Add to Google Calendar', value: 'google'},
+                {text: 'Add to Outlook', value: 'outlook'},
+                {text: 'Download calendar(.ics) file', value: 'download'}]};
+
+//  Google Calendar:
+//    https://calendar.google.com/calendar/r?cid=webcal://yourdomain.com/calendar/feed.ics
+//  Outlook Calendar:
+//    https://outlook.office.com/calendar/0/addfromweb?url=webcal://yourdomain.com/calendar/feed.ics
+//
+//  index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=...
+
+        var diary = ra.html.createDropDown(tag, config, 'Add to calendar');
         var _this = this;
-        diary.addEventListener('click', function () {
-            _this.events.setDisplayFilter();
-            var file = new ra.ics.file();
-            _this.events.forEachFiltered($walk => {
-                $walk.addWalktoIcs(file);
-            });
-            file.download();
+        diary.addEventListener('change', function (e) {
+            var opt = e.target.value;
+            var link = ra.baseDirectory() + 'index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=DE';
+            link.replace(/^https?:/, '');
+            switch (opt) {
+                case 'webcal':
+                    var url = 'webcal:' + link;
+                    window.open(url, '_blank');
+                    break;
+                case 'google':
+                    var url = 'https://calendar.google.com/calendar/r?cid=webcal:' + link;
+                    window.open(url, '_blank');
+                    break;
+                case 'outlook':
+                    var url = 'https://outlook.office.com/calendar/0/addfromweb?url=webcal:' + link;
+                    window.open(url, '_blank');
+                    break;
+                case 'download':
+                    _this.events.setDisplayFilter();
+                    var file = new ra.ics.file();
+                    _this.events.forEachFiltered($walk => {
+                        $walk.addWalktoIcs(file);
+                    });
+                    file.download();
+                    break;
+            }
+
         });
     };
 };

@@ -43,7 +43,7 @@ class Mapcompare extends Map {
 
         parent::display();
 
-        Load::addScript("media/com_ra_library/js/leaflet/ra.display.mapCompare.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/leaflet/ra.display.mapCompare.js");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
     }
 }

@@ -1,7 +1,6 @@
 /* 
  * Table Items Custom Field - Joomla 5/6 - PRODUCTION READY
- * Supports sort="false" (hides drag handles + disables sorting)
- * Supports fieldnames and hints arrays for custom column headers/placeholders
+ * Supports filters='["normal","raw"]' - raw fields render as textarea
  * copyright: Chris Vaughan
  * email: ruby.tuesday@ramblers-webs.org.uk
  */
@@ -18,8 +17,7 @@
 
     function initContainer(container) {
         const itemsList = container.querySelector('.items-list');
-        if (!itemsList)
-            return;
+        if (!itemsList) return;
 
         const hiddenInput = container.querySelector('.items-json');
         const addBtn = container.querySelector('.add-item-btn');
@@ -27,7 +25,8 @@
         const allowSort = (container.dataset.sort || 'true') !== 'false';
         const classes = JSON.parse(container.dataset.classes || '[]');
         const widths = JSON.parse(container.dataset.widths || '[]');
-        const inputTypes = JSON.parse(container.dataset.inputtypes || ['text', 'text']);
+        const inputTypes = JSON.parse(container.dataset.inputtypes || Array(fieldsPerItem).fill('text'));
+        const filters = JSON.parse(container.dataset.filters || Array(fieldsPerItem).fill('normal'));  // NEW
 
         const debouncedUpdate = debounce(function () {
             const items = Array.from(itemsList.querySelectorAll('.item-row'));
@@ -61,7 +60,6 @@
             if (itemsList.sortableInstance) {
                 itemsList.sortableInstance.destroy();
             }
-
             itemsList.sortableInstance = new Sortable(itemsList, {
                 handle: '.handle',
                 animation: 150,
@@ -74,7 +72,7 @@
             addBtn.dataset.initialized = 'true';
             addBtn.addEventListener('click', function () {
                 const index = itemsList.children.length;
-                const newRow = createItemRow(index, fieldsPerItem, container, allowSort);
+                const newRow = createItemRow(index, fieldsPerItem, container, allowSort, filters);  // NEW: pass filters
                 itemsList.appendChild(newRow);
                 updateJSON();
             });
@@ -88,7 +86,7 @@
             }
         });
 
-        // Delegate input events
+        // Delegate input events (works for both input and textarea)
         itemsList.addEventListener('input', function (e) {
             if (e.target.matches('.field-input')) {
                 debouncedUpdate();
@@ -98,9 +96,7 @@
         updateJSON();
     }
 
-
-
-    function createItemRow(index, numFields, container, allowSort) {
+    function createItemRow(index, numFields, container, allowSort, filters) {  // NEW: filters param
         const fieldNames = JSON.parse(container.dataset.fieldnames || '[]');
         const hints = JSON.parse(container.dataset.hints || JSON.stringify(fieldNames));
         const classes = JSON.parse(container.dataset.classes || '[]');
@@ -114,7 +110,16 @@
             const inputType = inputTypes[f] || 'text';
             const fieldClass = classes[f] ? ` ${classes[f]}` : '';
             const style = widths[f] ? ` style="width: ${widths[f]};"` : '';
-            inputsHtml += `<input type="${inputType}" class="field-input field-${f + 1}${fieldClass}" data-fieldname="${name}" placeholder="${hint}"${style}>`;
+            const filter = filters[f] || 'normal';
+            const isRaw = (filter === 'raw');
+
+            if (isRaw) {
+                // NEW: Textarea for raw fields
+                inputsHtml += `<textarea class="field-input field-${f + 1}${fieldClass}" data-fieldname="${name}" placeholder="${hint}"${style}></textarea>`;
+            } else {
+                // Regular input
+                inputsHtml += `<input type="${inputType}" class="field-input field-${f + 1}${fieldClass}" data-fieldname="${name}" placeholder="${hint}"${style}>`;
+            }
         }
 
         const handleHtml = allowSort ? '<span class="handle">☰</span>' : '';
@@ -130,7 +135,7 @@
         return div;
     }
 
-    // INITIALIZATION (UNCHANGED)
+    // INITIALIZATION (unchanged)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initAllContainers);
     } else {
@@ -143,8 +148,7 @@
 
     let scanInterval;
     function startScanning() {
-        if (scanInterval)
-            return;
+        if (scanInterval) return;
         scanInterval = setInterval(function () {
             document.querySelectorAll('.table-items-container:not([data-js-init])').forEach(function (container) {
                 container.dataset.jsInit = 'true';

@@ -4,45 +4,33 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
 
 /*
  * copyright: Chris Vaughan
- * email: ruby.tuesday@ramblers-webs.org.uk
+ * email: [ruby.tuesday@ramblers-webs.org.uk](mailto:ruby.tuesday@ramblers-webs.org.uk)
  */
 
-// usage:
-//    $template = "Hello {name} {if:company}from {company}{/if}";
-//
-//    $temp   = new SimpleTemplate($template);
-//    $fields = $temp->getFields();          // → ['name', 'company']
-//    $values = $this->fetchValues($fields); // your Joomla‑style fetch logic
-//    echo $temp->render($values);
+class SimpleTemplate
+{
+    private string $template;
+    private array $values = [];
+    private int $pos = 0;
 
-class SimpleTemplate {
-
-    private $template;
-    private $values;
-    private $pos;
-
-    // Constructor takes the template string
-    public function __construct(string $template) {
-        // if old format
+    public function __construct(string|array $template)
+    {
         if (is_array($template)) {
-            $template = this->convertOldTemplate($template);
+            $template = self::convertOldTemplate($template);
         }
+
         // {from ?company} → {if:company}from {company}{/if}
         $this->template = preg_replace(
-                '/\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/i',
-                '{if:$2}$1{$2}{/if}',
-                $template
+            '/\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/i',
+            '{if:$2}$1{$2}{/if}',
+            $template
         );
 
-        // Validate template for invalid tags
         $this->validateTemplate();
     }
 
-    /**
-     * Validate template for invalid field syntax
-     * @throws \InvalidArgumentException if invalid tags found
-     */
-    private function validateTemplate(): void {
+    private function validateTemplate(): void
+    {
         $pos = 0;
         $len = strlen($this->template);
         $invalidTags = [];
@@ -51,17 +39,14 @@ class SimpleTemplate {
             $ch = $this->template[$pos];
 
             if ($ch === '{') {
-                // Check if it's a valid tag
-                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[a-z_][a-z0-9_+]*|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
+                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
                     $pos += strlen($match[1]);
                     continue;
                 }
 
-                // Found an opening brace but not a valid tag - check if it's an invalid tag
                 $closeBrace = strpos($this->template, '}', $pos);
                 if ($closeBrace !== false) {
                     $possibleTag = substr($this->template, $pos, $closeBrace - $pos + 1);
-                    // Check if it looks like a tag attempt (has content between braces)
                     if (preg_match('/^\{.+\}$/', $possibleTag)) {
                         $invalidTags[] = $possibleTag;
                     }
@@ -75,30 +60,23 @@ class SimpleTemplate {
 
         if (!empty($invalidTags)) {
             throw new \InvalidArgumentException(
-                            'Invalid template syntax found: ' . implode(', ', $invalidTags) .
-                            '. Valid formats are: {fieldname}, {if:fieldname}...{/if}, {if_not:fieldname}...{/if_not}, {text ?fieldname}'
-                    );
+                'Invalid template syntax found: ' . implode(', ', $invalidTags) .
+                '. Valid formats are: {fieldname}, {if:fieldname}...{/if}, {if:fieldname=value}...{/if}, {if:fieldname!=value}...{/if}, {if_not:fieldname}...{/if_not}, {text ?fieldname}'
+            );
         }
     }
 
-    /**
-     * Convert old array-based template to new SimpleTemplate string format
-     * 
-     * @param array $oldTemplate Array of template parts
-     * @return string New template string (using shorthand syntax)
-     */
-    public static function convertOldTemplate(array $oldTemplate): string {
+    public static function convertOldTemplate(array $oldTemplate): string
+    {
         $result = '';
         $previousField = null;
 
         foreach ($oldTemplate as $part) {
-            // Handle literal strings (no braces)
             if (strpos($part, '{') === false) {
                 $result .= $part;
                 continue;
             }
 
-            // {,name} → {, ?name}
             if (preg_match('/^\{,([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
                 $field = $match[1];
                 $result .= "{, ?$field}";
@@ -106,7 +84,6 @@ class SimpleTemplate {
                 continue;
             }
 
-            // {[prefix text ]field} → {prefix text ?field}
             if (preg_match('/^\{\[(.+?)\]([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
                 $prefix = $match[1];
                 $field = $match[2];
@@ -115,7 +92,6 @@ class SimpleTemplate {
                 continue;
             }
 
-            // {<conditional text>field} → {conditional text?previousField}{field}
             if (preg_match('/^\{<(.+?)>([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
                 $conditionalText = $match[1];
                 $field = $match[2];
@@ -125,11 +101,11 @@ class SimpleTemplate {
                 } else {
                     $result .= "{{$field}}";
                 }
+
                 $previousField = $field;
                 continue;
             }
 
-            // Simple {name} → {name}
             if (preg_match('/^\{([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
                 $field = $match[1];
                 $result .= "{{$field}}";
@@ -137,7 +113,6 @@ class SimpleTemplate {
                 continue;
             }
 
-            // If nothing matched, keep as-is
             $result .= $part;
             $previousField = null;
         }
@@ -145,8 +120,8 @@ class SimpleTemplate {
         return $result;
     }
 
-    // Tokenize (static‑style, reused internally)
-    private function tokenize(): array {
+    private function tokenize(): array
+    {
         $tokens = [];
         $pos = 0;
         $len = strlen($this->template);
@@ -155,7 +130,7 @@ class SimpleTemplate {
             $ch = $this->template[$pos];
 
             if ($ch === '{') {
-                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[a-z_][a-z0-9_+]*|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
+                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
                     $tokens[] = ['type' => 'tag', 'value' => $match[1]];
                     $pos += strlen($match[1]);
                     continue;
@@ -175,8 +150,8 @@ class SimpleTemplate {
         return $tokens;
     }
 
-    // Get list of fields used in the template
-    public function getFields(): array {
+    public function getFields(): array
+    {
         $tokens = $this->tokenize();
         $fields = [];
 
@@ -191,8 +166,8 @@ class SimpleTemplate {
                 $fields[$m[1]] = true;
             }
 
-            if (preg_match('/^\{if:([a-z_][a-z0-9_+]*)\}$/i', $tag, $m)) {
-                $fields[$m[1]] = true;
+            if (preg_match('/^\{if:([^}=!]+)(?:\s*[=!]=\s*[^}]+)?\}$/i', $tag, $m)) {
+                $fields[trim($m[1])] = true;
             }
 
             if (preg_match('/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i', $tag, $m)) {
@@ -203,8 +178,8 @@ class SimpleTemplate {
         return array_keys($fields);
     }
 
-    // Render the template with given values
-    public function render(array $values): string {
+    public function render(array $values): string
+    {
         $tokens = $this->tokenize();
         $this->pos = 0;
         $this->values = $values;
@@ -212,7 +187,25 @@ class SimpleTemplate {
         return $this->parseBlock($tokens);
     }
 
-    private function parseBlock(array $tokens): string {
+    private function evaluateCondition(string $condition): bool
+    {
+        $condition = trim($condition);
+
+        if (preg_match('/^([a-z_][a-z0-9_+]*)\s*(=|!=)\s*(.*?)$/i', $condition, $m)) {
+            $field = $m[1];
+            $op = $m[2];
+            $expected = $m[3];
+            $actual = (string)($this->values[$field] ?? '');
+
+            return $op === '=' ? $actual === $expected : $actual !== $expected;
+        }
+
+        $field = $condition;
+        return !empty($this->values[$field] ?? '');
+    }
+
+    private function parseBlock(array $tokens): string
+    {
         $output = '';
 
         while ($this->pos < count($tokens)) {
@@ -224,47 +217,46 @@ class SimpleTemplate {
                 continue;
             }
 
-            if ($token['type'] === 'tag') {
-                $tag = $token['value'];
+            $tag = $token['value'];
 
-                if (preg_match('/^\{([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchField)) {
-                    $field = $matchField[1];
-                    $output .= $this->values[$field] ?? '';
-                    $this->pos++;
-                    continue;
-                }
-
-                if (preg_match('/^\{if:([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchIf)) {
-                    $this->pos++;
-                    $fieldName = $matchIf[1];
-                    $sub = $this->parseBlock($tokens);
-
-                    if (!empty($this->values[$fieldName] ?? '')) {
-                        $output .= $sub;
-                    }
-                    continue;
-                }
-
-                if (preg_match('/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchIfNot)) {
-                    $this->pos++;
-                    $fieldName = $matchIfNot[1];
-                    $sub = $this->parseBlock($tokens);
-
-                    if (empty($this->values[$fieldName] ?? '')) {
-                        $output .= $sub;
-                    }
-                    continue;
-                }
-
-                if ($tag === '{/if}' || $tag === '{/if_not}') {
-                    $this->pos++;
-                    break;
-                }
-
-                $output .= $tag;
+            if (preg_match('/^\{([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchField)) {
+                $field = $matchField[1];
+                $output .= $this->values[$field] ?? '';
                 $this->pos++;
                 continue;
             }
+
+            if (preg_match('/^\{if:([^}]+)\}$/i', $tag, $matchIf)) {
+                $this->pos++;
+                $condition = $matchIf[1];
+                $sub = $this->parseBlock($tokens);
+
+                if ($this->evaluateCondition($condition)) {
+                    $output .= $sub;
+                }
+
+                continue;
+            }
+
+            if (preg_match('/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchIfNot)) {
+                $this->pos++;
+                $fieldName = $matchIfNot[1];
+                $sub = $this->parseBlock($tokens);
+
+                if (empty($this->values[$fieldName] ?? '')) {
+                    $output .= $sub;
+                }
+
+                continue;
+            }
+
+            if ($tag === '{/if}' || $tag === '{/if_not}') {
+                $this->pos++;
+                break;
+            }
+
+            $output .= $tag;
+            $this->pos++;
         }
 
         return $output;

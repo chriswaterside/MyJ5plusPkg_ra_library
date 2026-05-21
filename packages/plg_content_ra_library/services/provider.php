@@ -1,4 +1,5 @@
 <?php
+//             Part of the RA_library package
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;

@@ -237,7 +237,7 @@ class Walk implements \JsonSerializable {
     }
 
     public function EventText() {
-      //  $calendarFormat = ["{meetTime}", "{< meet, >startTime}", "{,title}", "{,distance}"];
+        //  $calendarFormat = ["{meetTime}", "{< meet, >startTime}", "{,title}", "{,distance}"];
 
         $calendarFormat = "{meetTime}{ meet, ?meetTime}{startTime}{, ?title}{, ?distance}";
         $text = $this->getWalkText($calendarFormat);
@@ -544,7 +544,6 @@ class Walk implements \JsonSerializable {
             case "{meetGR}":
             case "{meetPC}":
             case "{meetw3w}":
-            case "{meetOSMap}":
             case "{meetDirections}":
                 $out = $this->meeting->getValue(str_replace("meet", "", $option));
                 break;
@@ -555,7 +554,6 @@ class Walk implements \JsonSerializable {
             case "{startGR}":
             case "{startPC}":
             case "{startw3w}":
-            case "{startOSMap}":
             case "{startDirections}":
                 $out = $this->start->getValue(str_replace("start", "", $option));
                 break;
@@ -589,7 +587,6 @@ class Walk implements \JsonSerializable {
             case "{telephone1}":
             case "{telephone2}":
             case "{email}":
-            case "{emailat}":
             case "{emaillink}":
                 $out = $this->contacts->getValue($option);
                 break;

@@ -36,22 +36,22 @@ class Mapdraw extends Map {
 
         parent::display();
 
-        Load::addScript("media/com_ra_library/js/leaflet/ra.display.plotRoute.js", "text/javascript");
-        Load::addStyleSheet("media/com_ra_library/js/leaflet/ra-gpx-tools.css", "text/css");
+        Load::addScript("media/com_ra_library/js/leaflet/ra.display.plotRoute.js");
+        Load::addStyleSheet("media/com_ra_library/js/leaflet/ra-gpx-tools.css");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
-        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxUpload.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxDownload.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/leaflet/L.Control.SmartRoute.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/leaflet/L.Control.ReverseRoute.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxSimplify.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxUpload.js");
+        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxDownload.js");
+        Load::addScript("media/com_ra_library/js/leaflet/L.Control.SmartRoute.js");
+        Load::addScript("media/com_ra_library/js/leaflet/L.Control.ReverseRoute.js");
+        Load::addScript("media/com_ra_library/js/leaflet/L.Control.GpxSimplify.js");
         Load::addStyleSheet('media/com_ra_library/css/ra.tabs.css');
         Load::addScript("media/com_ra_library/js/ra.tabs.js");
 
         $document = Factory::getDocument();
         $path = "media/com_ra_library/js/vendors/Leaflet.draw-1.0.4/dist/";
-        $document->addStyleSheet($path . "leaflet.draw.css", "text/css");
-        Load::addScript($path . "leaflet.draw-src.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/vendors/simplify-js-1.2.3/simplify.js", "text/javascript");
-        Load::addScript("media/com_ra_library/js/vendors/FileSaver-js-1.3.8/src/FileSaver.js", "text/javascript");
+        $document->addStyleSheet($path . "leaflet.draw.css");
+        Load::addScript($path . "leaflet.draw-src.js");
+        Load::addScript("media/com_ra_library/js/vendors/simplify-js-1.2.3/simplify.js");
+        Load::addScript("media/com_ra_library/js/vendors/FileSaver-js-1.3.8/src/FileSaver.js");
     }
 }

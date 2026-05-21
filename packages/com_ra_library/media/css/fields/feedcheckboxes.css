@@ -44,11 +44,11 @@ email: ruby.tuesday@ramblers-webs.org.uk
 }
 
 .feedcheckboxes-list {
-    max-height: 200px;
     overflow-y: auto;
     border: 1px solid #ddd;
     padding: 10px;
     background: white;
+    resize: vertical;
 }
 
 .feedcheckbox-item {
@@ -75,4 +75,24 @@ email: ruby.tuesday@ramblers-webs.org.uk
 .feedcheckbox-item.group {
     border-left: 4px solid #dc3545;
     margin-left: 15px;
+}
+.feedcheckboxes-search {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-end;  /* Aligns input to right */
+}
+
+.search-input {
+    width: 300px;  /* Fixed width or adjust as needed */
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }

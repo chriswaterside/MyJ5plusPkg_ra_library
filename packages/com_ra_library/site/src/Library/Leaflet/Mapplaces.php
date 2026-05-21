@@ -33,7 +33,7 @@ class Mapplaces extends RLeafletMap {
     
         parent::display();
 
-        Load::addScript("media/lib_com_ra_library/jsramblers/leaflet/ra-display-places.js", "text/javascript");
+        Load::addScript("media/lib_com_ra_library/jsramblers/leaflet/ra-display-places.js");
         Load::addStyleSheet('media/com_ra_library/js/css/ramblerslibrary.css');
 
     }

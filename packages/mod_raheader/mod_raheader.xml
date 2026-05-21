@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="5.0" client="site" method="upgrade">
+
+    <name>RA Header</name>
+    <author>Chris Vaughan Derby and South Derbyshire</author>
+    <creationDate>18 May 2026</creationDate>
+    <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
+    <license>This extension is released under the GNU/GPL License</license>
+    <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
+    <authorUrl>www.ramblers-webs.org.uk</authorUrl>
+    <version>2.0.0</version>
+    <description>This module displays a customizable header module for Ramblers branding (Joomla 5/6 compatible)</description>
+
+    <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
+    <namespace path="src">RamblersWebs\Module\Raheader\Site</namespace>
+
+
+    <files>
+        <filename module="mod_raheader">mod_raheader.php</filename>
+        <folder>src</folder>
+        <folder>tmpl</folder>
+        <folder>css</folder>
+        <filename>index.html</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/mod_raheader.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="header_height" type="integer" default="94" label="HEADER_HEIGHT" description="HEADER_HEIGHT_DESC" first="70" last="200" step="1" />
+                <field name="header_margin_top" type="integer" default="0" label="HEADER_MARGIN_TOP" description="HEADER_MARGIN_TOP_DESC" first="0" last="200" step="1" />
+                <field name="website_title" type="text" default="" size="100" label="WEBSITE_TITLE" description="WEBSITE_TITLE_DESC" />
+                <field name="title_color" type="list" default="_blank" label="TITLE_COLOR" description="TITLE_COLOR_DESC">
+                    <option value="pantone0110">PANTONE0110</option>
+                    <option value="pantone0159">PANTONE0159</option>
+                    <option value="pantone0186">PANTONE0186</option>
+                    <option value="pantone0555">PANTONE0555</option>
+                    <option value="pantone0583">PANTONE0583</option>
+                    <option value="pantone1815">PANTONE1815</option>
+                    <option value="pantone4485">PANTONE4485</option>
+                    <option value="pantone5565">PANTONE5565</option>
+                    <option value="pantone7474">PANTONE7474</option>
+                    <option value="Custom">CUSTOM</option>
+                </field>
+                <field name="title_color_value" 
+				type="text" 
+				showon="title_color:Custom"
+				default="#000000" size="8" label="TITLE_CUSTOM_COLOR" description="TITLE_CUSTOM_COLOR_DESC" />
+
+                <field name="website_subtitle" type="text" default="" size="100" label="WEBSITE_SUBTITLE" description="WEBSITE_SUBTITLE_DESC" />
+                <field name="subtitle_color" type="list" default="_blank" label="SUBTITLE_COLOR" description="SUBTITLE_COLOR_DESC">
+                    <option value="pantone0110">PANTONE0110</option>
+                    <option value="pantone0159">PANTONE0159</option>
+                    <option value="pantone0186">PANTONE0186</option>
+                    <option value="pantone0555">PANTONE0555</option>
+                    <option value="pantone0583">PANTONE0583</option>
+                    <option value="pantone1815">PANTONE1815</option>
+                    <option value="pantone4485">PANTONE4485</option>
+                    <option value="pantone5565">PANTONE5565</option>
+                    <option value="pantone7474">PANTONE7474</option>
+                    <option value="Custom">CUSTOM</option>
+                </field>
+                <field name="subtitle_color_value" 
+				type="text" 
+				showon="subtitle_color:Custom"
+				default="#000000" size="8" label="SUBTITLE_CUSTOM_COLOR" description="SUBTITLE_CUSTOM_COLOR_DESC" />
+            </fieldset>
+
+            <fieldset name="logo">
+                <field type="spacer" name="logo_section" class="text" label="LOGO_SECTION" />
+                <field name="logo_image" type="media" directory="images" label="LOGO_IMAGE" description="LOGO_IMAGE_DESC" />
+                <field name="logo_width" type="integer" default="91" label="LOGO_WIDTH" description="LOGO_WIDTH_DESC" first="1" last="2000" step="1" />
+                <field name="logo_height" type="integer" default="91" label="LOGO_HEIGHT" description="LOGO_HEIGHT_DESC" first="1" last="200" step="1" />
+                <field name="logo_url" type="text" default="http://www.ramblers.org.uk/" size="30" label="LOGO_URL" description="LOGO_URL_DESC" />
+                <field name="logo_url_target" type="list" default="_blank" label="LOGO_URL_TARGET" description="LOGO_URL_TARGET_DESC">
+                    <option value="_blank">Load in a new window</option>
+                    <option value="_top">Load in the full window</option>
+                </field>
+                <field name="logo_margin_top" type="integer" default="0" label="LOGO_MARGIN_TOP" description="LOGO_MARGIN_TOP_DESC" first="0" last="200" step="1" />
+            </fieldset>
+
+            <fieldset name="background">
+                <field name="background_style" type="list" default="_part" label="Background_Style" description="Background_Style_DESC">
+                    <option value="_part">Horizon image</option>
+                    <option value="_fullwidth">Full width image</option>
+                </field>
+                <field name="background_color" type="list" default="pantone7474" label="BACKGROUND_COLOR" description="BACKGROUND_COLOR_DESC">
+                    <option value="Transparent">TRANSPARENT</option>
+                    <option value="white">White</option>
+                    <option value="pantone0110">PANTONE0110</option>
+                    <option value="pantone0159">PANTONE0159</option>
+                    <option value="pantone0186">PANTONE0186</option>
+                    <option value="pantone0555">PANTONE0555</option>
+                    <option value="pantone0583">PANTONE0583</option>
+                    <option value="pantone1815">PANTONE1815</option>
+                    <option value="pantone4485">PANTONE4485</option>
+                    <option value="pantone5565">PANTONE5565</option>
+                    <option value="pantone7474">PANTONE7474</option>
+                    <option value="Custom">CUSTOM</option>
+                </field>
+                <field name="background_custom_color" 
+				type="text" 
+				showon="background_color:Custom"
+				default="#FFFFFF" size="8" label="BACKGROUND_CUSTOM_COLOR" description="BACKGROUND_CUSTOM_COLOR_DESC" />
+                <field name="horizon_image" type="media" directory="images" label="BACKGROUND_IMAGE" description="BACKGROUND_IMAGE_DESC" />
+            </fieldset>
+
+            <fieldset name="advanced">
+                <field
+                    name="moduleclass_sfx"
+                    type="textarea"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+                    rows="3"
+                />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

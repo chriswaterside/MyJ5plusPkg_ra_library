@@ -1,5 +1,5 @@
 /**
- * Feed Checkboxes Field - FIXED ID Matching
+ * Feed Checkboxes Field - FIXED ID Matching, with search
  */
 
 function initFeedcheckboxes(wrapper) {
@@ -7,10 +7,12 @@ function initFeedcheckboxes(wrapper) {
     wrapper.dataset.initialized = 'true';
 
     const checkboxes = wrapper.querySelectorAll('input[type="checkbox"]');
-    const hiddenInput = wrapper.querySelector('input[type="hidden"]'); // or add a specific class
-    const selectedContainer = wrapper.querySelector('.selected-container'); // add this class in your layout
+    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+    const selectedContainer = wrapper.querySelector('.selected-container');
+    const searchInput = wrapper.querySelector('.search-input');
+    const listContainer = wrapper.querySelector('.feedcheckboxes-list');
 
-    if (!hiddenInput || !selectedContainer || checkboxes.length === 0) return;
+    if (!hiddenInput || !selectedContainer || checkboxes.length === 0 || !searchInput || !listContainer) return;
 
     const updateField = () => {
         const selectedData = Array.from(checkboxes)
@@ -31,12 +33,28 @@ function initFeedcheckboxes(wrapper) {
         });
     };
 
-    // Clear existing listeners on this wrapper
+    // NEW: Filter function for search
+    const filterCheckboxes = () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const items = listContainer.querySelectorAll('.feedcheckbox-item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (searchTerm === '' || text.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    };
+
+    // Existing checkbox change listeners
     checkboxes.forEach(cb => {
         cb.removeEventListener('change', updateField);
         cb.addEventListener('change', updateField);
     });
 
+    // Existing chip remove
     selectedContainer.removeEventListener('click', updateField);
     selectedContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-x')) {
@@ -52,6 +70,9 @@ function initFeedcheckboxes(wrapper) {
             updateField();
         }
     });
+
+    // NEW: Search input listener
+    searchInput.addEventListener('input', filterCheckboxes);
 
     updateField();
 }

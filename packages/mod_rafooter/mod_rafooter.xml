@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="5.0" client="site" method="upgrade">
+    <name>RA Footer</name>
+    <author>Chris Vaughan Derby and South Derbyshire</author>
+    <creationDate>18 May 2026</creationDate>
+    <copyright>Copyright (C) 2015-2026 Ramblers-webs.org.uk</copyright>
+    <license>This extension is released under the GNU/GPL License</license>
+    <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
+    <authorUrl>www.ramblers-webs.org.uk</authorUrl>
+    <version>3.0.13</version>
+    <description>MOD_RAFOOTER_DESCRIPTION</description>
+
+    <namespace path="src">RamblersWebs\Module\Rafooter</namespace>
+
+    <files>
+        <filename module="mod_rafooter">mod_rafooter.php</filename>
+        <folder>tmpl</folder>
+        <folder>images</folder>
+        <folder>css</folder>
+        <folder>src</folder>
+        <folder>language</folder>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/mod_rafooter.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="MOD_RAFOOTER_FIELDSET_LABEL_BASIC">
+                <field name="startyear" type="text" default="2010" size="10"
+                    label="MOD_RAFOOTER_FIELD_STARTYEAR_LABEL"
+                    description="MOD_RAFOOTER_FIELD_STARTYEAR_DESC" />
+                <field name="copyrighttext" type="text" default="Site Name" size="10"
+                    label="MOD_RAFOOTER_FIELD_COPYRIGHTTEXT_LABEL"
+                    description="MOD_RAFOOTER_FIELD_COPYRIGHTTEXT_DESC" />
+                <field name="ramblerswebs" type="radio" default="1"
+                    label="MOD_RAFOOTER_FIELD_RAMBLERSWEBS_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_ENABLE</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_DISABLE</option>
+                </field>
+                <field name="footersize" type="radio" default="1"
+                    label="MOD_RAFOOTER_FIELD_FOOTERSIZE_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_FULL</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_SHORT</option>
+                    <option value="2">MOD_RAFOOTER_OPTION_NOCOPYRIGHT</option>
+                </field>
+                <field name="ramblersdisableprivacy" type="radio" default="1"
+                    label="MOD_RAFOOTER_FIELD_RAMBLERSDISABLEPRIVACY_LABEL">
+                    <option value="0">MOD_RAFOOTER_OPTION_ENABLE</option>
+                    <option value="1">MOD_RAFOOTER_OPTION_DISABLE</option>
+                </field>
+                <field name="custom_css_file" type="text" default=""
+                    label="MOD_RAFOOTER_FIELD_CUSTOMCSS_LABEL"
+                    description="MOD_RAFOOTER_FIELD_CUSTOMCSS_DESC" />
+                <field name="alternative_css_file" type="text" default=""
+                    label="MOD_RAFOOTER_FIELD_ALTERNATIVECSS_LABEL"
+                    description="MOD_RAFOOTER_FIELD_ALTERNATIVECSS_DESC" />
+            </fieldset>
+
+            <fieldset name="ramblers" label="MOD_RAFOOTER_FIELDSET_LABEL_RAMBLERS">
+                <field name="footerstyle" type="radio" default="0"
+                    label="MOD_RAFOOTER_FIELD_FOOTERSTYLE_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_ENABLE</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_DISABLE</option>
+                </field>
+                <field name="background_color" type="list" default="darkgrey"
+                    label="MOD_RAFOOTER_FIELD_BACKGROUNDCOLOR_LABEL"
+                    description="MOD_RAFOOTER_FIELD_BACKGROUNDCOLOR_DESC">
+                    <option value="darkgrey">MOD_RAFOOTER_COLOR_DARKGREY</option>
+                    <option value="pantone0110">PANTONE 0110</option>
+                    <option value="pantone0159">PANTONE 0159</option>
+                    <option value="pantone0186">PANTONE 0186</option>
+                    <option value="pantone0555">PANTONE 0555</option>
+                    <option value="pantone0583">PANTONE 0583</option>
+                    <option value="pantone1815">PANTONE 1815</option>
+                    <option value="pantone4485">PANTONE 4485</option>
+                    <option value="pantone5565">PANTONE 5565</option>
+                    <option value="pantone7474">PANTONE 7474</option>
+                    <option value="custom">MOD_RAFOOTER_COLOR_CUSTOM</option>
+                </field>
+                <field name="custom_background_colour_value" type="text" default="#000000"
+                    size="8"
+                    showon="background_color:custom"
+                    label="MOD_RAFOOTER_FIELD_CUSTOMBACKGROUND_LABEL"
+                    description="MOD_RAFOOTER_FIELD_CUSTOMBACKGROUND_DESC" />
+                <field name="textcolour" type="radio" default="1"
+                    label="MOD_RAFOOTER_FIELD_TEXTCOLOUR_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_DARK</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_WHITE</option>
+                </field>
+                <field name="standardimage" type="radio" default="1"
+                    label="MOD_RAFOOTER_FIELD_STANDARDIMAGE_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_YES</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_NO</option>
+                </field>
+                <field name="footer_image" type="media" directory=""
+                    label="MOD_RAFOOTER_FIELD_FOOTERIMAGE_LABEL"
+                    description="MOD_RAFOOTER_FIELD_FOOTERIMAGE_DESC" />
+                <field name="imageposition" type="list" default="center"
+                    label="MOD_RAFOOTER_FIELD_IMAGEPOSITION_LABEL">
+                    <option value="center">MOD_RAFOOTER_POSITION_CENTER</option>
+                    <option value="left">MOD_RAFOOTER_POSITION_LEFT</option>
+                    <option value="right">MOD_RAFOOTER_POSITION_RIGHT</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+
+</extension>

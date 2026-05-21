@@ -166,7 +166,7 @@ class Organisation {
 
     public function display($map) {
         if (isset($map)) {
-            Load::addScript("media/com_ra_library/js/organisation/organisation.js", "text/javascript");
+            Load::addScript("media/com_ra_library/js/organisation/organisation.js");
             Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
             $map->setCommand('ra.display.organisationMap');
             $map->help_page = "";

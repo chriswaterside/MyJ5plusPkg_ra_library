@@ -78,14 +78,14 @@ class Maplist extends LeafletMap {
         parent::setDataObject($this->data);
         parent::display();
 
-        Load::addScript("media/com_ra_library/js/leaflet/gpx/maplist.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/leaflet/gpx/maplist.js");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
         Load::addScript("media/com_ra_library/js/ra.tabs.js");
         Load::addStyleSheet("media/com_ra_library/css/ra.tabs.css");
         Load::addStyleSheet('media/com_ra_library/js/vendors/cvList/cvList.css');
         Load::addScript("media/com_ra_library/js/vendors/cvList/cvList.js");
         //   <!-- IE 10+ / Edge support via babel-polyfill: https://babeljs.io/docs/en/babel-polyfill/ --> 
-        Load::addScript("https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.12.1/polyfill.min.js", "text/javascript");
+        Load::addScript("https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.12.1/polyfill.min.js");
     }
 
     private function loggedon() {

@@ -76,3 +76,24 @@ optgroup.level-0 option,
 optgroup.level-1 option{
     color:black;
 }
+/* input checks box */
+div.layout-check-status{
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+    width: fit-content;
+    z-index: 9999 !important;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    height: auto;
+    box-sizing: border-box;
+}

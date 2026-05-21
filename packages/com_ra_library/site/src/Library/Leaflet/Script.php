@@ -52,7 +52,7 @@ class Script {
         }
 
         $text .= "ra.bootstrapper('" . $jv . "','" . $this->command . "',mapOptions,data);});" . PHP_EOL;
-        $document->addScriptDeclaration($text, "text/javascript");
+        $document->addScriptDeclaration($text);
 
         $this->addScriptsandStyles($options);
     }
@@ -63,11 +63,11 @@ class Script {
 
         $document = Factory::getDocument();
 
-        Load::addScript("media/com_ra_library/js/ra.js", array("type" => "text/javascript"));
+        Load::addScript("media/com_ra_library/js/ra.js");
         // Leaflet
         $document->addStyleSheet("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
         Load::addScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
-        // Load::addScript("media/com_ra_library/js/vendors/leaflet/leaflet.js", array("type" => "text/javascript"));
+        // Load::addScript("media/com_ra_library/js/vendors/leaflet/leaflet.js");
         Load::addScript("media/com_ra_library/js/leaflet/ra.leafletmap.js");
         Load::addStyleSheet("media/com_ra_library/js/leaflet/ramblersleaflet.css");
         Load::addScript("https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.15.0/proj4.js");
@@ -79,11 +79,11 @@ class Script {
 
         if ($options->displayElevation !== null) {
             // elevation
-            $document->addScript("https://d3js.org/d3.v3.min.js", array("type" => "text/javascript"));
+            $document->addScript("https://d3js.org/d3.v3.min.js");
             $path = "media/com_ra_library/js/vendors/Leaflet.Elevation-0.0.4-ra/";
-            Load::addScript($path . "leaflet.elevation-0.0.4.src.js", array("type" => "text/javascript"));
-            $document->addStyleSheet($path . "elevation.css", array("type" => "text/css"));
-            Load::addScript("media/com_ra_library/js/vendors/leaflet-gpx-1.3.1/gpx.js", array("type" => "text/javascript"));
+            Load::addScript($path . "leaflet.elevation-0.0.4.src.js");
+            $document->addStyleSheet($path . "elevation.css");
+            Load::addScript("media/com_ra_library/js/vendors/leaflet-gpx-1.3.1/gpx.js");
         }
 
         if ($options->licenseKeys->OSkey !== null) {

@@ -20,7 +20,7 @@ class Map extends LeafletMap {
     private $data = null;
 
     public function displayPath($gpx) {
-        Load::addScript("media/com_ra_library/js/leaflet/gpx/maplist.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/leaflet/gpx/maplist.js");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
         $this->help_page = "singleroute.html";
         $this->options->fullscreen = true;

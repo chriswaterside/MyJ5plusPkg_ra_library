@@ -265,10 +265,10 @@ ra.display.tableList = (function () {
         };
         this.getMarkerIcon = function (no) {
             var icon = this.defaultIcon;
-            if (this.data.displayOptions === null) {
+            if (this.data.markerOptions === null) {
                 return icon;
             }
-            var icons = this.data.displayOptions.icons;
+            var icons = this.data.markerOptions.icons;
             if (icons) {
                 if (icons.type && icons.column) {
                     var title = icons.column;

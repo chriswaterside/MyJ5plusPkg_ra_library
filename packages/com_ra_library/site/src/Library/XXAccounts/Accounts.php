@@ -87,7 +87,7 @@ class Accounts {
     }
 
     public function addMapMarkers($map) {
-        Load::addScript("media/com_ra_library/js/accounts/accounts.js", "text/javascript");
+        Load::addScript("media/com_ra_library/js/accounts/accounts.js");
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
         $map->setCommand('ra.display.accountsMap');
         $map->options->fullscreen = true;

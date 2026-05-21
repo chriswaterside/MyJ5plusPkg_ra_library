@@ -103,8 +103,8 @@ class FeedcheckboxesField extends ListField {
         $options = $this->getOptions();
 
         $codes = $this->value;
-        if (is_string($codes)){
-             $codes=[];
+        if (is_string($codes)) {
+            $codes = [];
         }
         $storedData = json_encode($codes);
         $valueCodes = array_filter(array_column($codes, 'code'));
@@ -127,8 +127,12 @@ class FeedcheckboxesField extends ListField {
         }
         $html .= '</div>';
 
+        $html .= '<div class="feedcheckboxes-search">';
+        $html .= '<input type="text" class="search-input no-hints" placeholder="Search groups..." autocomplete="off">';
+        $html .= '</div>';
+
         // Checkboxes
-        $html .= '<div class="feedcheckboxes-list">';
+        $html .= '<div class="feedcheckboxes-list" style="height:300px">';
         foreach ($options as $option) {
             $checked = in_array($option->value, $valueCodes) ? ' checked' : '';
             $html .= '<label class="feedcheckbox-item ' . htmlspecialchars($option->class ?? '') . '">';

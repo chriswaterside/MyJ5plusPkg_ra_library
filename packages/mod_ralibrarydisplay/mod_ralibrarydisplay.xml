@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+    <name>RA Library Display</name>
+    <author>Chris Vaughan</author>
+    <creationDate>18 May 2026</creationDate>
+    <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
+    <license>This extension is released under the GNU/GPL License</license>
+    <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
+    <authorUrl>www.ramblers-webs.org.uk</authorUrl>
+    <version>2.0.0</version>
+    <description>This module display an RA Library Display (Joomla 5/6 compatible)</description>
+
+    <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
+    <namespace path="src">RamblersWebs\Module\Ralibrarydisplay\Site</namespace>
+
+    <files>
+        <filename module="mod_ralibrarydisplay">mod_ralibrarydisplay.php</filename>
+        <folder>src</folder>
+        <folder>tmpl</folder>
+        <filename>index.html</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/mod_ralibrarydisplay.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset 
+                name="basic" 
+                addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
+                <field name="library_display_id" 
+                       type="LibraryDisplay" 
+                       label="Select Library Display" 
+                       description="Select which Library Display to show in this module" 
+                />
+                
+             
+            </fieldset>
+            <fieldset name="advanced">
+                <field name="moduleclass_sfx" type="text" label="Module Class" description="JFIELD_MODULE_CLASS_SUFFIX_DESC"/>
+                <field name="header_tag" type="list" label="Header Tag" default="h3">
+                    <option value="h1">h1</option>
+                    <option value="h2">h2</option>
+                    <option value="h3">h3</option>
+                    <option value="h4">h4</option>
+                    <option value="h5">h5</option>
+                    <option value="h6">h6</option>
+                    <option value="p">p</option>
+                    <option value="div">div</option>
+                   
+                </field>
+                <field name="header_class" type="text" label="Header Class"/>
+                <field name="module_style" type="modulestyle"/>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

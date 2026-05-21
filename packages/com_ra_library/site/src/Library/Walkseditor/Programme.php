@@ -68,8 +68,8 @@ class Programme extends LeafletMap {
         $this->data->items=[];
 
         $path = "media/com_ra_library/js/walkseditor/";
-        Load::addScript($path . "js/form/programme.js", "text/javascript");
-        Load::addScript($path . "js/viewWalks.js", "text/javascript");
+        Load::addScript($path . "js/form/programme.js");
+        Load::addScript($path . "js/viewWalks.js");
    
         
        

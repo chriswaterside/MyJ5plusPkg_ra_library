@@ -128,13 +128,6 @@ class Timelocation implements \JsonSerializable {
                     $out = $this->w3w;
                 }
                 break;
-            case "{OSMap}":
-//                if ($this->type !== self::LOCATION_ROUGH) {
-//                    $lat = $this->latitude;
-//                    $long = $this->longitude;
-//                    $out = "<span><a href=&quot;javascript:ra.link.streetmap(" . $lat . "," . $long . ")&quot; >[OS Map]</a></span>";
-//                }
-                break;
             case "{Directions}":
                 if ($this->type !== self::LOCATION_ROUGH) {
                     $lat = $this->latitude;

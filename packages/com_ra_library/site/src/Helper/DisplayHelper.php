@@ -12,6 +12,7 @@ namespace Ramblers\Component\Ra_library\Site\Helper;
  *
  * @author chris
  */
+use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Feedoptions;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Feed;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Areawalks;
@@ -40,6 +41,7 @@ use Ramblers\Component\Ra_library\Site\Library\Leaflet\Gpx\Maplist as GpxMaplist
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Csv\CsvList;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Json\JsonList;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Sql\SqlList as SqlList;
+use Ramblers\Component\Ra_library\Site\Library\Directory\DirList;
 
 class DisplayHelper {
 
@@ -49,8 +51,15 @@ class DisplayHelper {
 
     public function __construct($displayoption, $options) {
         $this->displayoption = $displayoption;
-        //  $this->options = $options;
         $this->data = json_decode($options);
+        $css = $this->data->css_file;
+        if (isset($css) && strlen($css) > 0) {
+            Load::addStyleSheet($css);
+        }
+        $js = $this->data->js_file;
+        if (isset($js) && strlen($js) > 0) {
+            Load::addScript($js);
+        }
     }
 
     Public function Display() {
@@ -65,7 +74,7 @@ class DisplayHelper {
             case "routes_display_single":
                 $this->displayRoutesSingle();
                 break;
-            case "routes_display_multe":
+            case "routes_display_multi":
                 $this->displayRoutesMulti();
                 break;
             case "table_csv":
@@ -78,7 +87,7 @@ class DisplayHelper {
                 $this->displayTableJson();
                 break;
             case "documents_folder":
-
+                $this->displayDocumentsFolders();
                 break;
             case "draft_programme":
                 $this->WalkseditorProgramme();
@@ -247,6 +256,22 @@ class DisplayHelper {
         return $display;
     }
 
+    private function setClasses($type, $display, $data) {
+        switch ($type) {
+            case 'future_nextwalks':
+            case 'future_table':
+            case 'future_list':
+            case 'future_fulldetails':
+                if (strlen($data->walks_class) > 0) {
+                    $display->setWalksClass($data->walks_class);
+                }
+                if (strlen($data->walk_class) > 0) {
+                    $display->setWalkClass($data->walk_class);
+                }
+                break;
+        }
+    }
+
     private function customiseWalksDisplay($display, $option, $data) {
         switch ($option) {
             case 'nextwalks':
@@ -345,8 +370,12 @@ class DisplayHelper {
     private function displayTableCSV() {
         $data = $this->data;
         $folder = $data->table_file;
+        $options = $data->table_options;
+        $options = json_encode($options);
+        $options = json_decode($options, true) ?: [];
         $list = new CsvList($folder);
-        $list->setDisplayOptions($table_options);
+        $list->setOptions($options);
+        $list->setTableMarkerOptions($list);
         $list->display();
     }
 
@@ -358,7 +387,7 @@ class DisplayHelper {
         $options = json_encode($options);
         $options = json_decode($options, true) ?: [];
         $list = new SqlList($select);
-        $this->setTableDisplayOptions($list);
+        $this->setTableMarkerOptions($list);
         $list->setOptions($options);
         $list->display();
     }
@@ -373,15 +402,15 @@ class DisplayHelper {
         $options = json_decode($options, true) ?: [];
         $list = new JsonList($json);
         $list->setOptions($options);
-        $list->setDisplayOptions($list);
+        $list->setTableMarkerOptions($list);
         $list->display();
     }
 
-    private function setTableDisplayOptions($list) {
+    private function setTableMarkerOptions($list) {
         $data = $this->data;
         switch ($data->table_markertype) {
             case "text":
-                $displayOptions = (object) [
+                $markerOptions = (object) [
                             'icons' => (object) [
                                 'type' => 'text',
                                 'column' => $data->table_markercolumn,
@@ -390,7 +419,7 @@ class DisplayHelper {
                 ];
                 break;
             case 'icons':
-                $displayOptions = (object) [
+                $markerOptions = (object) [
                             'icons' => (object) [
                                 'type' => 'icon',
                                 'column' => $data->table_markercolumn,
@@ -400,20 +429,35 @@ class DisplayHelper {
                 foreach ($data->table_iconmarkers as $value) {
                     $prop = $value->value;
                     $val = $value->icon;
-                    $displayOptions->icons->values->$prop = $val;
+                    $markerOptions->icons->values->$prop = $val;
                 }
                 break;
             default:
                 return;
         }
-        $list->setDisplayOptions($displayOptions);
+        $list->setMarkerOptions($markerOptions);
     }
 
-    private function dsiplayDocumentsFolder() {
-        $dir = new RDirectoryList(array(".pdf", ".doc", ".docx", ".odt", ".zip")); // specifies the option and which file types will be displayed
-        $dir->listItems("images/xxxxxxxx"); // specifies the folder that should be listed
-        $dir->listItems("images/xxxxxxxx", RDirectoryList::ASC); // this also specifies that the files should be listed in alphabetical order.(the default)
-        $dir->listItems("images/xxxxxxxx", RDirectoryList::DESC); // this also specifies that the files should be listed in reverse alphabetical order.
+    private function displayDocumentsFolders() {
+        foreach ($this->data->document_sources as $source) {
+            if (!$source->enabled) {
+                continue;
+            }
+
+            if ($source->introduction === '1' && $source->introductiontext) {
+                echo $source->introductiontext;
+            }
+            //    $exts = $source->documents_exts;
+            $exts = array_column($source->documents_exts, 'Extension');
+            $folder = $source->document_folder;
+            $asc = $source->sort === "0";
+            $dir = new DirList($exts);
+            if ($asc) {
+                $dir->listItems($folder, DirList::ASC);
+            } else {
+                $dir->listItems($folder, DirList::DESC);
+            }
+        }
     }
 
     private function WalkseditorProgramme() {

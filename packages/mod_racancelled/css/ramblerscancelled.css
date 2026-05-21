@@ -1,0 +1,20 @@
+/* RA Cancelled Walk Module */
+/* @module	RA Cancelled */
+/* @author	Chris Vaughan */
+/* @website	http://ramblers-webs.org.uk/ */
+/* @copyright	Copyright (C) 2018 Chris Vaughan webmaster@ramblers-webs.org.uk All rights reserved. */
+
+
+.cancelledWalks { background-color: #8BA69C;
+                  border-radius: 10px 10px 10px 10px;
+                  padding: 10px;
+                  border-width: 2px;
+                  border-style: solid;
+                  border-color: #69897E
+}
+.cancelledWalks h3 {
+    color:#782327;
+    border-bottom: 1px solid #d1d1d1;
+    box-shadow: 0 1px 0 #ffffff;
+    margin-top: 0px;
+}

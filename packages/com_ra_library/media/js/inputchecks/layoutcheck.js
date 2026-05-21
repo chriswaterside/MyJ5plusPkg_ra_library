@@ -38,19 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
             top: auto !important;
             left: auto !important;
             right: auto !important;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 5px 8px;
-            font-size: 12px;
-            white-space: nowrap;
-            z-index: 9999 !important;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.2s, transform 0.2s;
-            pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: auto;
         `;
 
         const wrapper = field.closest('.control-group, .field-group, .form-group') || field.parentNode;  // NEW: Better container
@@ -61,7 +48,12 @@ document.addEventListener('DOMContentLoaded', function () {
         function positionStatus() {
             const rect = field.getBoundingClientRect();
             const statusRect = statusBox.getBoundingClientRect();
-
+            if (field.offsetWidth > 0) {
+                statusBox.style.width = field.offsetWidth + 'px';
+            }
+            if (rect.left > 0) {
+                statusBox.style.left = rect.left + 'px';
+            }
             const topSpace = rect.top;
             if (topSpace > 50) {
                 // Top (your original preference)
@@ -76,8 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Event handlers (your existing + positioning)
         field.addEventListener('input', function () {
+            positionStatus();  // NEW     
             updateStatus.call(this);
-            positionStatus();  // NEW
+
         });
 
         field.addEventListener('focus', function () {
@@ -133,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function  getStatus(text) {
         var temp = new ra.SimpleTemplate(text);
         var fields = temp.getFields();
-        out = "Fields found: " +  fields.toString();
+        out = "Fields found: " + fields.join(", ");
         return  out;
     }
 

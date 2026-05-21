@@ -793,48 +793,48 @@ ra.time = (function () {
 }
 ());
 class Time {
-  constructor(hours = 0, minutes = 0) {
-    this.hours = hours;
-    this.minutes = minutes;
-    this.normalize();
-  }
-
-  setTime(timeString) {
-    const [h, m] = timeString.split(":").map(Number);
-    this.hours = h;
-    this.minutes = m;
-    this.normalize();
-    return this;
-  }
-
-  addMinutes(amount) {
-    this.minutes += amount;
-    this.normalize();
-    return this;
-  }
-  roundUpToNext30() {
-    const total = this.hours * 60 + this.minutes;
-    const rounded = Math.ceil(total / 30) * 30;
-    this.hours = Math.floor(rounded / 60) % 24;
-    this.minutes = rounded % 60;
-    return this;
-  }
-
-  normalize() {
-    this.hours += Math.floor(this.minutes / 60);
-    this.minutes = this.minutes % 60;
-
-    if (this.minutes < 0) {
-      this.minutes += 60;
-      this.hours -= 1;
+    constructor(hours = 0, minutes = 0) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.normalize();
     }
 
-    this.hours = ((this.hours % 24) + 24) % 24;
-  }
+    setTime(timeString) {
+        const [h, m] = timeString.split(":").map(Number);
+        this.hours = h;
+        this.minutes = m;
+        this.normalize();
+        return this;
+    }
 
-  toString() {
-    return `${String(this.hours).padStart(2, "0")}:${String(this.minutes).padStart(2, "0")}`;
-  }
+    addMinutes(amount) {
+        this.minutes += amount;
+        this.normalize();
+        return this;
+    }
+    roundUpToNext30() {
+        const total = this.hours * 60 + this.minutes;
+        const rounded = Math.ceil(total / 30) * 30;
+        this.hours = Math.floor(rounded / 60) % 24;
+        this.minutes = rounded % 60;
+        return this;
+    }
+
+    normalize() {
+        this.hours += Math.floor(this.minutes / 60);
+        this.minutes = this.minutes % 60;
+
+        if (this.minutes < 0) {
+            this.minutes += 60;
+            this.hours -= 1;
+        }
+
+        this.hours = ((this.hours % 24) + 24) % 24;
+    }
+
+    toString() {
+        return `${String(this.hours).padStart(2, "0")}:${String(this.minutes).padStart(2, "0")}`;
+    }
 }
 ra.html = (function () {
     var html = {};
@@ -868,6 +868,34 @@ ra.html = (function () {
                 td.appendChild(col);
             }
         });
+    };
+    html.createDropDown = function (tag, config) {
+//         var config = {classes:'',
+//            options:[
+//            {text: 'Add to calendar options:-', value: 'none'},
+//            {text: 'Subscribe to calendar', value: 'webcal'},
+//            {text: 'Add to Google Calendar', value: 'google'},
+//            {text: 'Add to Outlook', value: 'outlook'},
+//            {text: 'Download calendar(.ics) file', value: 'download'}]};
+        var div = html.createElement(tag, 'span');
+        if ('class' in config) {
+            div.setAttribute('class', config.classes);
+        }
+        if ('title' in config) {
+            div.title = config.title;
+        }
+
+        div.title = 'Download or subscribe to our walks';
+        var select = html.createElement(div, 'select');
+
+        config.options.forEach(opt => {
+            var ele = document.createElement('option');
+            ele.setAttribute('value', opt.value);
+            ele.innerHTML = opt.text;
+            select.appendChild(ele);
+        });
+        return select;
+
     };
     html.displayInModal = function (tag) {
         // used by ra.walk to display images
@@ -1528,13 +1556,6 @@ if (typeof (ra.html.input) === "undefined") {
 
 ra.link = (function () {
     var link = {};
-    link.getOSMap = function (lat, long, text) {
-        var $out = '';
-//        $out = "<abbr title='Click Map to see Ordnance Survey map of location'>";
-//        $out = "<a class='mappopup' href=\"javascript:ra.link.streetmap(" + lat + "," + long + ")\" >[" + text + "]</a>";
-//        $out += "</abbr>";
-        return $out;
-    };
     link.getAreaMap = function ($location, $text) {
         var $this = $location;
         var $code, $out;
@@ -2900,18 +2921,277 @@ ra.previousNext = function (tag, items, fnc) {
 
 // Create ra namespace if it doesn't exist
 var ra = ra || {};
-
-ra.SimpleTemplate = function(template) {
-    // check old format and convert it
-    if (Array.isArray(template)){
-        template=this.convertOldTemplate(template);
+ ra.SimpleTemplate=function(template) {
+    if (Object.prototype.toString.call(template) === '[object Array]') {
+        template = SimpleTemplate.convertOldTemplate(template);
     }
-    
-    // {from ?company} → {if:company}from {company}{/if}
+
     this.template = template.replace(
         /\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/gi,
         '{if:$2}$1{$2}{/if}'
     );
+
+    this.values = {};
+    this.pos = 0;
+
+    this.validateTemplate();
+}
+
+ra.SimpleTemplate.prototype.validateTemplate = function () {
+    var pos = 0;
+    var len = this.template.length;
+    var invalidTags = [];
+
+    while (pos < len) {
+        if (this.template[pos] === '{') {
+            var match = this.template.slice(pos).match(/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i);
+            if (match) {
+                pos += match[1].length;
+                continue;
+            }
+
+            var closeBrace = this.template.indexOf('}', pos);
+            if (closeBrace !== -1) {
+                var possibleTag = this.template.slice(pos, closeBrace + 1);
+                if (/^\{.+\}$/.test(possibleTag)) {
+                    invalidTags.push(possibleTag);
+                }
+                pos = closeBrace + 1;
+                continue;
+            }
+        }
+
+        pos++;
+    }
+
+    if (invalidTags.length) {
+        throw new Error(
+            'Invalid template syntax found: ' + invalidTags.join(', ') +
+            '. Valid formats are: {fieldname}, {if:fieldname}...{/if}, {if:fieldname=value}...{/if}, {if:fieldname!=value}...{/if}, {if_not:fieldname}...{/if_not}, {text ?fieldname}'
+        );
+    }
+};
+
+ra.SimpleTemplate.convertOldTemplate = function (oldTemplate) {
+    var result = '';
+    var previousField = null;
+
+    for (var i = 0; i < oldTemplate.length; i++) {
+        var part = oldTemplate[i];
+
+        if (part.indexOf('{') === -1) {
+            result += part;
+            continue;
+        }
+
+        var m;
+
+        if ((m = part.match(/^\{,([a-z_][a-z0-9_+]*)\}$/i))) {
+            var field1 = m[1];
+            result += '{, ?' + field1 + '}';
+            previousField = field1;
+            continue;
+        }
+
+        if ((m = part.match(/^\{\[(.+?)\]([a-z_][a-z0-9_+]*)\}$/i))) {
+            var prefix = m[1];
+            var field2 = m[2];
+            result += '{' + prefix + '?' + field2 + '}';
+            previousField = field2;
+            continue;
+        }
+
+        if ((m = part.match(/^\{<(.+?)>([a-z_][a-z0-9_+]*)\}$/i))) {
+            var conditionalText = m[1];
+            var field3 = m[2];
+
+            if (previousField !== null) {
+                result += '{' + conditionalText + '?' + previousField + '}{' + field3 + '}';
+            } else {
+                result += '{' + field3 + '}';
+            }
+
+            previousField = field3;
+            continue;
+        }
+
+        if ((m = part.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+            var field4 = m[1];
+            result += '{' + field4 + '}';
+            previousField = field4;
+            continue;
+        }
+
+        result += part;
+        previousField = null;
+    }
+
+    return result;
+};
+
+ra.SimpleTemplate.prototype.tokenize = function () {
+    var tokens = [];
+    var pos = 0;
+    var len = this.template.length;
+
+    while (pos < len) {
+        if (this.template[pos] === '{') {
+            var match = this.template.slice(pos).match(/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i);
+            if (match) {
+                tokens.push({ type: 'tag', value: match[1] });
+                pos += match[1].length;
+                continue;
+            }
+        }
+
+        var next = this.template.indexOf('{', pos);
+        if (next === -1) {
+            tokens.push({ type: 'text', value: this.template.slice(pos) });
+            break;
+        }
+
+        tokens.push({ type: 'text', value: this.template.slice(pos, next) });
+        pos = next;
+    }
+
+    return tokens;
+};
+
+ra.SimpleTemplate.prototype.getFields = function () {
+    var tokens = this.tokenize();
+    var fields = {};
+
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i].type !== 'tag') {
+            continue;
+        }
+
+        var tag = tokens[i].value;
+        var m;
+
+        if ((m = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+            fields[m[1]] = true;
+        }
+
+        if ((m = tag.match(/^\{if:([^}=!]+)(?:\s*[=!]=\s*[^}]+)?\}$/i))) {
+            fields[m[1].trim()] = true;
+        }
+
+        if ((m = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+            fields[m[1]] = true;
+        }
+    }
+
+    var list = [];
+    for (var key in fields) {
+        if (Object.prototype.hasOwnProperty.call(fields, key)) {
+            list.push(key);
+        }
+    }
+
+    return list;
+};
+
+ra.SimpleTemplate.prototype.render = function (values) {
+    this.values = values || {};
+    this.pos = 0;
+    var tokens = this.tokenize();
+    return this.parseBlock(tokens);
+};
+
+ra.SimpleTemplate.prototype.evaluateCondition = function (condition) {
+    condition = condition.trim();
+
+    var m = condition.match(/^([a-z_][a-z0-9_+]*)\s*(=|!=)\s*(.*?)$/i);
+    if (m) {
+        var field = m[1];
+        var op = m[2];
+        var expected = m[3];
+        var actual = String(this.values[field] || '');
+
+        return op === '=' ? actual === expected : actual !== expected;
+    }
+
+    return Boolean(this.values[condition] || '');
+};
+
+ra.SimpleTemplate.prototype.parseBlock = function (tokens) {
+    var output = '';
+
+    while (this.pos < tokens.length) {
+        var token = tokens[this.pos];
+
+        if (token.type === 'text') {
+            output += token.value;
+            this.pos++;
+            continue;
+        }
+
+        var tag = token.value;
+        var m;
+
+        if ((m = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+            var field = m[1];
+            output += this.values[field] || '';
+            this.pos++;
+            continue;
+        }
+
+        if ((m = tag.match(/^\{if:([^}]+)\}$/i))) {
+            this.pos++;
+            var condition = m[1];
+            var sub = this.parseBlock(tokens);
+
+            if (this.evaluateCondition(condition)) {
+                output += sub;
+            }
+
+            continue;
+        }
+
+        if ((m = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+            this.pos++;
+            var fieldName = m[1];
+            var sub2 = this.parseBlock(tokens);
+
+            if (!this.values[fieldName]) {
+                output += sub2;
+            }
+
+            continue;
+        }
+
+        if (tag === '{/if}' || tag === '{/if_not}') {
+            this.pos++;
+            break;
+        }
+
+        output += tag;
+        this.pos++;
+    }
+
+    return output;
+};
+
+
+
+
+
+
+
+
+
+ra.SimpleTemplateOrig = function (template) {
+    // check old format and convert it
+    if (Array.isArray(template)) {
+        template = this.convertOldTemplate(template);
+    }
+
+    // {from ?company} → {if:company}from {company}{/if}
+    this.template = template.replace(
+            /\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/gi,
+            '{if:$2}$1{$2}{/if}'
+            );
     this.values = {};
     this.pos = 0;
 };
@@ -2920,14 +3200,14 @@ ra.SimpleTemplate = function(template) {
  * @param {Array} oldTemplate - Array of template parts
  * @returns {string} New template string (using shorthand syntax)
  */
-ra.SimpleTemplate.prototype.convertOldTemplate = function(oldTemplate) {
+ra.SimpleTemplateOrig.prototype.convertOldTemplate = function (oldTemplate) {
     var result = '';
     var previousField = null;
     var i, part, match, field, prefix, conditionalText;
 
     for (i = 0; i < oldTemplate.length; i++) {
         part = oldTemplate[i];
-        
+
         // Handle literal strings (no braces)
         if (part.indexOf('{') === -1) {
             result += part;
@@ -2984,7 +3264,7 @@ ra.SimpleTemplate.prototype.convertOldTemplate = function(oldTemplate) {
 /**
  * Tokenize the template string
  */
-ra.SimpleTemplate.prototype.tokenize = function() {
+ra.SimpleTemplateOrig.prototype.tokenize = function () {
     var tokens = [];
     var pos = 0;
     var len = this.template.length;
@@ -2994,19 +3274,19 @@ ra.SimpleTemplate.prototype.tokenize = function() {
 
         if (ch === '{') {
             var match = this.template.substring(pos).match(
-                /^(\{(?:[a-z_][a-z0-9_+]*|if:[a-z_][a-z0-9_+]*|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i
-            );
-            
+                    /^(\{(?:[a-z_][a-z0-9_+]*|if:[a-z_][a-z0-9_+]*|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i
+                    );
+
             if (match) {
-                tokens.push({ type: 'tag', value: match[1] });
+                tokens.push({type: 'tag', value: match[1]});
                 pos += match[1].length;
                 continue;
             }
-            
+
             // Invalid tag - find the closing brace and treat as text
             var closeBrace = this.template.indexOf('}', pos);
             if (closeBrace !== -1) {
-                tokens.push({ type: 'text', value: this.template.substring(pos, closeBrace + 1) });
+                tokens.push({type: 'text', value: this.template.substring(pos, closeBrace + 1)});
                 pos = closeBrace + 1;
                 continue;
             }
@@ -3014,11 +3294,11 @@ ra.SimpleTemplate.prototype.tokenize = function() {
 
         var next = this.template.indexOf('{', pos);
         if (next === -1) {
-            tokens.push({ type: 'text', value: this.template.substring(pos) });
+            tokens.push({type: 'text', value: this.template.substring(pos)});
             break;
         }
 
-        tokens.push({ type: 'text', value: this.template.substring(pos, next) });
+        tokens.push({type: 'text', value: this.template.substring(pos, next)});
         pos = next;
     }
 
@@ -3028,14 +3308,14 @@ ra.SimpleTemplate.prototype.tokenize = function() {
 /**
  * Get list of fields used in the template
  */
-ra.SimpleTemplate.prototype.getFields = function() {
+ra.SimpleTemplateOrig.prototype.getFields = function () {
     var tokens = this.tokenize();
     var fields = {};
     var i, token, tag, match;
 
     for (i = 0; i < tokens.length; i++) {
         token = tokens[i];
-        
+
         if (token.type !== 'tag') {
             continue;
         }
@@ -3061,7 +3341,7 @@ ra.SimpleTemplate.prototype.getFields = function() {
 /**
  * Render the template with given values
  */
-ra.SimpleTemplate.prototype.render = function(values) {
+ra.SimpleTemplateOrig.prototype.render = function (values) {
     var tokens = this.tokenize();
     this.pos = 0;
     this.values = values || {};
@@ -3072,7 +3352,7 @@ ra.SimpleTemplate.prototype.render = function(values) {
 /**
  * Parse a block of tokens recursively
  */
-ra.SimpleTemplate.prototype.parseBlock = function(tokens) {
+ra.SimpleTemplateOrig.prototype.parseBlock = function (tokens) {
     var output = '';
     var token, tag, match, field, fieldName, sub;
     var safetyCounter = 0;
@@ -3141,7 +3421,7 @@ ra.SimpleTemplate.prototype.parseBlock = function(tokens) {
             this.pos++;
             continue;
         }
-        
+
         // Unknown token type - skip it
         console.warn('SimpleTemplate: Unknown token type at position ' + this.pos);
         this.pos++;
