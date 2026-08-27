@@ -74,7 +74,6 @@ $wa->useScript('com_ra_library.layoutcheck');
             case "future_list":
             case "future_map":
             case "future_fulldetails":
-            case "future_AV01a":
             case "future_BU51a":
             case "future_BU51b":
             case "future_BU51c":
@@ -97,19 +96,25 @@ $wa->useScript('com_ra_library.layoutcheck');
             case 'future_display':
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
                 echo $this->form->renderField('custom_tabs', 'options');
-                displayLayoutHelp();
                 echo $this->form->renderField('custom_grades', 'options');
                 echo $this->form->renderField('custom_table', 'options');
                 echo $this->form->renderField('custom_list', 'options');
                 echo $this->form->renderField('custom_calendar', 'options');
+                echo $this->form->renderField('custom_title', 'options');
                 echo $this->form->renderField('css_file', 'options');
                 echo $this->form->renderField('js_file', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
+            case "future_calendar":
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'CalOptions', Text::_('Calendar Options'));
+                echo $this->form->renderField('calendar_size', 'options');
+                echo $this->form->renderField('custom_title', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
             case "future_table":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
-                displayLayoutHelp();
                 echo $this->form->renderField('custom_table', 'options');
+                echo $this->form->renderField('custom_title', 'options');
                 echo $this->form->renderField('css_file', 'options');
                 echo $this->form->renderField('walks_class', 'options');
                 echo $this->form->renderField('walk_class', 'options');
@@ -117,8 +122,8 @@ $wa->useScript('com_ra_library.layoutcheck');
                 break;
             case "future_list":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
-                displayLayoutHelp();
                 echo $this->form->renderField('custom_simplelist', 'options');
+                echo $this->form->renderField('custom_title', 'options');
                 echo $this->form->renderField('css_file', 'options');
                 echo $this->form->renderField('walks_class', 'options');
                 echo $this->form->renderField('walk_class', 'options');
@@ -126,8 +131,8 @@ $wa->useScript('com_ra_library.layoutcheck');
                 break;
             case "future_nextwalks":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
-                displayLayoutHelp();
                 echo $this->form->renderField('custom_nextwalks', 'options');
+                echo $this->form->renderField('custom_title', 'options');
                 echo $this->form->renderField('css_file', 'options');
                 echo $this->form->renderField('walks_class', 'options');
                 echo $this->form->renderField('walk_class', 'options');
@@ -135,8 +140,8 @@ $wa->useScript('com_ra_library.layoutcheck');
                 break;
             case "future_fulldetails":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
-                displayLayoutHelp();
                 echo $this->form->renderField('custom_fulldetails', 'options');
+                echo $this->form->renderField('custom_title', 'options');
                 echo $this->form->renderField('css_file', 'options');
                 echo $this->form->renderField('walks_class', 'options');
                 echo $this->form->renderField('walk_class', 'options');
@@ -170,12 +175,15 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo $this->form->renderField('routes_folder', 'options');
                 echo $this->form->renderField('routes_linecolour', 'options');
                 echo $this->form->renderField('routes_download', 'options');
+                echo $this->form->renderField('routes_displayasprevious', 'options');
                 echo $this->form->renderField('routes_displaytitle', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
             case'table_csv':
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
                 echo $this->form->renderField('table_file', 'options');
+                echo $this->form->renderField('table_csv_optionsmode', 'options');
+                echo $this->form->renderField('table_options', 'options');
                 echo $this->form->renderField('table_markertype', 'options');
                 echo $this->form->renderField('table_markercolumn', 'options');
                 echo $this->form->renderField('table_textmarkerclass', 'options');
@@ -197,7 +205,7 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo $this->form->renderField('table_json', 'options');
                 echo $this->form->renderField('table_options', 'options');
                 echo $this->form->renderField('table_markertype', 'options');
-                echo $this->form->renderField('table_textmarker', 'options');
+                echo $this->form->renderField('table_markercolumn', 'options');
                 echo $this->form->renderField('table_textmarkerclass', 'options');
                 echo $this->form->renderField('table_iconmarkers', 'options');
                 echo HTMLHelper::_('uitab.endTab');
@@ -207,17 +215,84 @@ $wa->useScript('com_ra_library.layoutcheck');
                 echo $this->form->renderFieldset('documents');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
-            case'draft_submit':
+            case 'pastwalks_blog':
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
-                echo $this->form->renderField('draft_ragroups', 'options');
-                echo $this->form->renderField('draft_coords', 'options');
-                echo $this->form->renderField('draft_localgrades', 'options');
+                echo $this->form->renderField('pastwalks_routes_note', 'options');
+                echo $this->form->renderField('pw_catid', 'options');
+                echo $this->form->renderField('pw_blog_full_items', 'options');
+                echo $this->form->renderField('pw_blog_intro_items', 'options');
+                echo $this->form->renderField('pw_blog_intro_columns', 'options');
+                echo $this->form->renderField('pw_blog_link_items', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
-            case'draft_programme':
+            case 'pastwalks_list':
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
-                echo $this->form->renderField('draft_ragroups', 'options');
-                echo $this->form->renderField('draft_localgrades', 'options');
+                echo $this->form->renderField('pw_catid', 'options');
+                echo $this->form->renderField('pw_items_per_page', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                echo $this->form->renderField('custom_pastwalks_list', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'pastwalks_table':
+            case 'pastwalks_maptable':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('table_note', 'options');
+                echo $this->form->renderField('pw_catid', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_blog':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('pastwalks_routes_note', 'options');
+                echo $this->form->renderField('rt_catid', 'options');
+                echo $this->form->renderField('rt_blog_full_items', 'options');
+                echo $this->form->renderField('rt_blog_intro_items', 'options');
+                echo $this->form->renderField('rt_blog_intro_columns', 'options');
+                echo $this->form->renderField('rt_blog_link_items', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_list':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('rt_catid', 'options');
+                echo $this->form->renderField('rt_items_per_page', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                echo $this->form->renderField('custom_routes_list', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'pastwalks_categorytree':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('categorytree_note', 'options');
+                echo $this->form->renderField('pw_categorytree_rootcat', 'options');
+                echo $this->form->renderField('pw_categorytree_style', 'options');
+                echo $this->form->renderField('pw_categorytree_items_per_page', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                echo $this->form->renderField('custom_pastwalks_categorytree_branch', 'options');
+                echo $this->form->renderField('custom_pastwalks_categorytree_list', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_categorytree':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('categorytree_note', 'options');
+                echo $this->form->renderField('rt_categorytree_rootcat', 'options');
+                echo $this->form->renderField('rt_categorytree_style', 'options');
+                echo $this->form->renderField('rt_categorytree_items_per_page', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Custom', Text::_('Customise'));
+                echo $this->form->renderField('custom_routes_categorytree_branch', 'options');
+                echo $this->form->renderField('custom_routes_categorytree_list', 'options');
+                echo $this->form->renderField('css_file', 'options');
+                echo HTMLHelper::_('uitab.endTab');
+                break;
+            case 'routes_table':
+            case 'routes_maptable':
+                echo HTMLHelper::_('uitab.addTab', 'myTab', 'Options', Text::_('Options'));
+                echo $this->form->renderField('table_note', 'options');
+                echo $this->form->renderField('rt_catid', 'options');
                 echo HTMLHelper::_('uitab.endTab');
                 break;
         }
@@ -260,12 +335,10 @@ $wa->useScript('com_ra_library.layoutcheck');
 
 </form>
 <?php
-
-function displayLayoutHelp() {
-    echo '<details>';
-    echo "<summary><b>Defining your own layout</b></summary>";
-    $helpFile = __DIR__ . '\layouthelp.html';
-    // echo $helpFile;
-    echo file_get_contents($helpFile);
-    echo "</details>";
-}
+// The "Defining your own layout" help (syntax + available fields) is now
+// shown via small Syntax/Fields buttons next to each relevant field itself
+// (see administrator/src/Field/LayoutHelpTextareaField.php and
+// LayoutHelpButtonsTrait), rather than one <details> block per Customise
+// tab - layouthelp-syntax.html / layouthelp-fields-{type}.html are still
+// the underlying content files, just read by that trait now instead of a
+// displayLayoutHelp() call here.

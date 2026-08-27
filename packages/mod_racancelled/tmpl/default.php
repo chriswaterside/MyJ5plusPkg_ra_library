@@ -26,17 +26,17 @@ $wa->registerAndUseStyle(
 // -----------------------------------------------------------------------
 // Module logic
 // -----------------------------------------------------------------------
-$groups = $params->get('groups', '');
-if ($groups !== "") {
+$groups = $params->get('ramblersgroups', '');
+if ($groups === "") {
     $app = Factory::getApplication();
     $app->enqueueMessage('Cancelled walks module needs editing to correct specified groups', 'error');
 }
-$groupsPairs = json_decode($params->get('ramblersgroups', ''));
+$groupsPairs = json_decode($groups);
 $groupsArray = array_column($groupsPairs, 'code');
-$groups = implode(",", $groupsArray);
-$diagnostics = (int) $params->get('diagnostics', 1);
+$groupsCSV = implode(",", $groupsArray);
+$diagnostics = (int) $params->get('diagnostics', 0);
 
-$options = new Feedoptions($groups);
+$options = new Feedoptions($groupsCSV);
 $feed = new Feed($options);
 $display = new Cancelledwalks();
 

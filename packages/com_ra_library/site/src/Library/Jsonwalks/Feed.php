@@ -85,6 +85,11 @@ class Feed {
         $this->walks->filterStatus($status);
     }
 
+    public function filterFeedDistances($distances) {
+        // used by calendar feed
+        $this->walks->filterFeedDistances($distances);
+    }
+
     public function filterWalksDistance($minDistance, $maxDistance) {
         $this->walks->filterDistance(floatval($minDistance), floatval($maxDistance));
     }
@@ -185,9 +190,9 @@ class Feed {
         $this->walks->limitNumberWalks($no);
     }
 
-    public function noWalks($no) {
-        $this->limitNumberWalks($no);
-    }
+//    public function noWalks($no) {
+//        $this->limitNumberWalks($no);
+//    }
 
     public function numberWalks() {
         return count($this->walks->allWalks());

@@ -1,4 +1,0 @@
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !\.(cgi)$
-Rewritecond %{http_host} ^THIS_DOMAIN
-RewriteRule ^(.*) http://www.THIS_DOMAIN/$1

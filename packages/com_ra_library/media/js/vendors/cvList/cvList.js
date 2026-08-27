@@ -537,8 +537,8 @@ cvListFieldNumber = function (displayTag, title, no) {
             // parent
             var no = this._getItemValue('data-cvListFieldNo', item);
             no = parseFloat(no.replaceAll(",", ""));
-            if (no === null) {
-                values.push({key: key, value: no});
+            if (isNaN(no)) {
+                values.push({key: key, value: 0});
             } else {
                 values.push({key: key, value: no});
             }

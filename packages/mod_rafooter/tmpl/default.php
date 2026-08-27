@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @module      RA Footer
  * @author      Chris Vaughan
@@ -6,41 +7,39 @@
  * @copyright   Copyright (C) 2013 Chris Vaughan <webmaster@ramblers-webs.org.uk>. All rights reserved.
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
-
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Toolbar\Toolbar;
 use RamblersWebs\Module\Rafooter\Helper\RafooterHelper;
+use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 
-$revisionversion = "3.0.13";
-
-$startyear                = $params->get('startyear');
-$copyrighttext            = $params->get('copyrighttext');
-$ramblerswebs             = $params->get('ramblerswebs');
-$ramblersdisableprivacy   = $params->get('ramblersdisableprivacy');
-$footersize               = $params->get('footersize');
-$footerstyle              = $params->get('footerstyle');
-$background_color         = $params->get('background_color');
-$custom_background_color  = $params->get('custom_background_colour_value');
-$textcolour               = $params->get('textcolour');
-$standardimage            = $params->get('standardimage');
-$footer_image             = $params->get('footer_image');
-$imageposition            = $params->get('imageposition');
-$customcssfile            = $params->get('custom_css_file');
-$alternativecssfile       = $params->get('alternative_css_file');
+$startyear = $params->get('startyear');
+$copyrighttext = $params->get('copyrighttext');
+$ramblerswebs = $params->get('ramblerswebs');
+$ramblersdisableprivacy = $params->get('ramblersdisableprivacy');
+$footersize = $params->get('footersize');
+$footerstyle = $params->get('footerstyle');
+$background_color = $params->get('background_color');
+$custom_background_color = $params->get('custom_background_colour_value');
+$textcolour = $params->get('textcolour');
+$standardimage = $params->get('standardimage');
+$footer_image = $params->get('footer_image');
+$imageposition = $params->get('imageposition');
+$customcssfile = $params->get('custom_css_file');
+$alternativecssfile = $params->get('alternative_css_file');
 
 $document = Factory::getDocument();
-$baseUrl  = Uri::base();
 
 echo "<div class='mod-footer-content'>";
 
 $url = null;
 if ($footerstyle == 1) {
     if ($standardimage == 1) {
-        $url = $baseUrl . "modules/mod_rafooter/images/footer-bg.png";
+        $url = "modules/mod_rafooter/images/footer-bg.png";
     } elseif ($footer_image !== null) {
-        $url = $baseUrl . $footer_image;
+        $url = $footer_image;
     }
 
     if ($url !== null) {
@@ -54,25 +53,24 @@ if ($footerstyle == 1) {
     $document->addStyleDeclaration($text);
 
     if ($textcolour == 0) {
-        $document->addStyleSheet($baseUrl . 'modules/mod_rafooter/css/footerwhitestyle.css?rev=' . $revisionversion);
+        Load::addStyleSheet('modules/mod_rafooter/css/footerwhitestyle.css');
     } else {
-        $document->addStyleSheet($baseUrl . 'modules/mod_rafooter/css/footerdarkstyle.css?rev=' . $revisionversion);
+        Load::addStyleSheet('modules/mod_rafooter/css/footerdarkstyle.css');
     }
 }
 
 // Add stylesheets
 if ($alternativecssfile !== null && $alternativecssfile !== '') {
-    $document->addStyleSheet($baseUrl . $alternativecssfile);
+    Load::addStyleSheet($alternativecssfile);
 } else {
-    $document->addStyleSheet($baseUrl . 'modules/mod_rafooter/css/ramblers.css?rev=' . $revisionversion);
-    if ($customcssfile !== null && $customcssfile !== '') {
-        $document->addStyleSheet($baseUrl . $customcssfile);
-    }
+    Load::addStyleSheet('modules/mod_rafooter/css/ramblers.css');
 }
-
+if ($customcssfile !== null && $customcssfile !== '') {
+    Load::addStyleSheet($customcssfile);
+}
 // Build footer HTML
 $copyright_symbol = '&copy;';
-$current_year     = date('Y');
+$current_year = date('Y');
 
 $footer = '<div class="footer" id="rafooter">';
 
@@ -88,11 +86,11 @@ switch ($footersize) {
     case 1: // full
         $footer .= 'Copyright ' . $copyright_symbol . ' ' . $startyear . '-' . $current_year . ' ' . $copyrighttext . '<br />';
         if ($ramblerswebs != 0) {
-            $footer .= 'Hosted by <a href="https://www.ramblers-webs.org.uk/" target="_blank" rel="noopener noreferrer">www.ramblers-webs.org.uk</a>. Centrally funded hosting for Areas and Groups<br />';
+            $footer .= 'Hosted by <a href="https://www.ramblers-webs.org.uk/" target="_blank" rel="noopener noreferrer">www.ramblers-webs.org.uk</a> Centrally funded hosting for Areas and Groups<br />';
         }
         $footer .= "The Ramblers' Association is a company limited by guarantee, registered in England and Wales. ";
         $footer .= "Company registration number: 4458492. Ramblers Charity England &amp; Wales No: 1093577 Scotland No: SC039799.<br />";
-        $footer .= "Registered office: First Floor, 10 Queen Street Place, London EC4R 1BE";
+        $footer .= "Registered office: First Floor, 13 Dirty Lane, London SE1 9PA ";
         break;
 
     case 2: // no copyright text, just year range

@@ -22,7 +22,8 @@ class Script {
     private $dataObject = null;
 
     public function __construct() {
-         helper::setData();
+        // os license keys
+        helper::setData();
     }
 
     public function setCommand($command) {
@@ -46,6 +47,11 @@ class Script {
         $text .= "var mapOptions='" . addslashes(json_encode($options)) . "';" . PHP_EOL;
         // set data object for this command      
         if ($this->dataObject !== null) {
+            $jsonString = json_encode($this->dataObject);
+            if ($jsonString === false) {
+                $error = json_last_error_msg();
+                throw new \RuntimeException('Script.php: Unable to convert data to json: ' . $error);
+            }
             $text .= "var data='" . addslashes(json_encode($this->dataObject)) . "';" . PHP_EOL;
         } else {
             $text .= "var data=null;" . PHP_EOL;
@@ -133,6 +139,11 @@ class Script {
         Load::addScript("media/com_ra_library/js/ra.js");
         Load::addScript("media/com_ra_library/js/ra.map.js");
         Load::addScript("media/com_ra_library/js/ra.walk.js");
+        // Shared image gallery lightbox (also used by the Past Walks/Routes
+        // views) - ra.event.media's addMediaSection() now uses this instead
+        // of its own bespoke ra.modals/ra.previousNext popup.
+        Load::addScript("media/com_ra_library/js/ra.lightbox.js");
+        Load::addStyleSheet("media/com_ra_library/css/ra.lightbox.css");
         Load::addScript("media/com_ra_library/js/ra.tabs.js");
         Load::addScript("media/com_ra_library/js/ra.paginatedDataList.js");
         Load::addStyleSheet("media/com_ra_library/css/ra.paginatedDataList.css");

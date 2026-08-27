@@ -1,4 +1,5 @@
 <?php
+
 //              Part of the RA_library package
 
 namespace Ramblers\Plugin\Content\Ra_library\Extension;
@@ -50,10 +51,11 @@ final class Ra_library extends CMSPlugin implements SubscriberInterface {
             $display = $this->loadDisplay($displayId);
 
             if (!$display) {
-                continue;
+                $html = "<p class='alert-error'><b>ERROR: RA Library Display not found ID:" . $displayId . "</b></p>";
+            } else {
+                $html = PluginHelper::renderView($viewName, $display);
             }
 
-           $html=PluginHelper::renderView($viewName, $display);
             $text = preg_replace(
                     '#\{ra\_library\:' . preg_quote($viewName, '#') . '\:' . $displayId . '\}#i',
                     $html,
@@ -77,5 +79,4 @@ final class Ra_library extends CMSPlugin implements SubscriberInterface {
                 ->bind(':id', $id, ParameterType::INTEGER);
         return $db->setQuery($query)->loadObject();
     }
-
 }

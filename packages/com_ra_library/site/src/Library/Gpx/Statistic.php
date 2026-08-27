@@ -1,5 +1,6 @@
 <?php
-use Ramblers\Component\Ra_library\Site\Library\Gpx;
+
+namespace Ramblers\Component\Ra_library\Site\Library\Gpx;
 
 /**
  * Description of statistic
@@ -32,5 +33,4 @@ class Statistic {
         $this->id = self::$lastId;
         self::$lastId += 1;
     }
-
 }

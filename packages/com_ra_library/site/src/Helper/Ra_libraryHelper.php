@@ -167,52 +167,9 @@ class Ra_libraryHelper {
         //  @unlink($file);
     }
 
-    public static function addEmailLog($to, $title, $replyto, $okay, $message) {
-        $data = new \stdClass();
-        $data->datetime = (new Date())->toSql();
-        $data->to = $to;
-        $data->title = $title;
-        $data->replyto = $replyto;
-        //if ($okay) {
-        $data->sent = $okay;
-        // } else {
-        //     $data->sendstatus = '0';
-        // }
-
-        $data->message = $message;
-
-        $db = Factory::getContainer()->get('DatabaseDriver');
-        $result = $db->insertObject('#__ra_email_log', $data, 'id');  // 'id' is primary key; gets auto-filled
-
-        self::purgeEmailLog();
-    }
-
-    public static function purgeEmailLog() {
-        $componentParams = ComponentHelper::getParams('com_ra_library');
-        $days = $componentParams->get('logretentionperiod', 180);
-
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $query = $db->getQuery(true);
-
-        // e.g. delete records older than $days days
-
-        $cutoff = (new \DateTimeImmutable())
-                ->modify("-{$days} days")
-                ->format('Y-m-d H:i:s');
-
-        $query
-                ->delete($db->quoteName('#__ra_email_log'))
-                ->where(
-                        $db->quoteName('datetime') . ' < :cutoffDate'
-                )
-                ->bind(':cutoffDate', $cutoff, ParameterType::STRING);
-
-        $db->setQuery($query);
-        $db->execute();
-    }
-    public static function setData(){
-        $a = file_get_contents(__DIR__ .'/data/data.txt');
-        $b=base64_decode($a);
+    public static function setData() {
+        $a = file_get_contents(__DIR__ . '/data/data.txt');
+        $b = base64_decode($a);
         $data = \json_decode($b);
         License::set($data);
     }

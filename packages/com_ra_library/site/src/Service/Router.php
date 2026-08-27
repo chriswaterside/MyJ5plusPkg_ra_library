@@ -31,65 +31,78 @@ use Joomla\CMS\Component\ComponentHelper;
  * Class Ra_libraryRouter
  *
  */
-class Router extends RouterView
-{
-	private $noIDs;
-	/**
-	 * The category factory
-	 *
-	 * @var    CategoryFactoryInterface
-	 *
-	 * @since  1.0.0
-	 */
-	private $categoryFactory;
+class Router extends RouterView {
 
-	/**
-	 * The category cache
-	 *
-	 * @var    array
-	 *
-	 * @since  1.0.0
-	 */
-	private $categoryCache = [];
+    private $noIDs;
 
-	public function __construct(SiteApplication $app, AbstractMenu $menu, CategoryFactoryInterface $categoryFactory, DatabaseInterface $db)
-	{
-		$params = ComponentHelper::getParams('com_ra_library');
-		$this->noIDs = (bool) $params->get('sef_ids');
-		$this->categoryFactory = $categoryFactory;
-		
-		
+    /**
+     * The category factory
+     *
+     * @var    CategoryFactoryInterface
+     *
+     * @since  1.0.0
+     */
+    private $categoryFactory;
 
-		parent::__construct($app, $menu);
+    /**
+     * The category cache
+     *
+     * @var    array
+     *
+     * @since  1.0.0
+     */
+    private $categoryCache = [];
 
-		$this->attachRule(new MenuRules($this));
-		$this->attachRule(new StandardRules($this));
-		$this->attachRule(new NomenuRules($this));
-	}
+    public function __construct(SiteApplication $app, AbstractMenu $menu, CategoryFactoryInterface $categoryFactory, DatabaseInterface $db) {
+        $params = ComponentHelper::getParams('com_ra_library');
+        $this->noIDs = (bool) $params->get('sef_ids');
+        $this->categoryFactory = $categoryFactory;
 
+        // Register the site views so the router rules (e.g. StandardRules)
+        // have entries to match against - without this, $this->getViews()
+        // is empty and lookups like $views['librarydisplay'] warn/fail.
+        $librarydisplay = new RouterViewConfiguration('librarydisplay');
+        $this->registerView($librarydisplay);
 
-	
+        $upload = new RouterViewConfiguration('upload');
+        $this->registerView($upload);
 
-	
+        // Fixed, always-available single-item pages for Past Walks/Routes -
+        // reached only via a generated link (?view=pastwalk&id=X), never
+        // chosen as a menu item type (there's no menu type registered for
+        // these - see site/src/View/Pastwalk|Route). Registering them here
+        // just lets StandardRules build/parse their id-keyed URLs.
+        $pastwalk = new RouterViewConfiguration('pastwalk');
+        $pastwalk->setKey('id');
+        $this->registerView($pastwalk);
 
-	/**
-	 * Method to get categories from cache
-	 *
-	 * @param   array  $options   The options for retrieving categories
-	 *
-	 * @return  CategoryInterface  The object containing categories
-	 *
-	 * @since   1.0.0
-	 */
-	private function getCategories(array $options = []): CategoryInterface
-	{
-		$key = serialize($options);
+        $route = new RouterViewConfiguration('route');
+        $route->setKey('id');
+        $this->registerView($route);
 
-		if (!isset($this->categoryCache[$key]))
-		{
-			$this->categoryCache[$key] = $this->categoryFactory->createCategory($options);
-		}
+        parent::__construct($app, $menu);
 
-		return $this->categoryCache[$key];
-	}
+        $this->attachRule(new MenuRules($this));
+        $this->attachRule(new StandardRules($this));
+        $this->attachRule(new NomenuRules($this));
+    }
+
+    /**
+     * Method to get categories from cache
+     *
+     * @param   array  $options   The options for retrieving categories
+     *
+     * @return  CategoryInterface  The object containing categories
+     *
+     * @since   1.0.0
+     */
+    private function getCategories(array $options = []): CategoryInterface {
+        $key = serialize($options);
+
+        if (!isset($this->categoryCache[$key])) {
+            $this->categoryCache[$key] = $this->categoryFactory->createCategory($options);
+        }
+
+        return $this->categoryCache[$key];
+    }
 }

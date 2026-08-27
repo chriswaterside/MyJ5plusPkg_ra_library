@@ -57,11 +57,8 @@ class Display extends Displaybase {
         } else {
             $display->DisplayWalks($walks);  // display cancelled walks information
         }
-        $data = new class {
-            
-        };
+        $data = new \stdClass();
         $data->walks = array_values($items);
-
         $data->displayClass = $this->displayClass;
         $data->customGradesFormat = $this->customGradesFormat;
         $data->customCalendarFormat = $this->customCalendarFormat;

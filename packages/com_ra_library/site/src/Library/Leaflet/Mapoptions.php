@@ -41,11 +41,12 @@ class Mapoptions {
     // false only display option on full screen
     public $mouseposition = false;
     public $rightclick = false;
+    public $postcodes = true;
 
     // ************** END these options have three values
 
     public function __construct() {
-       
+
         $this->divId = uniqid(rand());
         $this->base = Uri::base();
         $this->licenseKeys = new \stdClass();
@@ -57,7 +58,7 @@ class Mapoptions {
         $this->licenseKeys->thunderForestkey = null;
     }
 
-    public function setinitialviewView($latitude, $longitude, $zoom) {
+    public function setinitialView($latitude, $longitude, $zoom) {
         $this->initialview = (object) [
                     'latitude' => $latitude,
                     'longitude' => $longitude,

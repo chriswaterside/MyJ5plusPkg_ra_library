@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>System - RaStyling</name>
+    <author>RaStyling</author>
+    <creationDate>28-06-2026</creationDate>
+    <version>5.0.0</version>
+    <description>Optionally inject ramblers.css, a custom CSS file, and/or a custom JS file into the site front-end.</description>
+
+    <files>
+        <filename plugin="rastyling">rastyling.php</filename>
+        <folder>language</folder>
+    </files>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_system_rastyling.ini</language>
+        <language tag="en-GB">en-GB/plg_system_rastyling.sys.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+
+                <field
+                    name="include_ramblers_css"
+                    type="radio"
+                    label="PLG_SYSTEM_RASTYLING_INCLUDE_RAMBLERS_CSS_LABEL"
+                    description="PLG_SYSTEM_RASTYLING_INCLUDE_RAMBLERS_CSS_DESC"
+                    layout="joomla.form.field.radio.switcher"
+                    default="0"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field
+                    name="custom_css_enabled"
+                    type="radio"
+                    label="PLG_SYSTEM_RASTYLING_CUSTOM_CSS_ENABLED_LABEL"
+                    description="PLG_SYSTEM_RASTYLING_CUSTOM_CSS_ENABLED_DESC"
+                    layout="joomla.form.field.radio.switcher"
+                    default="0"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field
+                    name="custom_css_file"
+                    type="text"
+                    label="PLG_SYSTEM_RASTYLING_CUSTOM_CSS_FILE_LABEL"
+                    description="PLG_SYSTEM_RASTYLING_CUSTOM_CSS_FILE_DESC"
+                    default=""
+                    filter="string"
+                    showon="custom_css_enabled:1"
+                />
+
+                <field
+                    name="custom_js_enabled"
+                    type="radio"
+                    label="PLG_SYSTEM_RASTYLING_CUSTOM_JS_ENABLED_LABEL"
+                    description="PLG_SYSTEM_RASTYLING_CUSTOM_JS_ENABLED_DESC"
+                    layout="joomla.form.field.radio.switcher"
+                    default="0"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field
+                    name="custom_js_file"
+                    type="text"
+                    label="PLG_SYSTEM_RASTYLING_CUSTOM_JS_FILE_LABEL"
+                    description="PLG_SYSTEM_RASTYLING_CUSTOM_JS_FILE_DESC"
+                    default=""
+                    filter="string"
+                    showon="custom_js_enabled:1"
+                />
+
+            </fieldset>
+        </fields>
+    </config>
+</extension>

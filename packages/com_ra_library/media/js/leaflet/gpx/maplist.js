@@ -65,14 +65,16 @@ ra.display.gpxSingle = function (options, data) {
             const collection = document.getElementsByClassName("leaflet-control-container");
             const ele = collection[0].getElementsByClassName("elevation");
             var elevation = ele[0];
-            var svg = elevation.childNodes[1];
-            var clone = svg.cloneNode(true);
-            var holder = document.createElement('div');
-            holder.classList.add("elevation");
-            holder.classList.add("steelblue-theme");
-            holder.classList.add("leaflet-control");
-            _this.pageDiv.appendChild(holder);
-            holder.appendChild(clone);
+            if (elevation !== null) {
+                var svg = elevation.childNodes[1];
+                var clone = svg.cloneNode(true);
+                var holder = document.createElement('div');
+                holder.classList.add("elevation");
+                holder.classList.add("steelblue-theme");
+                holder.classList.add("leaflet-control");
+                _this.pageDiv.appendChild(holder);
+                holder.appendChild(clone);
+            }
             var clear = document.createElement('div');
             clear.classList.add("clearBoth");
             _this.pageDiv.appendChild(clear);

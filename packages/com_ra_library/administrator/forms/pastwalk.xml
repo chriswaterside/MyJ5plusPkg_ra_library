@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+>
+    <fieldset name="details" label="COM_RA_LIBRARY_PASTWALK_FIELDSET_DETAILS">
+        <field name="id" type="text" readonly="true" class="readonly" default="0" label="JGLOBAL_FIELD_ID_LABEL" description="JGLOBAL_FIELD_ID_DESC"/>
+
+        <field name="state" default="0" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+            <option value="2">JARCHIVED</option>
+            <option value="-2">JTRASHED</option>
+        </field>
+
+        <field name="ordering" type="hidden" filter="unset"/>
+        <field name="checked_out" type="hidden" filter="unset"/>
+        <field name="checked_out_time" type="hidden" filter="unset"/>
+
+        <field name="created_by" type="createdby" default="0" label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_DESC" hidden="true"/>
+        <field name="modified_by" type="modifiedby" default="0" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" description="JGLOBAL_FIELD_MODIFIED_BY_DESC" hidden="true"/>
+        <field name="created" type="hidden" filter="unset"/>
+        <field name="modified" type="hidden" filter="unset"/>
+
+        <field name="title"
+               type="text"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_TITLE_LABEL"
+               filter="safehtml"
+               required="true"
+               size="60"
+        />
+
+        <field name="walk_date"
+               type="calendar"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_WALK_DATE_LABEL"
+               format="%Y-%m-%d"
+               required="true"
+        />
+
+        <field name="catid"
+               type="category"
+               extension="com_ra_library.pastwalk"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_CATID_LABEL"
+               default=""
+        >
+            <option value="">JOPTION_SELECT_CATEGORY</option>
+        </field>
+
+        <field name="walk_leader"
+               type="text"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_WALK_LEADER_LABEL"
+               filter="safehtml"
+               size="40"
+        />
+
+        <field name="distance_km"
+               type="distancemiles"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_DISTANCE_MILES_LABEL"
+               description="COM_RA_LIBRARY_PASTWALK_FIELD_DISTANCE_MILES_DESC"
+        />
+
+        <field name="national_grade"
+               type="list"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_NATIONAL_GRADE_LABEL"
+               description="COM_RA_LIBRARY_PASTWALK_FIELD_NATIONAL_GRADE_DESC"
+               default=""
+        >
+            <option value="">COM_RA_LIBRARY_PASTWALK_SELECT_GRADE</option>
+            <option value="Easy Access">Easy Access</option>
+            <option value="Easy">Easy</option>
+            <option value="Leisurely">Leisurely</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Strenuous">Strenuous</option>
+            <option value="Technical">Technical</option>
+        </field>
+
+        <field name="start_grid_reference"
+               type="text"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_START_GRID_REFERENCE_LABEL"
+               description="COM_RA_LIBRARY_PASTWALK_FIELD_START_GRID_REFERENCE_DESC"
+               size="20"
+        />
+
+        <field name="walks_manager_id"
+               type="text"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_WALKS_MANAGER_ID_LABEL"
+               description="COM_RA_LIBRARY_PASTWALK_FIELD_WALKS_MANAGER_ID_DESC"
+               size="20"
+        />
+
+        <field name="description"
+               type="editor"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_DESCRIPTION_LABEL"
+               filter="safehtml"
+               buttons="true"
+               height="300"
+        />
+    </fieldset>
+
+    <fieldset name="images" label="COM_RA_LIBRARY_FIELDSET_IMAGES">
+        <field name="images"
+               type="subform"
+               label="COM_RA_LIBRARY_FIELD_IMAGES_LABEL"
+               description="COM_RA_LIBRARY_FIELD_IMAGES_DESC"
+               formsource="administrator/components/com_ra_library/forms/imagesrow.xml"
+               multiple="true"
+               layout="joomla.form.field.subform.repeatable"
+               buttons="add,remove,move"
+               min="0"
+               max="50"
+               groupByFieldset="false"
+        />
+    </fieldset>
+
+    <fieldset name="gpx" label="COM_RA_LIBRARY_FIELDSET_GPX">
+        <field name="gpx"
+               type="subform"
+               label="COM_RA_LIBRARY_FIELD_GPX_LABEL"
+               description="COM_RA_LIBRARY_FIELD_GPX_DESC"
+               formsource="administrator/components/com_ra_library/forms/gpxrow.xml"
+               multiple="true"
+               layout="joomla.form.field.subform.repeatable"
+               buttons="add,remove,move"
+               min="0"
+               max="20"
+               groupByFieldset="false"
+        />
+    </fieldset>
+
+    <fieldset name="documents" label="COM_RA_LIBRARY_FIELDSET_DOCUMENTS">
+        <field name="documents"
+               type="subform"
+               label="COM_RA_LIBRARY_FIELD_DOCUMENTS_LABEL"
+               description="COM_RA_LIBRARY_FIELD_DOCUMENTS_DESC"
+               formsource="administrator/components/com_ra_library/forms/documentrow.xml"
+               multiple="true"
+               layout="joomla.form.field.subform.repeatable"
+               buttons="add,remove,move"
+               min="0"
+               max="20"
+               groupByFieldset="false"
+        />
+    </fieldset>
+    <fieldset name="layout" label="COM_RA_LIBRARY_FIELDSET_LAYOUT">
+        <field name="template_intro_override"
+               type="LayoutHelpTextarea"
+               helptype="pastwalks"
+               filter="raw"
+               rows="6"
+               label="COM_RA_LIBRARY_FIELD_TEMPLATE_INTRO_OVERRIDE_LABEL"
+               description="COM_RA_LIBRARY_FIELD_TEMPLATE_INTRO_OVERRIDE_DESC"
+        />
+        <field name="template_more_override"
+               type="LayoutHelpTextarea"
+               helptype="pastwalks"
+               filter="raw"
+               rows="6"
+               label="COM_RA_LIBRARY_FIELD_TEMPLATE_MORE_OVERRIDE_LABEL"
+               description="COM_RA_LIBRARY_FIELD_TEMPLATE_MORE_OVERRIDE_DESC"
+        />
+    </fieldset>
+</form>

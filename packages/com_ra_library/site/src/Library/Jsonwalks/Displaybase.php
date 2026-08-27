@@ -26,6 +26,8 @@ abstract class Displaybase {
     //    protected $dispArticle = 0;
     private $script = null;
     private $options = null;
+    protected $walksClass = "walks";
+    protected $walkClass = "walk";
 
     // 0 display walk via ramblers.org.uk
     // >0 display via local site article
@@ -50,4 +52,16 @@ abstract class Displaybase {
 //    public function alwaysDisplayStartDescription($value) {
 //        $this->displayStartDescription = $value;
 //    }
+
+    public function setWalksClass($class) {
+        $this->walksClass = $class;
+    }
+
+    public function setWalkClass($class) {
+        $this->walksClass = $class;
+    }
+
+    public function setTableClass($class) {
+        $this->walksClass = $class;
+    }
 }

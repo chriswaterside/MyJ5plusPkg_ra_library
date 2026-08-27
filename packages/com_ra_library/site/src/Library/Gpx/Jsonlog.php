@@ -1,5 +1,6 @@
 <?php
-use Ramblers\Component\Ra_library\Site\Library\Gpx;
+
+namespace Ramblers\Component\Ra_library\Site\Library\Gpx;
 
 /**
  * Description of jsonlogfile
@@ -20,7 +21,7 @@ class Jsonlog {
     public function readFile() {
         $this->items = [];
         if (file_exists($this->file)) {
-            $string = file_get_contents($file);
+            $string = file_get_contents($this->file);
         } else {
             $string = false;
         }
@@ -40,6 +41,10 @@ class Jsonlog {
         $this->items_processed = true;
     }
 
+    public function getItems() {
+        return $this->items;
+    }
+
     Public function writeFile() {
         if ($this->items_processed) {
             //  $myJSON = json_encode($this->items, JSON_PRETTY_PRINT);
@@ -48,5 +53,4 @@ class Jsonlog {
             file_put_contents($this->file, $myJSON);
         }
     }
-
 }

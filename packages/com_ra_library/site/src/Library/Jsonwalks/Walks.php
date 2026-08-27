@@ -170,6 +170,15 @@ class Walks {
         }
     }
 
+    public function filterFeedDistances($distances) {
+        // used by calendar feed
+        foreach ($this->arrayofwalks as $key => $walk) {
+            if (!$walk->filterFeedDistances($distances)) {
+                unset($this->arrayofwalks[$key]);
+            }
+        }
+    }
+
     public function filterDistance($distanceMin, $distanceMax) {
         foreach ($this->arrayofwalks as $key => $walk) {
             // if outside of the range then remove the walk
@@ -178,7 +187,8 @@ class Walks {
             }
         }
     }
-     public function filterDistanceBelow($distanceMin) {
+
+    public function filterDistanceBelow($distanceMin) {
         foreach ($this->arrayofwalks as $key => $walk) {
             // if outside of the range then remove the walk
             if ($walk->filterDistanceBelow($distanceMin)) {
@@ -186,10 +196,11 @@ class Walks {
             }
         }
     }
-     public function filterDistanceAbove( $distanceMax) {
+
+    public function filterDistanceAbove($distanceMax) {
         foreach ($this->arrayofwalks as $key => $walk) {
             // if outside of the range then remove the walk
-            if ($walk->filterDistanceAbove( $distanceMax)) {
+            if ($walk->filterDistanceAbove($distanceMax)) {
                 unset($this->arrayofwalks[$key]);
             }
         }
@@ -229,9 +240,9 @@ class Walks {
         }
     }
 
-    public function noWalks($no) {
-        $this->limitNumberWalks($no);
-    }
+//    public function noWalks($no) {
+//        $this->limitNumberWalks($no);
+//    }
 
     public function appendWalkTitle($titles) {
         foreach ($this->arrayofwalks as $key => $walk) {

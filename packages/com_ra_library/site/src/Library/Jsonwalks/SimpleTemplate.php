@@ -7,30 +7,28 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
  * email: [ruby.tuesday@ramblers-webs.org.uk](mailto:ruby.tuesday@ramblers-webs.org.uk)
  */
 
-class SimpleTemplate
-{
+class SimpleTemplate {
+
     private string $template;
     private array $values = [];
     private int $pos = 0;
 
-    public function __construct(string|array $template)
-    {
+    public function __construct(string|array $template) {
         if (is_array($template)) {
             $template = self::convertOldTemplate($template);
         }
 
         // {from ?company} → {if:company}from {company}{/if}
         $this->template = preg_replace(
-            '/\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/i',
-            '{if:$2}$1{$2}{/if}',
-            $template
+                '/\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/i',
+                '{if:$2}$1{$2}{/if}',
+                $template
         );
 
         $this->validateTemplate();
     }
 
-    private function validateTemplate(): void
-    {
+    private function validateTemplate(): void {
         $pos = 0;
         $len = strlen($this->template);
         $invalidTags = [];
@@ -60,14 +58,13 @@ class SimpleTemplate
 
         if (!empty($invalidTags)) {
             throw new \InvalidArgumentException(
-                'Invalid template syntax found: ' . implode(', ', $invalidTags) .
-                '. Valid formats are: {fieldname}, {if:fieldname}...{/if}, {if:fieldname=value}...{/if}, {if:fieldname!=value}...{/if}, {if_not:fieldname}...{/if_not}, {text ?fieldname}'
-            );
+                            'Invalid template syntax found: ' . implode(', ', $invalidTags) .
+                            '. Valid formats are: {fieldname}, {if:fieldname}...{/if}, {if:fieldname=value}...{/if}, {if:fieldname!=value}...{/if}, {if_not:fieldname}...{/if_not}, {text ?fieldname}'
+                    );
         }
     }
 
-    public static function convertOldTemplate(array $oldTemplate): string
-    {
+    public static function convertOldTemplate(array $oldTemplate): string {
         $result = '';
         $previousField = null;
 
@@ -80,6 +77,12 @@ class SimpleTemplate
             if (preg_match('/^\{,([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
                 $field = $match[1];
                 $result .= "{, ?$field}";
+                $previousField = $field;
+                continue;
+            }
+            if (preg_match('/^\{;([a-z_][a-z0-9_+]*)\}$/i', $part, $match)) {
+                $field = $match[1];
+                $result .= "{<br> ?$field}";
                 $previousField = $field;
                 continue;
             }
@@ -120,8 +123,7 @@ class SimpleTemplate
         return $result;
     }
 
-    private function tokenize(): array
-    {
+    private function tokenize(): array {
         $tokens = [];
         $pos = 0;
         $len = strlen($this->template);
@@ -150,8 +152,7 @@ class SimpleTemplate
         return $tokens;
     }
 
-    public function getFields(): array
-    {
+    public function getFields(): array {
         $tokens = $this->tokenize();
         $fields = [];
 
@@ -178,8 +179,7 @@ class SimpleTemplate
         return array_keys($fields);
     }
 
-    public function render(array $values): string
-    {
+    public function render(array $values): string {
         $tokens = $this->tokenize();
         $this->pos = 0;
         $this->values = $values;
@@ -187,15 +187,14 @@ class SimpleTemplate
         return $this->parseBlock($tokens);
     }
 
-    private function evaluateCondition(string $condition): bool
-    {
+    private function evaluateCondition(string $condition): bool {
         $condition = trim($condition);
 
         if (preg_match('/^([a-z_][a-z0-9_+]*)\s*(=|!=)\s*(.*?)$/i', $condition, $m)) {
             $field = $m[1];
             $op = $m[2];
             $expected = $m[3];
-            $actual = (string)($this->values[$field] ?? '');
+            $actual = (string) ($this->values[$field] ?? '');
 
             return $op === '=' ? $actual === $expected : $actual !== $expected;
         }
@@ -204,8 +203,7 @@ class SimpleTemplate
         return !empty($this->values[$field] ?? '');
     }
 
-    private function parseBlock(array $tokens): string
-    {
+    private function parseBlock(array $tokens): string {
         $output = '';
 
         while ($this->pos < count($tokens)) {

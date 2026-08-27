@@ -18,6 +18,11 @@ class Csv extends Map {
     private $list;
     public $paginationDefault = 10;
     private $markerOptions = null;
+    // Set via setOptions() when the admin has chosen to define the columns
+    // and their options in the form (table_options) instead of reading them
+    // from the second line of the CSV file. Null/empty means "use the
+    // second line of the file", same as before this option existed.
+    private $columnOptions = null;
 
     public function __construct($filename) {
         parent::__construct();
@@ -26,6 +31,35 @@ class Csv extends Map {
 
     public function setMarkerOptions($markerOptions) {
         $this->markerOptions = $markerOptions;
+    }
+
+    /**
+     * Optional. Pass an array of {heading, column, options} rows - the same
+     * shape as Sql::setOptions()/Json::setOptions() (i.e. the table_options
+     * field) - to define the table's columns from the form instead of the
+     * CSV file's second line. "column" is matched against the CSV file's
+     * header row (row 1), case-insensitively, to work out which value in
+     * each data row belongs to it.
+     *
+     * Not calling this at all (or calling it with an empty array) leaves
+     * the original behaviour unchanged: columns/options come from the CSV
+     * file itself.
+     */
+    public function setOptions($options) {
+        if (!is_array($options) || count($options) === 0) {
+            $this->columnOptions = null;
+            return;
+        }
+
+        foreach ($options as $option) {
+            if (!array_key_exists("heading", $option) || !array_key_exists("column", $option) || !array_key_exists("options", $option)) {
+                echo "ERROR: RLeafletCsvList options does not contain heading/column/options field";
+                $this->columnOptions = null;
+                return;
+            }
+        }
+
+        $this->columnOptions = $options;
     }
 
     public function display() {
@@ -73,23 +107,57 @@ class Csv extends Map {
         $row = 1;
         $column = null;
         $this->list = new Columns();
+        $useFormOptions = is_array($this->columnOptions) && count($this->columnOptions) > 0;
+        $csvPositions = []; // only used when $useFormOptions: list index => CSV column position
+
         if (($handle = fopen($this->filename, "r")) !== FALSE) {
             while (($data = fgetcsv($handle, null, ",")) !== FALSE) {
                 $num = count($data);
-                for ($col = 0; $col < $num; $col++) {
-                    $value = $data[$col];
+
+                if ($useFormOptions) {
+                    // Columns/options come from the form, not the file - row 1
+                    // is only used to find which CSV column each configured
+                    // "column" name refers to; data starts on row 2.
                     if ($row === 1) {
-                        $column = new Column($value);
-                        $this->list->addColumn($column);
+                        $lookup = array_map(fn($h) => strtolower(trim((string) $h)), $data);
+                        foreach ($this->columnOptions as $option) {
+                            $column = new Column($option["heading"]);
+                            $column->addOptions($option["options"]);
+                            $column->columnName = $option["column"];
+                            $this->list->addColumn($column);
+
+                            $pos = array_search(strtolower(trim((string) $option["column"])), $lookup, true);
+                            $csvPositions[] = $pos === false ? null : $pos;
+                            if ($pos === false) {
+                                echo '<p>Column "' . htmlspecialchars((string) $option["column"]) . '" was not found in the CSV file\'s header row</p>';
+                            }
+                        }
                     } else {
-                        $column = $this->list->getColumn($col);
-                        if ($column == null) {
-                            echo "<p>Column " . $col . " has no header title</p>";
+                        foreach ($this->list->getColumns() as $i => $column) {
+                            $pos = $csvPositions[$i] ?? null;
+                            if ($pos !== null && array_key_exists($pos, $data)) {
+                                $column->addValue($data[$pos]);
+                            }
+                        }
+                    }
+                } else {
+                    // Legacy behaviour, unchanged: row 1 = headers, row 2 =
+                    // per-column options, row 3+ = data.
+                    for ($col = 0; $col < $num; $col++) {
+                        $value = $data[$col];
+                        if ($row === 1) {
+                            $column = new Column($value);
+                            $this->list->addColumn($column);
                         } else {
-                            if ($row == 2) {
-                                $column->addOptions($value);
+                            $column = $this->list->getColumn($col);
+                            if ($column == null) {
+                                echo "<p>Column " . $col . " has no header title</p>";
                             } else {
-                                $column->addValue($value);
+                                if ($row == 2) {
+                                    $column->addOptions($value);
+                                } else {
+                                    $column->addValue($value);
+                                }
                             }
                         }
                     }

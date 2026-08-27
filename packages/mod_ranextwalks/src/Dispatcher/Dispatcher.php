@@ -16,15 +16,15 @@ use Joomla\CMS\Dispatcher\AbstractModuleDispatcher;
 /**
  * Dispatcher class for mod_ranextwalks.
  */
-class Dispatcher extends AbstractModuleDispatcher
-{
+class Dispatcher extends AbstractModuleDispatcher {
+
     /**
      * Returns the layout data for the template.
      *
      * @return array
      */
-    protected function getLayoutData(): array
-    {
+    #[\Override]
+    protected function getLayoutData(): array {
         $data = parent::getLayoutData();
         $params = $data['params'];
 

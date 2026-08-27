@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+>
+    <field name="id" type="hidden" filter="int"/>
+
+    <field name="thumbnail_path"
+           type="imagepreview"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_PHOTO_LABEL"
+    />
+
+    <field name="image_upload"
+           type="file"
+           accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_UPLOAD_LABEL"
+           description="COM_RA_LIBRARY_IMAGE_FIELD_UPLOAD_DESC"
+    />
+
+    <field name="caption"
+           type="text"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_CAPTION_LABEL"
+           filter="safehtml"
+           size="30"
+    />
+
+    <field name="description"
+           type="textarea"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_DESCRIPTION_LABEL"
+           filter="safehtml"
+           rows="2"
+           cols="30"
+    />
+
+    <field name="grid_reference"
+           type="text"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_GRID_REFERENCE_LABEL"
+           description="COM_RA_LIBRARY_IMAGE_FIELD_GRID_REFERENCE_DESC"
+           size="12"
+    />
+
+    <field name="featured"
+           type="checkbox"
+           label="COM_RA_LIBRARY_IMAGE_FIELD_FEATURED_LABEL"
+           description="COM_RA_LIBRARY_IMAGE_FIELD_FEATURED_DESC"
+           value="1"
+    />
+</form>

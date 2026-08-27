@@ -13,13 +13,14 @@ defined("_JEXEC") or die("Restricted access");
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Walktable;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
 use Joomla\CMS\Factory;
+
 class Table2 extends Walktable {
 
     private $tableFormat = [
-        ['title' => 'Date/Time', 'items' => ["{dowddmm}", "{;startTime}"]],
-        ['title' => 'Leader/Contact', 'items' => ["{xContact}", "{;telephone1}", "{;telephone2}"]],
-        ['title' => 'Details', 'items' => ["{title}", "{;description}", "{lf}", "{Grid Ref: }", "{startGR}", "{ Postcode: }", "{startPC}", "{;additionalNotes}"]],
-        ['title' => 'Distance', 'items' => ["{distance}", "{;xNationalGrade}", "{xSymbol}"]]
+        ['title' => 'Date/Time', 'items' => '{dowddmm}{<br> ?startTime}'],
+        ['title' => 'Leader/Contact', 'items' => '{xContact}{<br> ?telephone1}{<br> ?telephone2}'],
+        ['title' => 'Details', 'items' => '{title}{<br> ?description}{lf}{Grid Ref: ?startGR}{ Postcode ?startPC}{<br> ?additionalNotes}'],
+        ['title' => 'Distance', 'items' => '{distance}{<br> ?xNationalGrade}{xSymbol}']
     ];
 
     public function __construct() {

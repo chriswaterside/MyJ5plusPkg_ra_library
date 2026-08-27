@@ -13,11 +13,11 @@ class Mapdraw extends Map {
 
     public function __construct() {
         parent::__construct();
-        $this->options->setinitialviewView(52.89, -1.48, 10);
+        $this->options->setinitialView(52.89, -1.48, 10);
     }
 
     public function setCenter($lat, $long, $zoom) {
-        $this->options->setinitialviewView($lat, $long, $zoom);
+        $this->options->setinitialView($lat, $long, $zoom);
     }
 
     public function display() {

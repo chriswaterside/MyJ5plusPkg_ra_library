@@ -1,20 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<config>
-    <fieldset label="Email log" name="ra_library">
-        <field name="logretentionperiod" default="180" type="list" label="COM_RA_LIBRARY_FORM_LBL_LOGRETENTIONPERIOD" description="COM_RA_LIBRARY_FORM_DESC_LOGRETENTIONPERIOD" hint="COM_RA_LIBRARY_FORM_LBL_LOGRETENTIONPERIOD">
-            <option value="7">1 week</option>
-            <option value="14">2 weeks</option>
-            <option value="30">1 month</option>
-            <option value="91">3 months</option>
-            <option value="180">6 months</option>
-            <option value="365">1 year</option>
-        </field>
+<config addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
 
-
+    <fieldset name="eventsglobales" label="Events">
+        <field name="daysfornew"
+               type="integer"
+               default = '7'
+               first = '0'
+               last = '31'
+               step='1'
+               label="Considered New for n Days"
+               description="Enter the number of days to consider events are new"
+        />
+    </fieldset>    
+    <fieldset name="walksmanager" label="COM_RA_LIBRARY_CONFIG_WM_FIELDSET_LABEL">
+        <field name="wm_group_codes"
+               type="feedcheckboxes"
+               feedurl="https://groups.theramblers.org.uk/"
+               scope="global"
+               cache_lifetime="3600"
+               label="COM_RA_LIBRARY_CONFIG_WM_GROUP_CODES_LABEL"
+               description="COM_RA_LIBRARY_CONFIG_WM_GROUP_CODES_DESC"
+        />
     </fieldset>
     
-    <fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">
-        <field name="rules" type="rules" component="com_ra_library" class="inputbox" filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL" section="component" />
+   
+  
+    <fieldset name="pastwalkslayout" label="COM_RA_LIBRARY_CONFIG_PASTWALKS_LAYOUT_FIELDSET_LABEL">
+        <field
+            name="pastwalk_show_category_breadcrumb"
+            type="radio"
+            default="1"
+            layout="joomla.form.field.radio.switcher"
+            label="COM_RA_LIBRARY_CONFIG_PASTWALK_SHOW_CATEGORY_BREADCRUMB_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_PASTWALK_SHOW_CATEGORY_BREADCRUMB_DESC"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="pastwalk_category_breadcrumb_links"
+            type="radio"
+            default="1"
+            layout="joomla.form.field.radio.switcher"
+            label="COM_RA_LIBRARY_CONFIG_PASTWALK_CATEGORY_BREADCRUMB_LINKS_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_PASTWALK_CATEGORY_BREADCRUMB_LINKS_DESC"
+            showon="pastwalk_show_category_breadcrumb:1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="pastwalk_item_template_intro"
+            type="LayoutHelpTextarea"
+            helptype="pastwalks"
+            filter="raw"
+            rows="6"
+            label="COM_RA_LIBRARY_CONFIG_PASTWALK_ITEM_TEMPLATE_INTRO_LABEL"
+            description="Shown at the top of the Single Item page, and this is ALL that&amp;#x27;s shown in the Blog listing (with an automatic Read More link appended). Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-intro&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Blank uses the built-in default below - copy it into the field to start customising from it. Default is &amp;lt;div class=&amp;quot;ra-featured-float&amp;quot;&amp;gt;{featured_image}&amp;lt;/div&amp;gt;&amp;lt;h2&amp;gt;{title_link}&amp;lt;/h2&amp;gt;&amp;lt;p class=&amp;quot;ra-meta&amp;quot;&amp;gt;{walk_date_dow}{, ?walk_leader}{, ?national_grade}{, ?distance_miles}&amp;lt;/p&amp;gt;&amp;lt;div class=&amp;quot;ra-description&amp;quot;&amp;gt;{description}&amp;lt;/div&amp;gt;"
+        />
+        <field
+            name="pastwalk_item_template_more"
+            type="LayoutHelpTextarea"
+            helptype="pastwalks"
+            filter="raw"
+            rows="6"
+            label="COM_RA_LIBRARY_CONFIG_PASTWALK_ITEM_TEMPLATE_MORE_LABEL"
+            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
+        />
+    </fieldset>
+
+    <fieldset name="routeslayout" label="COM_RA_LIBRARY_CONFIG_ROUTES_LAYOUT_FIELDSET_LABEL">
+        <field
+            name="route_show_category_breadcrumb"
+            type="radio"
+            default="1"
+            layout="joomla.form.field.radio.switcher"
+            label="COM_RA_LIBRARY_CONFIG_ROUTE_SHOW_CATEGORY_BREADCRUMB_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_ROUTE_SHOW_CATEGORY_BREADCRUMB_DESC"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="route_category_breadcrumb_links"
+            type="radio"
+            default="1"
+            layout="joomla.form.field.radio.switcher"
+            label="COM_RA_LIBRARY_CONFIG_ROUTE_CATEGORY_BREADCRUMB_LINKS_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_ROUTE_CATEGORY_BREADCRUMB_LINKS_DESC"
+            showon="route_show_category_breadcrumb:1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="route_item_template_intro"
+            type="LayoutHelpTextarea"
+            helptype="routes"
+            filter="raw"
+            rows="6"
+            label="COM_RA_LIBRARY_CONFIG_ROUTE_ITEM_TEMPLATE_INTRO_LABEL"
+            description="Shown at the top of the Single Item page, and this is ALL that&amp;#x27;s shown in the Blog listing (with an automatic Read More link appended). Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-intro&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Blank uses the built-in default below - copy it into the field to start customising from it. Default is &amp;lt;div class=&amp;quot;ra-featured-float&amp;quot;&amp;gt;{featured_image}&amp;lt;/div&amp;gt;&amp;lt;h2&amp;gt;{title_link}&amp;lt;/h2&amp;gt;&amp;lt;p class=&amp;quot;ra-meta&amp;quot;&amp;gt;{national_grade}{, ?distance_miles}&amp;lt;/p&amp;gt;&amp;lt;div class=&amp;quot;ra-description&amp;quot;&amp;gt;{description}&amp;lt;/div&amp;gt;"
+        />
+        <field
+            name="route_item_template_more"
+            type="LayoutHelpTextarea"
+            helptype="routes"
+            filter="raw"
+            rows="6"
+            label="COM_RA_LIBRARY_CONFIG_ROUTE_ITEM_TEMPLATE_MORE_LABEL"
+            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:route_points_list}&amp;lt;h3&amp;gt;Route points&amp;lt;/h3&amp;gt;{route_points_list}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
+        />
+    </fieldset>
+
+    <fieldset name="imagegallery" label="COM_RA_LIBRARY_CONFIG_IMAGEGALLERY_FIELDSET_LABEL">
+        <field
+            name="image_grid_columns"
+            type="number"
+            default="4"
+            min="1"
+            max="8"
+            label="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_COLUMNS_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_COLUMNS_DESC"
+        />
+        <field
+            name="image_grid_thumb_width"
+            type="number"
+            default="140"
+            min="10"
+            max="1000"
+            label="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_THUMB_WIDTH_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_THUMB_WIDTH_DESC"
+        />
+        <field
+            name="image_grid_thumb_height"
+            type="number"
+            default="110"
+            min="10"
+            max="1000"
+            label="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_THUMB_HEIGHT_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_THUMB_HEIGHT_DESC"
+        />
+        <field
+            name="image_grid_page_size"
+            type="number"
+            default="12"
+            min="0"
+            max="60"
+            label="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_PAGE_SIZE_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_IMAGE_GRID_PAGE_SIZE_DESC"
+        />
+    </fieldset>
+
+    <fieldset name="itempreview" label="COM_RA_LIBRARY_CONFIG_ITEMPREVIEW_FIELDSET_LABEL">
+        <field
+            name="open_items_in_modal"
+            type="radio"
+            default="0"
+            layout="joomla.form.field.radio.switcher"
+            label="COM_RA_LIBRARY_CONFIG_OPEN_ITEMS_IN_MODAL_LABEL"
+            description="COM_RA_LIBRARY_CONFIG_OPEN_ITEMS_IN_MODAL_DESC"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
     </fieldset>
 
     <fieldset name="component">
@@ -31,9 +180,6 @@
         </field>
 
         <field name="history_limit" type="text" filter="integer" label="JGLOBAL_HISTORY_LIMIT_OPTIONS_LABEL" description="JGLOBAL_HISTORY_LIMIT_OPTIONS_DESC" default="5"/>
-
-      
-
         <field
             name="sef_ids"
             type="radio"
@@ -47,7 +193,9 @@
             <option value="1">JYES</option>
         </field>
     </fieldset>
-    
-   
-  
+
+    <fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">
+        <field name="rules" type="rules" component="com_ra_library" class="inputbox" filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL" section="component" />
+    </fieldset>
+
 </config>

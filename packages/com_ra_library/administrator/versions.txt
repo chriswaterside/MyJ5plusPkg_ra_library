@@ -1,0 +1,8 @@
+com_ra_library          5.0.0
+mod_racancelled         5.0.0
+mod_rafooter            5.0.0
+mod_raheader            5.0.0
+mod_ralibrarydisplay    5.0.0
+mod_ranextwalks         5.0.0
+plg_content_ra_library  5.0.0
+plg_system_rastyling    5.0.0

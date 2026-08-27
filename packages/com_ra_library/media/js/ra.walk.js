@@ -9,6 +9,32 @@ if (typeof (ra.data) === "undefined") {
 ra.events = function () {
     this.events = [];
     this.filter = null;
+    ra.events.filterOptions = {};
+    // these filter options are also used by calendar subscribe.
+    ra.events.filterOptions.grades = {order: [
+            'Easy Access',
+            'Easy',
+            'Leisurely',
+            'Moderate',
+            'Strenuous',
+            'Technical']};
+
+    ra.events.filterOptions.dow = {order: ['Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday']};
+    ra.events.filterOptions.distance = {displaySingle: true,
+        order: ['Not defined: See description',
+            'Up to 3 miles (5 km)',
+            '3+ to 5 miles (5-8 km)',
+            '5+ to 8 miles (8-13 km)',
+            '8+ to 10 miles (13-16 km)',
+            '10+ to 13 miles (16-21 km)',
+            '13+ to 15 miles (21-24 km)',
+            '15+ miles (24 km)']};
     this.registerEvent = function (event) {
         if (event.getIntValue('basics', 'future')) {
             this.events.push(event);
@@ -73,38 +99,27 @@ ra.events = function () {
     this.length = function () {
         return this.events.length;
     };
+    this.getGroups = function () {
+        const groups = new Map();
+
+        this.events.forEach(event => {
+            var groupCode = event.admin.groupCode;
+            var groupName = event.admin.groupName;
+            groups.set(groupCode, {'code': groupCode, 'name': groupName});
+        });
+        return groups;
+    };
+
+
+
+
     this.setFilters = function (tag) {
         var filter = new ra.filter(document, "reDisplayWalks");
         this.filter = filter;
         var groupOptions = {displaySingle: false};
         var typeOptions = {displaySingle: false};
         var statusOptions = {displaySingle: false};
-
-        var gradesOptions = {order: [
-                'Easy Access',
-                'Easy',
-                'Leisurely',
-                'Moderate',
-                'Strenuous',
-                'Technical']};
-
-        var dowOptions = {order: ['Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday']};
         var shapeOptions = {displaySingle: false};
-        var distanceOptions = {displaySingle: true,
-            order: ['See description',
-                'Up to 3 miles (5 km)',
-                '3+ to 5 miles (5-8 km)',
-                '5+ to 8 miles (8-13 km)',
-                '8+ to 10 miles (13-16 km)',
-                '10+ to 13 miles (16-21 km)',
-                '13+ to 15 miles (21-24 km)',
-                '15+ miles (24 km)']};
         var bookingOptions = {displaySingle: false};
         var updateOptions = {
             order: [{title: 'All walks', limit: 0},
@@ -116,10 +131,10 @@ ra.events = function () {
         filter.addGroup(new ra.filter.groupText("idGroup", "Group", groupOptions));
         filter.addGroup(new ra.filter.groupText("idType", "Type", typeOptions));
         filter.addGroup(new ra.filter.groupText("idBooking", "Booking", bookingOptions));
-        filter.addGroup(new ra.filter.groupText("idDOW", "Day of the week", dowOptions));
+        filter.addGroup(new ra.filter.groupText("idDOW", "Day of the week", ra.events.filterOptions.dow));
         filter.addGroup(new ra.filter.groupText("idShape", "Walk Shape/Type", shapeOptions));
-        filter.addGroup(new ra.filter.groupText("idDistance", "Distance", distanceOptions));
-        filter.addGroup(new ra.filter.groupText("idGrade", "Grade", gradesOptions));
+        filter.addGroup(new ra.filter.groupText("idDistance", "Distance", ra.events.filterOptions.distance));
+        filter.addGroup(new ra.filter.groupText("idGrade", "Grade", ra.events.filterOptions.grades));
         filter.addGroup(new ra.filter.groupDate("idDate", "Dates"));
         filter.addGroup(new ra.filter.groupLimit("idUpdate", "Updated", updateOptions));
         filter.addGroup(new ra.filter.groupText("idStatus", "Status", statusOptions));
@@ -130,9 +145,7 @@ ra.events = function () {
         this.events.forEach(event => {
             event.initialiseFilter(filter);
         });
-
         filter.display(tag);
-        //  var fred = filter.getJson();
     };
 };
 ra.event = function () {
@@ -145,6 +158,8 @@ ra.event = function () {
     this.contacts = new ra.event.items();
     this.media = new ra.event.media();
     this.flags = new ra.event.flags();
+    this.linkedWalks = [];
+    this.linkedEvent = null;
     this.bookings = null;
     this.general = new ra.event.general();
     var mapSummary = {};
@@ -159,7 +174,6 @@ ra.event = function () {
     var mapTitle = {};
     mapTitle.template = new ra.SimpleTemplate("{mapDowShortddmm}{, ?distance}");
     mapTitle.fields = mapTitle.template.getFields();
-
     let mapLayer = null;
     this.isCancelled = function () {
         return this.admin.isCancelled();
@@ -198,6 +212,10 @@ ra.event = function () {
         this.media.addPHPMedia(phpwalk.media);
         // flags
         this.flags.addFlags(phpwalk.flags);
+        // linked walks
+        this.linkedWalks = phpwalk.linkedWalks;
+        // linked Event
+        this.linkedEvent = phpwalk.linkedEvent;
         // bookings
         this.bookings = new ra.event.bookings(this.admin.id, this);
         this.bookings.convertPHPBookings(phpwalk);
@@ -278,7 +296,7 @@ ra.event = function () {
         if (link === undefined) {
             link = true;
         }
-        var values = this.fetchValues(layout.fields);  // your fetch logic
+        var values = this.fetchValues(layout.fields); // your fetch logic
         var out = layout.template.render(values);
         if (link) {
             return this.addWalkLink(out);
@@ -286,7 +304,6 @@ ra.event = function () {
             return out;
         }
     };
-
     /**
      * Fetch values for template fields
      * @param {Array} fields - Array of field names
@@ -295,7 +312,6 @@ ra.event = function () {
     this.fetchValues = function (fields) {
         var values = {};
         var i, field;
-
         for (i = 0; i < fields.length; i++) {
             field = fields[i];
             values[field] = this.getEventValue("{" + field + "}");
@@ -533,7 +549,6 @@ ra.event = function () {
         dsow.forEach(dow => {
             valueSet.add("idDOW", dow);
         });
-
         var status = this.admin.status;
         valueSet.add("idStatus", status);
         var booking = this.bookings.enabled;
@@ -542,23 +557,18 @@ ra.event = function () {
         } else {
             valueSet.add("idBooking", "Not required");
         }
-
-
         //   valueSet.add("idShape", null);
         this.walks.forEach(walk => {
             walk.setFilter(valueSet);
         });
-
         valueSet.add("idGroup", this.admin.groupName);
         valueSet.add("idUpdate", this.admin.filterUpdate());
-
         var flags = this.flags.getFlags();
         flags.forEach(flag => {
             valueSet.add("id" + flag.section, flag.name);
         });
         return valueSet;
     };
-
     this.addWalktoIcs = function (events) {
         var ev = new ra.ics.event();
         var $meetLocation, $startLocation, $before, $after, $summary, $description, $altDescription;
@@ -775,6 +785,44 @@ ra.event = function () {
 //        });
 
     };
+    this.addLinkedWalksSection = function (tag, walkids) {
+        if (walkids.length === 0) {
+            return;
+        }
+        var content = document.createElement('div');
+        content.setAttribute('class', 'walkitem linkedWalks');
+        var $html = "<div><b>Walks associated with this event</b></div><ul style='margin-top:5px;margin-bottom:5px;'>";
+        walkids.forEach(walkid => {
+            $html += '<li>';
+            $html += this.getLinkedHtml(walkid);
+            $html += '</li>';
+        });
+        $html += '</ul>';
+        content.innerHTML = $html;
+        tag.appendChild(content);
+    };
+    this.getLinkedHtml = function (id) {
+        var html = '';
+        var $class = '';
+        var title = "Walk not found: " + id;
+        var walk = ra.walk.getEventID(id);
+        if (walk !== null) {
+            title = walk.basics.getValue('{title}');
+        }
+        html += "<span class='pointer " + $class + "' onclick=\"javascript:" + ra.walk.DisplayWalkFunction + "(event,'" + id + "')\" title='Click to display walk details'>" + title + "</span>";
+        return html;
+    };
+    this.addLinkedEventSection = function (tag, eventid) {
+        if (eventid === null) {
+            return;
+        }
+        var content = document.createElement('div');
+        content.setAttribute('class', 'walkitem linkedWalks');
+        var $html = "Part of event: ";
+        $html += this.getLinkedHtml(eventid);
+        content.innerHTML = $html;
+        tag.appendChild(content);
+    };
     this.addFooterSection = function (tag) {
         var content = document.createElement('div');
         content.setAttribute('class', 'walkitem walkdates');
@@ -823,6 +871,8 @@ ra.event = function () {
         this.start.addSection(content, "start");
         this.finish.addSection(content, "finish");
         this.walks.addHtmlSection(content, "difficulty");
+        this.addLinkedWalksSection(content, this.linkedWalks);
+        this.addLinkedEventSection(content, this.linkedEvent);
         this.contacts.addHtmlSection(content, "contact");
         if (!this.isCancelled()) {
             this.addMapSection(content);
@@ -969,7 +1019,6 @@ ra.event.admin = function () {
         params.append("walkid", this.id);
         var link = new URL(`${url.origin}${url.pathname}?${params}`);
         this.localPopupUrl = link.href;
-
     };
     this.isCancelled = function () {
         return this.status.toLowerCase() === "cancelled";
@@ -1064,7 +1113,6 @@ ra.event.basics = function () {
                 out = this.dateRange(ra.date.dowddmmyyyy);
                 //out = "<b>" + ra.date.dowddmmyyyy(this.walkDate) + "</b>";
                 break;
-
             default:
         }
         return out;
@@ -1104,7 +1152,6 @@ ra.event.basics = function () {
                 return this.walkDate > yesterday;
             case "bookingdate":
                 return this.walkDate;
-
         }
         console.log("Invalid internal request: " + $option);
         return "";
@@ -1213,7 +1260,6 @@ ra.event.walk = function () {
                 out = this.localGrade;
                 break;
             case "{type}": // deprecated
-                ra.errors.toServer("Deprecated", "type in ra.walk.js");
             case "{shape}":
                 out = this.shape;
                 break;
@@ -1255,14 +1301,7 @@ ra.event.walk = function () {
         return "";
     };
     this.filterDistance = function () {
-        var distanceOrder = ['See description',
-            'Up to 3 miles (5 km)',
-            '3+ to 5 miles (5-8 km)',
-            '5+ to 8 miles (8-13 km)',
-            '8+ to 10 miles (13-16 km)',
-            '10+ to 13 miles (16-21 km)',
-            '13+ to 15 miles (21-24 km)',
-            '15+ miles (24 km)'];
+        var distanceOrder = ra.events.filterOptions.distance.order;
         var dist = this.distanceMiles;
         switch (true) {
             case (dist === 0):
@@ -1565,7 +1604,6 @@ ra.event.timelocation = function () {
         tag.appendChild(ll);
         ll.innerHTML = "<b>Latitude</b>: " + this.latitude.toFixed(5) + " , <b>Longitude</b>: " + this.longitude.toFixed(5);
         ll.classList.add("latlong");
-
         var section = document.createElement('div');
         tag.appendChild(section);
         var head = document.createElement('div');
@@ -1809,6 +1847,7 @@ ra.event.contact = function (id) {
                     if (this.contactForm !== "") {
                         out = "<span><b>Contact link: </b><a target='_blank' href='" + this.contactForm + "' title='Click to send an email to leader/contact or group'>Email contact</a></span>";
                     } else {
+                        console.log('No contact form for this event');
                         var $gwemlink = "javascript:ra.walk.emailContact(\"" + this.id + "\")";
                         out = "<span><a href='" + $gwemlink + "' title='Click to send an email to leader/contact'>Email contact</a></span>";
                     }
@@ -1875,6 +1914,11 @@ ra.event.contact = function (id) {
 ra.event.flags = function () {
     this._flags = [];
     this.addFlags = function (flags) {
+//        if (flags.length === 0) {
+//            var newflag = {section: 'Uncategorised',
+//                name: 'Uncategorised'};
+//            this._flags.push(newflag);
+//        }
         flags.forEach(flag => {
             var newflag = {section: flag.section,
                 name: flag.name};
@@ -1910,19 +1954,16 @@ ra.event.flags = function () {
         tag.appendChild(content);
     };
 };
-
 ra.event.bookings = function (id, event) {
     this.id = id;
     let myEvent = event; // not this.event to stop circular reference
     this.enabled = false;
-
     this.convertPHPBookings = function (phpwalk) {
         var bookings = phpwalk.bookings;
         if (bookings !== null) {
             this.enabled = bookings.enabled;
         }
     };
-
     this.addBookingsSection = function (tag) {
         if (this.enabled === false) {
             return;
@@ -1933,11 +1974,9 @@ ra.event.bookings = function (id, event) {
         var bookings = new ra.bookings(tag, this.id, myEvent, ics);
         bookings.initialise();
     };
-
 };
 ra.event.general = function () {
     this.general = [];
-
     this.addSection = function (tag) {
         var div = document.createElement('div');
         div.setAttribute('class', 'walkitem transport');
@@ -1946,7 +1985,6 @@ ra.event.general = function () {
         div.appendChild(content);
         var summary = document.createElement("summary");
         summary.setAttribute('class', 'pointer');
-
         summary.innerHTML = "Public Transport info";
         content.appendChild(summary);
         var ol = document.createElement("ul");
@@ -1965,10 +2003,8 @@ ra.event.general = function () {
         bus.setAttribute("target", "_blank");
         bus.textContent = "Traveline.info";
         li.appendChild(bus);
-
     };
 };
-
 ra.event.media = function () {
     this.items = [];
     this.addPHPMedia = function (values) {
@@ -1990,25 +2026,19 @@ ra.event.media = function () {
             var div = document.createElement('div');
             div.classList.add("walkitem");
             div.classList.add("media");
+            // Shared image gallery lightbox (see media/js/ra.lightbox.js) -
+            // its delegated click handler picks up any .ra-image-grid-item
+            // link inside a .ra-image-grid container, so no per-thumbnail
+            // click wiring is needed here any more (that used to build a
+            // ra.modals + ra.previousNext popup by hand).
+            div.classList.add("ra-image-grid");
             content.appendChild(div);
         }
 
-        var self = this;
         this.items.forEach(item => {
-            var tag = item.addThumbnail(div);
-            tag.addEventListener('click', function () {
-                var ele = document.createElement("div");
-                ra.modals.createModal(ele, false);
-                var ln = new ra.previousNext(ele, self.items, function (ele, item) {
-                    item.addImage(ele);
-                });
-                ln.display(item);
-            });
+            item.addThumbnail(div);
         });
     };
-
-
-
 };
 ra.event.mediaItem = function () {
     this.alt = "";
@@ -2032,41 +2062,31 @@ ra.event.mediaItem = function () {
         }
         return out;
     };
-
     this.addThumbnail = function (tag) {
         var div = document.createElement('div');
         div.classList.add("walk-image");
         tag.appendChild(div);
-
         var div2 = document.createElement('div');
         div2.classList.add("mediapopup");
         div.appendChild(div2);
-
+        // The clickable link the shared lightbox (media/js/ra.lightbox.js)
+        // looks for: href is the image it opens full-size (the "medium"
+        // resolution - there's no larger version available from the Walks
+        // Manager feed), title is its caption. The visible inline thumbnail
+        // stays the small "thumb" image, loaded first, same as before.
+        var link = document.createElement('a');
+        link.classList.add("ra-image-grid-item");
+        link.setAttribute("href", this.medium);
+        link.setAttribute("title", this.alt);
+        div2.appendChild(link);
         var img = document.createElement('img');
         img.classList.add("walkmedia");
         img.setAttribute("alt", this.alt);
         img.setAttribute("title", this.alt);
-        img.setAttribute("src", this.medium);
-        div2.appendChild(img);
-
+        img.setAttribute("src", this.thumb);
+        link.appendChild(img);
         return div;
     };
-    this.addImage = function (tag) {
-        var div = document.createElement('span');
-        div.classList.add("walk-image");
-        tag.appendChild(div);
-
-
-        var img = document.createElement('img');
-        img.classList.add("walkmedia");
-        img.setAttribute("alt", this.alt);
-        img.setAttribute("title", this.alt);
-        img.setAttribute("src", this.medium);
-        div.appendChild(img);
-
-        return div;
-    };
-
 };
 ra.event.nationalGrade = function (grade) {
     this.gradekey = "Event";
@@ -2288,9 +2308,6 @@ ra.walk = (function () {
     my.emailContact = function ($id) {
 
         var url = 'https://sendemail.ramblers-webs.org.uk';
-        //var url = 'https://sendemail02.ramblers-webs.org.uk';
-        //var url = 'http://localhost/contactForm';
-
         var $walk = my.walks.getEvent($id);
         var data = {};
         data.key = $walk.getIntValue("contacts", "key");

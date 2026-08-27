@@ -15,6 +15,7 @@ defined("_JEXEC") or die("Restricted access");
  */
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Simplelist;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
+use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 
 class Micronextwalks extends Simplelist {
 
@@ -26,7 +27,7 @@ class Micronextwalks extends Simplelist {
 //        "{mediathumbl}", "{dowShortddmm}", " ", "{startTime}",
 //        "{,title}", "{,startPC}", "{,nationalGrade}", "{,distance}"
 //    ];
-    private $listFormat  ="{mediathumbl}{dowShortddmm} {startTime}{, ?title}{, ?startPC}{, ?nationalGrade}{, ?distance}"; 
+    private $listFormat = "{mediathumbl}{dowShortddmm} {startTime}{, ?title}{, ?startPC}{, ?nationalGrade}{, ?distance}";
     // Number of walks to display
     private $nowalks = 5;
     // Detail page URL (e.g. 'walkdetail.php')
@@ -40,7 +41,7 @@ class Micronextwalks extends Simplelist {
         // Apply custom field format
         $this->customFormat = $this->listFormat;
         // Load BU51 stylesheet
-        // Load::addStyleSheet("media/com_ra_library/js/jsonwalks/bu51/bu51style.css");
+        Load::addStyleSheet("media/com_ra_library/js/jsonwalks/bu51/bu51style.css");
         // Disable grid refs and descriptions
         // $this->addGridRef = false;
         //$this->addStartGridRef = false;

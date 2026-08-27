@@ -103,9 +103,19 @@ class FeedcheckboxesField extends ListField {
         $options = $this->getOptions();
 
         $codes = $this->value;
+
         if (is_string($codes)) {
+            // The stored value is JSON text (from the DB / component params) -
+            // decode it back into the array of {code, name} rows this field
+            // works with, rather than discarding whatever was saved.
+            $decoded = json_decode($codes, true);
+            $codes = is_array($decoded) ? $decoded : [];
+        }
+
+        if (!is_array($codes)) {
             $codes = [];
         }
+
         $storedData = json_encode($codes);
         $valueCodes = array_filter(array_column($codes, 'code'));
 
@@ -120,7 +130,8 @@ class FeedcheckboxesField extends ListField {
 
         // Chips from stored data
         $html .= '<div class="feedcheckboxes-selected selected-container" id="' . $fieldId . '_selected">';
-        foreach ($storedData ?: [] as $item) {
+        foreach ($codes as $code) {
+            $item = (array) $code;
             $html .= '<span class="selected-chip" data-code="' . htmlspecialchars($item['code'] ?? '') . '">';
             $html .= htmlspecialchars($item['name'] ?? $item['code'] ?? '') . ' <span class="remove-x">&times;</span>';
             $html .= '</span>';

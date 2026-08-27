@@ -16,7 +16,7 @@ ra.display.tableList = (function () {
         this.numberOfRows = this.items[0].values.length;
         this.recordDiv;
         this.masterdiv = document.getElementById(options.divId);
-        this.iconpath = ra.baseDirectory() + "images/";
+        this.iconpath = ra.baseDirectory() + "media/com_ra_library/gpxsymbols/";
         this.defaultIcon = L.icon({
             iconUrl: ra.baseDirectory() + "media/com_ra_library/images/marker-route.png",
             iconSize: [33, 50],
@@ -35,9 +35,10 @@ ra.display.tableList = (function () {
             this.tabs = new ra.tabs(this.masterdiv, options);
 
             this.tabs.display();
-
-            var mapDiv = this.tabs.getStaticContainer('map');
-            this._displayMap(mapDiv);
+            if (mapping) {
+                var mapDiv = this.tabs.getStaticContainer('map');
+                this._displayMap(mapDiv);
+            }
             var listDiv = this.tabs.getStaticContainer('list');
             this._createTable(listDiv, this.items);
 //            setTimeout(function () {

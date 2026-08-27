@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="4.0" method="upgrade">
+<extension type="component" version="5.0" method="upgrade">
     <name>com_ra_library</name>
-    <creationDate>2026-05-20</creationDate>
+    <creationDate>27-08-2026</creationDate>
     <copyright>2026 Chris Vaughan</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <author>Chris Vaughan</author>
     <authorEmail>ruby.tuesday@ramblers-webs.org.uk</authorEmail>
     <authorUrl>https://ramblers-webs.org.uk</authorUrl>
-    <version>1.0.1</version>
-    <description>Component to enable emailing from a javascript</description>
+    <version>5.0.79</version>
+    <description>Component to Ramblers displays of events etc</description>
     <namespace path="src">Ramblers\Component\Ra_library</namespace>
+    <scriptfile>script.php</scriptfile>
    
     <install> <!-- Runs on install -->
         <sql>
@@ -18,7 +19,7 @@
     </install>
     <update> <!-- Runs on update -->
         <schemas>
-            <schemapath type="mysql">sql/updates</schemapath>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
         </schemas>
     </update>
     <uninstall> <!-- Runs on uninstall -->
@@ -28,31 +29,30 @@
     </uninstall>
  
     <files folder="site">
+        <folder>forms</folder>
         <folder>src</folder>
         <folder>tmpl</folder>
-    </files>
-    <files folder="images" destination="images/gpxsymbols">
-        <folder>letter</folder>
-        <folder>number</folder>
-        <folder>number_white</folder>
-        <folder>office</folder>
-        <folder>transport</folder>
-    </files>
-
+ 
+    </files> 
+    <languages folder="site/language">
+        <language tag="en-GB">en-GB/com_ra_library.ini</language>
+    </languages>
     <media destination="com_ra_library" folder="media">
         <folder>css</folder>
+        <folder>gpxsymbols</folder>
         <folder>images</folder>
         <folder>js</folder>
         <filename>joomla.asset.json</filename>
     </media>
-    <languages folder="site/languages">
-        <language tag="en-GB">en-GB/com_ra_library.ini</language>
-    </languages>
+   
     <administration>
         <menu>COM_RA_LIBRARY</menu>
         <submenu>
             <menu link="option=com_ra_library&amp;view=librarydisplays" view="librarydisplays" alt="Ra_library/Librarydisplays">Display Options</menu>
-            <menu link="option=com_ra_library&amp;view=emaillogs" view="emaillogs" alt="Ra_library/Emaillogs">COM_RA_LIBRARY_TITLE_EMAILLOGS</menu>
+            <menu link="option=com_ra_library&amp;view=pastwalks" view="pastwalks" alt="Ra_library/Pastwalks">Past Walks</menu>
+            <menu link="option=com_categories&amp;extension=com_ra_library.pastwalk" view="categories" alt="Ra_library/Categories">Past Walk Categories</menu>
+            <menu link="option=com_ra_library&amp;view=routes" view="routes" alt="Ra_library/Routes">Routes</menu>
+            <menu link="option=com_categories&amp;extension=com_ra_library.route" view="categories" alt="Ra_library/Categories">Route Categories</menu>
         </submenu>
         <files folder="administrator">
             <filename>access.xml</filename>
@@ -65,9 +65,9 @@
             <folder>sql</folder>
             <folder>tmpl</folder>
         </files>
-        <languages folder="administrator/languages">
-            <language tag="en-GB">en-GB/com_ra_library.ini</language>
-            <language tag="en-GB">en-GB/com_ra_library.sys.ini</language>
+        <languages folder="administrator">
+            <language tag="en-GB">language/en-GB/com_ra_library.ini</language>
+            <language tag="en-GB">language/en-GB/com_ra_library.sys.ini</language>
         </languages>
     </administration>
     <config>
@@ -77,7 +77,4 @@
             </fieldset>
         </fields>
     </config>
-    <plugins>
-    </plugins>
-
 </extension>

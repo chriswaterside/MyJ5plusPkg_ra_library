@@ -25,7 +25,7 @@ class JsonView extends BaseJsonView {
 
     public function display($tpl = null) {
         try {
-            $filename = 'images/gpxsymbols/' . htmlspecialchars($_GET["file"]);
+            $filename = 'media/com_ra_library/gpxsymbols/' . htmlspecialchars($_GET["file"]);
             $result = file_exists($filename);
             $record = (object) [
                         'exists' => $result,

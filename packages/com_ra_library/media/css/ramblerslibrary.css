@@ -811,8 +811,9 @@ details.ra-detailsButton[open] summary{
 }
 div.ra-filtergroup {
     padding-left:10px;
-    break-inside: avoid-column;
     font-weight:600;
+    break-inside: avoid;
+    display: table; /* firefox fix to get 3 coloumns */
 }
 div.ra-filtergroup div input[type=date] {
     font-size: 12px;
@@ -822,6 +823,23 @@ div.ra-filtergroup div input[type=date] {
 }
 div.ra-filtergroup div label {
     display: inline;
+}
+div.feed-field {
+    cursor:pointer;
+}
+
+div.feed-field::before {
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.5em;
+    content: "✗";
+    color: red;
+
+}
+
+div.feed-field.active::before {
+    content: "✓";
+    color: green;
 }
 
 div.ra-filteritem{
@@ -1054,6 +1072,10 @@ div.walks div.toggler span.item {
     padding: 0 1px;
     white-space: normal;
 }
+table.walks,
+table.walks tr.walk td{
+    border: 1px solid #ddd;
+}
 
 table.fc-col-header th div a{
     color: #FFFFFF;
@@ -1077,14 +1099,6 @@ iframe.ra.contactForm {
     border-width: 0px;
 }
 
-button.print-button{
-    border-color: #888;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 3px;
-    margin-right: 10px;
-    background-color: #fff;
-}
 .vertalign {
     display: flex;
     align-items: center; /* vertical alignment */

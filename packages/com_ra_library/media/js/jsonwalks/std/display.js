@@ -188,7 +188,7 @@ ra.display.walksTabs = function (mapOptions, data) {
             self.paginationOptions.itemsPerPage = e.cvList.itemsPerPage;
             self.paginationOptions.currentPage = e.cvList.currentPage;
         });
-        addPrintCalButtons(elements.legend);
+        this.addPrintCalButtons(elements.legend);
         var month = "";
         var div;
         var should = this.shouldDisplayMonth('Grades');
@@ -486,8 +486,9 @@ ra.display.walksTabs = function (mapOptions, data) {
     };
 
     this.addPrintButton = function (tag) {
+
         var printButton = document.createElement('button');
-        printButton.setAttribute('class', 'print-button');
+        printButton.classList.add('link-button', 'tiny', 'button', 'mintcake');
         printButton.textContent = 'Print';
         tag.appendChild(printButton);
         var _this = this;
@@ -507,50 +508,236 @@ ra.display.walksTabs = function (mapOptions, data) {
         ra.html.printHTML(content);
     };
     this.addToDiaryButton = function (tag) {
-        var config = {classes: 'ra calendar', title: 'Download or subscribe to our walks',
-            options: [
-                {text: 'Add to calendar options:-', value: 'none'},
-                {text: 'Subscribe to calendar', value: 'webcal'},
-                {text: 'Add to Google Calendar', value: 'google'},
-                {text: 'Add to Outlook', value: 'outlook'},
-                {text: 'Download calendar(.ics) file', value: 'download'}]};
-
-//  Google Calendar:
-//    https://calendar.google.com/calendar/r?cid=webcal://yourdomain.com/calendar/feed.ics
-//  Outlook Calendar:
-//    https://outlook.office.com/calendar/0/addfromweb?url=webcal://yourdomain.com/calendar/feed.ics
-//
-//  index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=...
-
-        var diary = ra.html.createDropDown(tag, config, 'Add to calendar');
+        var diaryButton = document.createElement('button');
+        diaryButton.classList.add('link-button', 'tiny', 'button', 'mintcake');
+        diaryButton.textContent = 'Add to calendar';
+        tag.appendChild(diaryButton);
         var _this = this;
-        diary.addEventListener('change', function (e) {
-            var opt = e.target.value;
-            var link = ra.baseDirectory() + 'index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=DE';
-            link.replace(/^https?:/, '');
-            switch (opt) {
-                case 'webcal':
-                    var url = 'webcal:' + link;
-                    window.open(url, '_blank');
-                    break;
-                case 'google':
-                    var url = 'https://calendar.google.com/calendar/r?cid=webcal:' + link;
-                    window.open(url, '_blank');
-                    break;
-                case 'outlook':
-                    var url = 'https://outlook.office.com/calendar/0/addfromweb?url=webcal:' + link;
-                    window.open(url, '_blank');
-                    break;
-                case 'download':
-                    _this.events.setDisplayFilter();
-                    var file = new ra.ics.file();
-                    _this.events.forEachFiltered($walk => {
-                        $walk.addWalktoIcs(file);
-                    });
-                    file.download();
-                    break;
-            }
-
+        diaryButton.addEventListener('click', function (e) {
+            ra.display.subscribeCalendarForm(_this.events);
         });
+    };
+};
+ra.display.subscribeCalendarForm = function (events) {
+    var types = ['Walks', 'Events'];
+
+    var numberOptions = [
+        {text: '100', value: '100'},
+        {text: '50', value: '50'},
+        {text: '25', value: '25'},
+        {text: '10', value: '10'},
+        {text: '5', value: '5'}];
+
+    var div = document.createElement("div");
+    div.style.display = "inline-block";
+    ra.modals.createModal(div, false);
+    var groups = events.getGroups();
+    const desc = document.createElement('div');
+    desc.classList.add('ra-calendar-desc');
+    desc.innerHTML = '<b>This option allows you to add our Walks/Events to your calendar</b>' +
+            '<p>There are two basic options:</p><ul style="margin-top:0px;">' +
+            '<li>Download a calendar/.ICS file of the currently displayed Walks/Events and manually add this to your calendar</li>' +
+            '<li>Subscribe to our Walks/Events, and your calendar will automatically update information</li>' +
+            '</ul>';
+    div.appendChild(desc);
+    div.appendChild(document.createElement('hr'));
+    var down = addButton(div, 'Download calendar .ics file', 'Add walks to calendar, you will need to repeat this action to get updates');
+    down.addEventListener('click', function (e) {
+        events.setDisplayFilter();
+        var file = new ra.ics.file();
+        events.forEachFiltered($walk => {
+            $walk.addWalktoIcs(file);
+        });
+        file.download();
+    });
+    div.appendChild(document.createElement('hr'));
+
+    const filters = [
+        {title: 'Groups', type: 'groups', values: groups},
+        {title: 'Day of week', type: 'dow', values: ra.events.filterOptions.dow.order},
+        {title: 'Type', type: 'type', values: types},
+        {title: 'Grade', type: 'grades', values: ra.events.filterOptions.grades.order},
+        {title: 'Distance', type: 'distance', values: ra.events.filterOptions.distance.order},
+        {title: 'Maximum walks/events', select: 'yes', type: 'number', values: numberOptions}
+    ];
+    var filtersForm = new ra.html.groupedItemsSelect();
+    filtersForm.display(div, filters);
+
+    var sub = addButton(div, 'Subscribe to calendar', 'Subscribe and select which calendar app you use');
+    sub.addEventListener('click', function (e) {
+        subscribeToCalendar('webcal', filtersForm);
+    });
+    var google = addButton(div, 'Subcribe via Google Calendar', 'Subscribe to walks using Google');
+    google.addEventListener('click', function (e) {
+        subscribeToCalendar('google', filtersForm);
+    });
+    var outlook = addButton(div, 'Subcribe via Outlook', 'Subscribe to walks using Outlook');
+    outlook.addEventListener('click', function (e) {
+        subscribeToCalendar('outlook', filtersForm);
+    });
+
+};
+
+function subscribeToCalendar(type, form) {
+    var result = form.getStatus();
+    var groups = result.groups;
+    var options = '';
+    if (result.type) {
+        options += '&type=' + form.getMask(result.type);
+    } else {
+        ra.showError('You must select at least one type');
+        return;
+    }
+    if (result.dow) {
+        options += '&dow=' + form.getMask(result.dow);
+    } else {
+        ra.showError('You must select at least one day of the week');
+        return;
+    }
+    if (result.grades) {
+        options += '&grades=' + form.getMask(result.grades);
+    } else {
+        ra.showError('You must select at least one grade');
+        return;
+    }
+    if (result.distance) {
+        options += '&dist=' + form.getMask(result.distance);
+    } else {
+        ra.showError('You must not deselect all distance options');
+        return;
+    }
+    options += '&limit=' + result.number;
+
+    var link = window.location.host + '/index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=' + groups + options.replace(/ /g, '%20');
+    var url = 'webcal:' + link;
+    switch (type) {
+        case 'google':
+            url = 'https://calendar.google.com/calendar/r?cid=webcal:' + link;
+            break;
+        case 'outlook':
+            url = 'https://outlook.office.com/calendar/0/addfromweb?url=webcal:' + link;
+            break;
+    }
+    window.open(url, '_blank');
+}
+function addButton(tag, name, title = '') {
+    var div = document.createElement('button');
+    div.innerHTML = name;
+    div.classList.add('link-button', 'tiny', 'button', 'mintcake');
+    if (title !== '') {
+        div.title = title;
+    }
+    tag.appendChild(div);
+    return div;
+}
+
+ra.html.groupedItemsSelect = function () {
+    this.container = null;
+    this.form = null;
+    this.display = function (tag, options) {
+        this.container = document.createElement('div');
+        this.container.classList.add('ra-container');
+        tag.appendChild(this.container);
+        var heading = document.createElement('h3');
+        heading.classList.add('ra-container-header');
+        heading.innerHTML = "Deselect any walks/events you don't wish to subscribe to";
+        this.container.appendChild(heading);
+        this.form = document.createElement('div');
+        this.form.classList.add('ra-walksfilter');
+        this.container.appendChild(this.form);
+
+        options.forEach(option => {
+            const set = document.createElement('div');
+            set.classList.add("ra-filtergroup");
+            const heading = document.createElement('h3');
+            heading.innerHTML = option.title;
+            const container = document.createElement('div');
+            set.append(heading, container);
+            this.form.appendChild(set);
+            if (option.select === 'yes') {
+                this.createDropDown(container, option.type, option.values);
+            } else {
+                this._renderCheckboxGroup(container, option.type, option.values);
+            }
+        });
+        return this.container;
+    };
+    this.getStatus = function () {
+        if (this.form === null) {
+            return null;
+        }
+        const result = {};
+        this.form.querySelectorAll('.active[data-type][data-code]').forEach(el => {
+            const type = el.dataset.type;
+            const code = el.dataset.code;
+            if (!result[type]) {
+                result[type] = [];
+            }
+            result[type].push(code);
+        });
+        this.form.querySelectorAll('select[data-type]').forEach(el => {
+            const type = el.dataset.type;
+            var value = el.value;
+            result[type] = value;
+        });
+        return result;
+    };
+    this.getMask = function (values) {
+        // var distanceValues = [1, 2, 4, 8, 16, 32, 64, 128];
+        var mask = 0;
+        values.forEach((value) => {
+            var val = 2 ** parseInt(value);
+            mask += val;
+        }
+        );
+        return mask;
+    };
+
+    this._renderCheckboxGroup = function (container, type, items) {
+        const fragment = document.createDocumentFragment();
+
+        items.forEach((item, index) => {
+            const label = typeof item === 'object' && item.name ? item.name : item;
+            const code = typeof item === 'object' && item.code ? item.code : index;
+
+            const input = document.createElement('div');
+            input.setAttribute('data-code', code);
+            input.setAttribute('data-type', type);
+            input.innerHTML = label;
+            input.classList.add('feed-field', 'active');
+            input.addEventListener('click', (event) => {
+                var tag = event.target;
+                if (tag.classList.contains('active')) {
+                    tag.classList.remove('active');
+                    tag.classList.add('inactive');
+                } else {
+                    tag.classList.add('active');
+                    tag.classList.remove('inactive');
+                }
+            });
+            fragment.appendChild(input);
+        });
+        container.appendChild(fragment);
+    };
+    this.createDropDown = function (tag, type, options) {
+//         var config = [
+//            {text: 'Add to calendar options:-', value: 'none'},
+//            {text: 'Subscribe to calendar', value: 'webcal'},
+//            {text: 'Add to Google Calendar', value: 'google'},
+//            {text: 'Add to Outlook', value: 'outlook'},
+//            {text: 'Download calendar(.ics) file', value: 'download'}];
+        var div = ra.html.createElement(tag, 'span');
+
+
+        var select = ra.html.createElement(div, 'select');
+        select.setAttribute('data-type', type);
+        options.forEach(opt => {
+            var ele = document.createElement('option');
+            ele.setAttribute('value', opt.value);
+            ele.innerHTML = opt.text;
+            select.appendChild(ele);
+        });
+        return select;
+
     };
 };

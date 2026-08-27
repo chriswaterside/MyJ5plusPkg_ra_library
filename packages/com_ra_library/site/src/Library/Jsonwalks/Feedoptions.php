@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
+
 /**
  * Description of feedoptions
  *
@@ -21,10 +23,6 @@ class Feedoptions {
         $this->addWalksManagerGroupWalks($groups);
     }
 
-    public function addWalksMangerGroupWalks($groups) {
-        $this->addWalksManagerGroupWalks($groups);
-    }
-
     public function addWalksManagerGroupWalks($groups, $period = null) {
         $this->checkGroups($groups);
         $readwalks = true;
@@ -36,10 +34,6 @@ class Feedoptions {
     }
 
     public function addWalksManagerWellbeingWalks($groups) {
-        $this->addWalksMangerWellbeingWalks($groups);
-    }
-
-    public function addWalksMangerWellbeingWalks($groups) {
         $this->checkGroups($groups);
         $readwalks = false;
         $readevents = false;

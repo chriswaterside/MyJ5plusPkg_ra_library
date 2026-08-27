@@ -246,7 +246,7 @@ ra.map = (function () {
                 return;
             }
 
-            marker.file = ra.baseDirectory() + "images/gpxsymbols/" + name + ".png";
+            marker.file = ra.baseDirectory() + "media/com_ra_library/gpxsymbols/" + name + ".png";
             var file = ra.baseDirectory() + "?option=com_ra_library&view=checkimage&format=json&file=" + name + ".png";
             ra.ajax.getUrl(file, "", marker, function (marker, response) {
                 var url = marker.file;

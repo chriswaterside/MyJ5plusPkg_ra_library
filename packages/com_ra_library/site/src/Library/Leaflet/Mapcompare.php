@@ -19,7 +19,7 @@ class Mapcompare extends Map {
     }
 
     public function setCenter($lat, $long, $zoom) {
-        $this->options->setinitialviewView($lat, $long, $zoom);
+        $this->options->setinitialView($lat, $long, $zoom);
     }
 
     public function display() {

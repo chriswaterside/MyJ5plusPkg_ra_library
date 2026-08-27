@@ -16,6 +16,7 @@ use \Joomla\CMS\Router\Route;
 use \Joomla\CMS\Layout\LayoutHelper;
 use \Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Ramblers\Component\Ra_library\Administrator\Helper\DisplayoptionLabelHelper;
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
@@ -37,6 +38,10 @@ if (!empty($saveOrder)) {
     $saveOrderingUrl = 'index.php?option=com_ra_library&task=librarydisplays.saveOrderAjax&tmpl=component&' . Session::getFormToken() . '=1';
     HTMLHelper::_('draggablelist.draggable');
 }
+// The value => label lookup lives in DisplayoptionLabelHelper, shared with
+// the menu item "Select Item" picker (Field/LibraryDisplayField.php) so
+// both places show the same friendly strings from one place.
+$disp = DisplayoptionLabelHelper::getLabels();
 ?>
 
 <form action="<?php echo Route::_('index.php?option=com_ra_library&view=librarydisplays'); ?>" method="post"
@@ -140,7 +145,8 @@ if (!empty($saveOrder)) {
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php echo $this->escape($item->displayoption); ?>
+                                    <?php // echo $this->escape($item->displayoption); ?>
+                                    <?php echo $disp[$item->displayoption] ?? $item->displayoption; ?>
 
                                 </td>
 

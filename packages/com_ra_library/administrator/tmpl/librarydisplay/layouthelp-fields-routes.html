@@ -1,0 +1,22 @@
+<p><strong>Available fields</strong></p>
+<ul>
+<li><strong>title</strong> - the route's title, plain text</li>
+<li><strong>title_link</strong> - the title, wrapped in a link to that route's own single-item page</li>
+<li><strong>url</strong> - the link to that route's single-item page on its own (e.g. for a custom "View" button)</li>
+<li><strong>category</strong> - the route's category title, or blank if uncategorised</li>
+<li><strong>description</strong> - the route's description (HTML, as entered)</li>
+<li><strong>national_grade</strong> - e.g. "Easy access", "Moderate"</li>
+<li><strong>distance_miles</strong> - e.g. "5.2 miles"</li>
+<li><strong>distance_km</strong> - e.g. "8.4 km"</li>
+</ul>
+<p><strong>Photo/file/route-point fields</strong></p>
+<p>These render as complete, ready-made blocks of HTML - you can place the whole block wherever you like in your layout and style it with CSS, but you can't rearrange what's inside the block field by field.</p>
+<ul>
+<li><strong>featured_image</strong> - an &lt;img&gt; of the featured photo (or the first photo if none is marked featured), blank if there are no photos</li>
+<li><strong>image_grid</strong> - a thumbnail grid of every photo, each linking to its full-size copy, blank if there are no photos</li>
+<li><strong>gpx_list</strong> - a list of GPX file download links, blank if none</li>
+<li><strong>gpx_map</strong> - the featured (or only) GPX file's route, embedded inline as a map, blank if none</li>
+<li><strong>gpx_map_list</strong> - a list of the OTHER GPX files (not the one gpx_map is already showing), each a link that opens the route on a map in a popup, blank if none</li>
+<li><strong>document_list</strong> - a list of titled document download links, blank if none</li>
+<li><strong>route_points_list</strong> - an ordered list of waypoints (title, grid reference, description), blank if none defined</li>
+</ul>

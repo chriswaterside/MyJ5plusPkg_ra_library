@@ -17,8 +17,6 @@ use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Addschema;
 
 class Simplelist extends Displaybase {
 
-    private $walksClass = "walks";
-    private $walkClass = "walk";
     private $customFormat = null;
     private $inLineDisplay = false;
     private $listFormat = "{dowdd}{, ?meet}{, ?meetGR}" .
@@ -30,7 +28,7 @@ class Simplelist extends Displaybase {
     }
 
     public function DisplayWalks($walks) {
- 
+
         if ($this->customFormat !== null) {
             $this->listFormat = $this->customFormat;
         }
@@ -70,14 +68,6 @@ class Simplelist extends Displaybase {
         $this->inLineDisplay = true;
     }
 
-    public function setWalksClass($class) {
-        $this->walksClass = $class;
-    }
-
-    public function setWalkClass($class) {
-        $this->walkClass = $class;
-    }
-
     private function displayWalk($walk, $oddeven) {
         $out = "";
         $status = $walk->getIntValue("admin", "status");
@@ -85,12 +75,12 @@ class Simplelist extends Displaybase {
         if ($this->inLineDisplay) {
             $DisplayWalkFunction = "ra.walk.toggleDisplay";
             $text = $walk->addTooltip($walk->getWalkText($this->listFormat, false));
-            $out .= "<div class='" . $this->walkClass . $status . " " . $oddeven . " toggler pointer'"
+            $out .= "<div class='" . $this->walkClass . " walk" . $status . " " . $oddeven . " toggler pointer'"
                     . " onclick=\"javascript:" . $DisplayWalkFunction . "(event,'" . $id . "')\">" . PHP_EOL;
             $out .= "<span class='item'>" . $text . "</span></div>" . PHP_EOL;
         } else {
             $text = $walk->addTooltip($walk->getWalkText($this->listFormat));
-            $out .= "<div class='" . $this->walkClass . $status . " " . $oddeven . "' >" . PHP_EOL;
+            $out .= "<div class='" . $this->walkClass . " walk" . $status . " " . $oddeven . "' >" . PHP_EOL;
             $out .= "<span class='item'>" . $text . "</span></div>" . PHP_EOL;
         }
         echo $out;

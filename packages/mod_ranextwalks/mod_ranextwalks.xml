@@ -2,12 +2,12 @@
 <extension type="module" client="site" method="upgrade">
     <name>RA Next Walks</name>
     <author>Chris Vaughan</author>
-    <creationDate>18 May 2026</creationDate>
+    <creationDate>28-06-2026</creationDate>
     <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
     <license>This extension is released under the GNU/GPL License</license>
     <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
     <authorUrl>www.ramblers-webs.org.uk</authorUrl>
-    <version>2.0.0</version>
+    <version>5.0.0</version>
     <description>Display Next Walks (Joomla 5/6 compatible)</description>
 
     <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
@@ -33,7 +33,6 @@
                        feedurl="https://groups.theramblers.org.uk/" 
                        scope="global" 
                        cache_lifetime="3600"                           
-                       showon="load_type:wm" 
                        label="Select Group(s)/Area" 
                        multiple="true" 
                 /> 
@@ -45,6 +44,7 @@
                        step="1"
                        default="7" 
                 />
+               
             </fieldset>
             <fieldset name="advanced">
                 <field name="moduleclass_sfx" type="text" label="Module Class" description="JFIELD_MODULE_CLASS_SUFFIX_DESC"/>

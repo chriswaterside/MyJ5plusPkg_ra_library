@@ -1,4 +1,5 @@
 <?php
+
 /*
  * copyright: Chris Vaughan
  * email: ruby.tuesday@ramblers-webs.org.uk
@@ -10,6 +11,63 @@
  * @copyright   Copyright (C) 2026 Your Name. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+/**
+ * Custom Joomla form field: "tableitems"
+ *
+ * Renders a repeatable, drag-sortable "table" of rows (via SortableJS), where
+ * each row has 1–3 sub-fields. The field's value is stored as a JSON array of
+ * associative arrays, keyed by your configured field names, e.g.:
+ *   [ { "Name": "Alice", "Role": "Leader" }, { "Name": "Bob", "Role": "Guide" } ]
+ *
+ * REQUIRES
+ * --------
+ *   - LayoutHelpButtonsTrait must be autoloadable from this namespace.
+ *   - SortableJS (loaded from jsdelivr CDN — consider vendoring it locally if
+ *     you need to support offline/restricted environments).
+ *   - media/com_ra_library/fields/tableitems.js and tableitems.css, loaded
+ *     relative to the component's media folder.
+ *
+ * USAGE IN XML
+ * ------------
+ *   <field
+ *       name="members"
+ *       type="tableitems"
+ *       label="Group Members"
+ *       fieldsperitem="2"
+ *       fieldnames="[&quot;Name&quot;,&quot;Role&quot;]"
+ *       hints="[&quot;Full name&quot;,&quot;e.g. Leader&quot;]"
+ *       inputtypes="[&quot;text&quot;,&quot;text&quot;]"
+ *       filters="[&quot;normal&quot;,&quot;normal&quot;]"
+ *       widths="[&quot;60%&quot;,&quot;40%&quot;]"
+ *       classes="[&quot;&quot;,&quot;&quot;]"
+ *       sort="true"
+ *   />
+ *
+ * FIELD ATTRIBUTES
+ * ----------------
+ *   fieldsperitem  int, 1–3. Columns per row. Default: 2.
+ *   fieldnames     JSON array of strings, length = fieldsperitem. Also used
+ *                  as the object keys in the stored JSON value. Default:
+ *                  "Field 1", "Field 2", ...
+ *   hints          JSON array of placeholder text per column. Default: same
+ *                  as fieldnames.
+ *   inputtypes     JSON array of HTML input types per column, e.g. "text",
+ *                  "number", "email", "date". Default: "text" for all.
+ *                  Avoid "checkbox"/"radio"/"file" unless tableitems.js has
+ *                  been extended to handle them (see note above).
+ *   filters        JSON array, one of "normal" (single-line <input>, default)
+ *                  or "raw" (renders a <textarea> instead — use for longer
+ *                  or multi-line content). No other value has an effect.
+ *   classes        JSON array of extra CSS class(es) to add per column.
+ *   widths         JSON array of CSS width values per column, e.g. "120px"
+ *                  or "20%".
+ *   sort           "true"/"false" — enables drag-to-reorder via the row
+ *                  handle (SortableJS). Default: true.
+ *
+ * Any *json array attribute whose decoded length doesn't match fieldsperitem
+ * is silently discarded and replaced with the field's built-in default —
+ * worth knowing when debugging a config that "isn't taking".
+ */
 
 namespace Ramblers\Component\Ra_library\Administrator\Field;
 
@@ -19,6 +77,8 @@ use Joomla\CMS\Form\Field\TextField;
 use Joomla\CMS\HTML\HTMLHelper;
 
 class TableitemsField extends TextField {
+
+    use LayoutHelpButtonsTrait;
 
     /**
      * The form field type.
@@ -33,6 +93,13 @@ class TableitemsField extends TextField {
     protected $widths;
     protected $inputTypes;
     protected $filters;  // NEW: Per-field filters
+
+    /**
+     * @since   1.0.0
+     */
+    protected function getLabel() {
+        return parent::getLabel() . $this->renderLayoutHelpButtons();
+    }
 
     protected function getInput() {
         if (!is_array($this->value)) {
@@ -134,16 +201,16 @@ class TableitemsField extends TextField {
             if ($isRaw) {
                 // NEW: Textarea for raw HTML
                 $html .= '<textarea class="field-input field-' . ($f + 1) . $fieldClass . '" '
-                    . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
-                    . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>'
-                    . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</textarea>';
+                        . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
+                        . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>'
+                        . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</textarea>';
             } else {
                 // Existing input
                 $html .= '<input type="' . htmlspecialchars($inputType, ENT_QUOTES, 'UTF-8') . '" '
-                    . 'class="field-input field-' . ($f + 1) . $fieldClass . '" '
-                    . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
-                    . 'value="' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '" '
-                    . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>';
+                        . 'class="field-input field-' . ($f + 1) . $fieldClass . '" '
+                        . 'data-fieldname="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '" '
+                        . 'value="' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '" '
+                        . 'placeholder="' . htmlspecialchars($hint, ENT_QUOTES, 'UTF-8') . '"' . $style . '>';
             }
         }
 
@@ -153,4 +220,5 @@ class TableitemsField extends TextField {
         return $html;
     }
 }
+
 ?>

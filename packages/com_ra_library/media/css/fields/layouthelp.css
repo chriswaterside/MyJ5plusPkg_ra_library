@@ -1,0 +1,33 @@
+/*
+ * Admin "Syntax" / "Fields" help buttons (see
+ * administrator/src/Field/LayoutHelpButtonsTrait.php and
+ * media/js/fields/layouthelp.js). The popup content itself uses ra.modals'
+ * own chrome styling (ramblerslibrary.css) - these rules only cover the
+ * small buttons appended after a field's label.
+ */
+.ra-layouthelp-buttons {
+    /* flex (not inline-flex) so this is a block-level box - forces it onto
+       its own line below the label, rather than only wrapping there if
+       the label column happens to be too narrow to fit alongside it. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    margin-top: 0.35em;
+}
+
+.ra-layouthelp-btn {
+    font-size: 0.8em;
+    padding: 0em 0.2em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: #f7f7f7;
+    cursor: pointer;
+}
+
+.ra-layouthelp-btn:hover {
+    background: #eee;
+}
+
+.ra-layouthelp-content {
+    display: none;
+}

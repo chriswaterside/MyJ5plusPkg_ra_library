@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std;
 
 /**
@@ -8,31 +9,26 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std;
  */
 // no direct access
 defined("_JEXEC") or die("Restricted access");
+
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Displaybase;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Script;
 
 class Walktable extends Displaybase {
 
-    private $walksClass = "walks";
-    private $walkClass = "walk";
-    private $tableClass = '';
     private $customFormat = null;
     private $monthlyReminderClass = null;
     private $monthlyReminderMethod = null;
     private $rowClassClass = null;
     private $rowClassMethod = null;
     public $link = true;
-    //public $addDescription = true;
-    //public $addGroupName = false;
-    //public $addLocation = true;
     private $tableFormat = [
         ['title' => 'Date', 'items' => "{dowddmm}"],
         ['title' => 'Meet', 'items' => "{meet}{, ?meetGR}{, ?meetPC}"],
-        ['title' => 'Start', 'items' =>"{start}{, ?startGR}{, ?startPC}"],
-        ['title' => 'Title', 'items' =>"{title}{mediathumbr}"],
-        ['title' => 'Difficulty', 'items' =>"{difficulty+}"],
-        ['title' => 'Contact', 'items' =>"{contact}"]];
+        ['title' => 'Start', 'items' => "{start}{, ?startGR}{, ?startPC}"],
+        ['title' => 'Title', 'items' => "{title}{mediathumbr}"],
+        ['title' => 'Difficulty', 'items' => "{difficulty+}"],
+        ['title' => 'Contact', 'items' => "{contact}"]];
 
     public function customFormat($format) {
         $this->customFormat = $format;
@@ -40,21 +36,21 @@ class Walktable extends Displaybase {
 
     public function DisplayWalks($walks) {
 
-        $walks->sort(Walk::SORT_DATE,Walk::SORT_TIME, Walk::SORT_DISTANCE);
+        $walks->sort(Walk::SORT_DATE, Walk::SORT_TIME, Walk::SORT_DISTANCE);
         $items = $walks->allWalks();
         if ($this->customFormat !== null) {
             $this->tableFormat = $this->customFormat;
         }
-        $groupByMonth=false;
+        $groupByMonth = true;
         foreach ($this->tableFormat as $key => $value) {
-          $groupByMonth = Walk::groupByMonth($value["items"]);
-          if ($groupByMonth){
-              break;
-          }
+            $groupByMonth = Walk::groupByMonth($value["items"]);
+            if (!$groupByMonth) {
+                break;
+            }
         }
         $odd = false;
         $lastValue = "";
-        echo "<table class='" . $this->tableClass . "' >" . PHP_EOL;
+        echo "<table class='" . $this->walksClass . "' >" . PHP_EOL;
 
         if (!$groupByMonth) {
             echo $this->displayTableHeader();
@@ -96,18 +92,6 @@ class Walktable extends Displaybase {
         $this->rowClassMethod = $method;
     }
 
-    public function setWalksClass($class) {
-        $this->tableClass = $class;
-    }
-
-    public function setWalkClass($class) {
-        $this->walkClass = $class;
-    }
-
-    public function setTableClass($class) {
-        $this->tableClass = $class;
-    }
-
     private function displayTableHeader() {
         $cols = $this->tableFormat;
         $out = "<tr>";
@@ -143,5 +127,4 @@ class Walktable extends Displaybase {
         $out .= "</tr>";
         return $out;
     }
-
 }

@@ -13,13 +13,14 @@ namespace Ramblers\Component\Ra_library\Administrator\Model;
 // No direct access.
 defined('_JEXEC') or die;
 
-use \Joomla\CMS\Table\Table;
-use \Joomla\CMS\Factory;
-use \Joomla\CMS\Language\Text;
-use \Joomla\CMS\Plugin\PluginHelper;
-use \Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Event\AbstractEvent;
-use \Joomla\Database\DatabaseInterface;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Filter\OutputFilter;
 
 /**
@@ -255,18 +256,34 @@ class LibrarydisplayModel extends AdminModel {
             $data['id'] = $item->id;
             $data['title'] = $item->title;
             $data['displayoption'] = $item->displayoption;
-            $data['options'] = json_decode($item->options, true) ?: [];
+            $data['options'] = json_decode($item->options ?? '', true) ?: [];
             // move items from options field
             $data = $this->moveFieldsOutofOptions($data);
         }
         return $data;
     }
 
+    protected function preprocessForm(Form $form, $data, $group = 'content') {
+        // Always call the parent first — this is what fires the normal
+        // onContentPrepareForm event and loads any extra field/rule paths.
+        parent::preprocessForm($form, $data, $group);
+
+        // $data is usually an array here (sometimes an object depending
+        // on how the form was bound), so handle both just in case.
+        $storedValue = is_array($data) ? ($data['displayoption'] ?? '') : ($data->displayoption ?? '');
+
+        if ($storedValue !== '') {
+            $form->setFieldAttribute(
+                    'displayoption_note',
+                    'showon',
+                    'displayoption!:' . $storedValue
+            );
+        }
+    }
+
     public function save($data) {
         // move items into options rather than at base level
         $data = $this->moveFieldsIntoOptions($data);
-        $data['options']['draft_coords'] = $this->flattenIds($data['options'], 'draft_coords');
-        // convert some items to objects rather then json strings
         $this->scanAndDecode($data);
         return parent::save($data);
     }
@@ -323,9 +340,9 @@ class LibrarydisplayModel extends AdminModel {
      * scan & decode specific field names anywhere recursively
      * 
      */
-    protected $targetDecodeFields = ['walkseditor',
+    protected $targetDecodeFields = [
         'documents_exts', 'ramblersgroups', 'draft_ragroups',
-        'draft_localgrades', 'custom_table', 'keep_groups',
+        'draft_localgrades', 'custom_table', 'custom_title', 'keep_groups',
         'table_options', 'table_iconmarkers'];  // Add your unique fields
 
     /**

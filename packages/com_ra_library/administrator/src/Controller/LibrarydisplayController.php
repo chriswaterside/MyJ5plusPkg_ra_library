@@ -24,19 +24,4 @@ use Joomla\CMS\Language\Text;
 class LibrarydisplayController extends FormController {
 
     protected $view_list = 'librarydisplays';
-
-//    public function save($key = null, $keyName = 'id') {
-//        $data = $this->input->post->get('jform', [], 'array');
-//
-//        $model = $this->getModel();
-//        $result = $model->save($data);
-//
-//        if ($result) {
-//            Factory::getApplication()->enqueueMessage(Text::_('Item saved successfully'), 'success');
-//            $this->setRedirect('index.php?option=com_ra_library&view=librarydisplays');
-//        } else {
-//            Factory::getApplication()->enqueueMessage(Text::_('Error saving item'), 'error');
-//            $this->setRedirect('index.php?option=com_ra_library&view=item&layout=edit&id=' . (int) $data['id']);
-//        }
- //   }
 }

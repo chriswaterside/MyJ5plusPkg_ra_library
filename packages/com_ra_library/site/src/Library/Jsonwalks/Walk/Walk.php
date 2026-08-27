@@ -171,6 +171,9 @@ class Walk implements \JsonSerializable {
     }
 
     public function notInGradeList($grades) {
+        if ($this->nationalGrade === 'Event') {
+            return false;
+        }
         foreach ($grades as $grade) {
             if (strtolower($grade) == strtolower($this->nationalGrade)) {
                 return false;

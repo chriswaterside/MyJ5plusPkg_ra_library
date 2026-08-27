@@ -1,5 +1,6 @@
 <?php
-use Ramblers\Component\Ra_library\Site\Library\Gpx;
+
+namespace Ramblers\Component\Ra_library\Site\Library\Gpx;
 
 /**
  * Description of gpx
@@ -36,12 +37,26 @@ class File {
 
     private function parse() {
         if (!self::$registered) {
-            $regPath = JPATH_BASE . "/libraries/ramblers/vendors/phpGPX-1.0.1/src";
-            $regPath .= Joomla\CMS\Version::MAJOR_VERSION > 3  ? "/phpGPX" : ""; 
-            JLoader::registerNamespace('phpGPX', $regPath);
+//            $regPath = JPATH_BASE . "/libraries/ramblers/vendors/phpGPX-1.0.1/src";
+//            $regPath .= "/phpGPX";
+//            JLoader::registerNamespace('phpGPX', $regPath);
+
+            spl_autoload_register(function ($class) {
+                $prefix = 'phpGPX\\';
+                if (strncmp($prefix, $class, strlen($prefix)) !== 0) {
+                    return;
+                }
+                $relative = substr($class, strlen($prefix));
+                $file2 = __DIR__;
+                $file = __DIR__ . '/phpGPX/' . str_replace('\\', '/', $relative) . '.php';
+                if (is_file($file)) {
+                    require $file;
+                }
+            });
+
             self::$registered = true;
         }
-        $gpxfile = new phpGPX\phpGPX();
+        $gpxfile = new \phpGPX\phpGPX();
 
         $gpx = $gpxfile->load($this->file);
         $meta = $gpx->metadata;
@@ -124,5 +139,4 @@ class File {
             }
         }
     }
-
 }

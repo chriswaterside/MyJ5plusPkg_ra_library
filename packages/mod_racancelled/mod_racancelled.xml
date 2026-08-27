@@ -2,12 +2,12 @@
 <extension type="module" client="site" method="upgrade">
     <name>RA Cancelled</name>
     <author>Chris Vaughan</author>
-    <creationDate>18 May 2026</creationDate>
+    <creationDate>22-08-2026</creationDate>
     <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
     <license>This extension is released under the GNU/GPL License</license>
     <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
     <authorUrl>www.ramblers-webs.org.uk</authorUrl>
-    <version>2.0.0</version>
+    <version>5.0.1</version>
     <description>This module displays cancelled walks (Joomla 5/6 compatible)</description>
 
     <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
@@ -26,6 +26,7 @@
     </languages>
 
     <config>
+        <inlinehelp button="show" />
         <fields name="params">
             <fieldset name="basic" addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
                 <field name="ramblersgroups" 
@@ -37,15 +38,12 @@
                        label="Select Group(s)/Area" 
                        multiple="true" 
                 />    
-                <field name="number_walks" 
-                       first="1" 
-                       last="200" 
-                       step="1" 
-                       type="integer" 
-                       default="7"
-                       label="Number of walks/events" 
-                       description="The maximum number of walks/events to display" 
-                />   
+                <field name="diagnostics"
+                       type="checkbox"
+                       label="Diagnostics"
+                       description="Set to test module if you have no cancelled events"
+                       value="0"
+                />
             </fieldset>
             <fieldset name="advanced">
                 <field name="moduleclass_sfx" type="text" label="Module Class" description="JFIELD_MODULE_CLASS_SUFFIX_DESC"/>

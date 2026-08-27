@@ -1,11 +1,14 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Wm;
+
 /**
  * Description of feed
  *
  * @author Chris Vaughan
  */
 use Joomla\CMS\Factory;
+
 // Live Site Definition Below
 define("WALKMANAGER", "https://walks-manager.ramblers.org.uk/api/volunteers/walksevents?");
 // https://walks-manager.ramblers.org.uk/api/volunteers/walksevents?&types=group-walk&api-key=853aa876db0a37ff0e6780db2d2addee&groups=er05
@@ -26,12 +29,13 @@ class Feed {
     public function getGroupEventItems($groups, $readwalks, $readevents, $readwellbeingwalks, $period) {
         $feedOpts = new Feedoptions();
         $feedOpts->groupCode = $groups;
-        $feedOpts->include_walks = $readevents;
-        $feedOpts->include_events = $readwalks;
+        $feedOpts->include_walks = $readwalks;
+        $feedOpts->include_events = $readevents;
         $feedOpts->include_wellbeing_walks = $readwellbeingwalks;
         $feedOpts->date_start = $period->getStartDateString();
         $feedOpts->date_end = $period->getEndDateString();
-        $items = $this->getFeed($feedOpts);
+        $future = $period->isFuture();
+        $items = $this->getFeed($feedOpts, $future);
         return $items;
     }
 
@@ -49,11 +53,14 @@ class Feed {
         return $items;
     }
 
-    private function getFeed($feedOpts) {
+    private function getFeed($feedOpts, $future = true) {
         $debug = false;
         $feedurl = $feedOpts->getFeedURL();
         $cachedWalksFileName = $feedOpts->getCacheFileName("walks.json");
         $source = $this->whichSource($cachedWalksFileName);
+        if (!$future) {
+            $source = READSOURCE::FEED;
+        }
 
         if ($debug) {
             $this->debugMsg($feedurl, "Reading data from " . $source);
@@ -156,7 +163,7 @@ class Feed {
 
     private static function errorMsg($url, $msg) {
         $urlout = str_replace(APIKEY, '???', $url);
-         RErrors::notifyError("Error reading walks: " . $msg . " " . $urlout, "Walks Manager", 'error');
+        RErrors::notifyError("Error reading walks: " . $msg . " " . $urlout, "Walks Manager", 'error');
     }
 
     private static function debugMsg($url, $msg) {

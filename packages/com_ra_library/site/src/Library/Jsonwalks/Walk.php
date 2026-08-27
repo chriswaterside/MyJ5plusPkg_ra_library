@@ -24,6 +24,8 @@ class Walk implements \JsonSerializable {
     private $contacts = null;
     private $flags = null;                  // flags to describe walk 
     private $media = [];                  // array of image information
+    private $linkedWalks = [];
+    private $linkedEvent = null;
     private $icsDayEvents = false;
     private static $withMonth = ["dowShortddmm", "dowddmm", "dowddmmyyyy"];
     private static $customValuesClass = null;
@@ -86,6 +88,14 @@ class Walk implements \JsonSerializable {
 
     public function addMedia($media) {
         array_push($this->media, $media);
+    }
+
+    public function addLinkedWalks(?array $walksIds) {
+        $this->linkedWalks = $walksIds;
+    }
+
+    public function addLinkedEvent(?string $eventId) {
+        $this->linkedEvent = $eventId;
     }
 
     public function isWalk($walk) {
@@ -394,6 +404,21 @@ class Walk implements \JsonSerializable {
             }
         }
         return $outside;
+    }
+
+    public function filterFeedDistances($distances) {
+        // $distances will be elements of [0, 3, 5, 8, 10, 13, 15, 999];
+        // remove items that are in each range
+        $walks = $this->walks->getItems();
+        foreach ($walks as $walk) {
+            foreach ($distances as $distance) {
+                $remove = $walk->filterDistance($distance[0], $distance[1]);
+                if (!$remove) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function filterDistanceBelow($distanceMin) {
@@ -749,7 +774,9 @@ class Walk implements \JsonSerializable {
             'contact' => $this->contacts,
             'flags' => $this->flags,
             'media' => $this->media,
-            'bookings' => $this->bookings
+            'bookings' => $this->bookings,
+            'linkedEvent' => $this->linkedEvent,
+            'linkedWalks' => $this->linkedWalks
         ];
     }
 }

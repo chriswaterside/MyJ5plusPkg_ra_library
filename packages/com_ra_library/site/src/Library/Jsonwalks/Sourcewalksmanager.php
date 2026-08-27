@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
+
 /**
  * @version		1.0
  * @package		Process WM walk and convert into internal format
@@ -7,11 +9,11 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks;
  * @copyright           Copyright (c) 2023 Chris Vaughan. All rights reserved.
  * @license		
  */
-
 use \Ramblers\Component\Ra_library\Site\Library\Html\Html;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Wm\Feed;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk\Admin;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk\Basics;
@@ -43,7 +45,7 @@ class Sourcewalksmanager extends Sourcebase {
         $this->readevents = $readevents;
         $this->wellbeingWalks = $wellbeingWalks;
         if ($period === null) {
-             $this->period =new Walksdaterange();
+            $this->period = new Walksdaterange();
         } else {
             $this->period = $period;
         }
@@ -263,7 +265,9 @@ class Sourcewalksmanager extends Sourcebase {
                 $flags->addWalksManagerFlags("Accessibility", $item->accessibility);
 
                 $walk->setFlags($flags);
-
+                if ($item->linked_event !== null) {
+                    $walk->addLinkedEvent($item->linked_event);
+                }
                 break;
             case TypeOfWalk::GroupEvent:
                 // add dummy walk
@@ -306,6 +310,9 @@ class Sourcewalksmanager extends Sourcebase {
                             $latitude, $longitude, $gridref, $w3w,
                             $postcode, 0, 0, null);
                     $walk->addStart($location);
+                    if ($item->linked_walks !== null) {
+                        $walk->addLinkedWalks($item->linked_walks);
+                    }
                 }
                 break;
         }

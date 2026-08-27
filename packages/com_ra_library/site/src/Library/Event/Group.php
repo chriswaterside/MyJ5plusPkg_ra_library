@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Event;
 
 /**
@@ -7,6 +8,7 @@ namespace Ramblers\Component\Ra_library\Site\Library\Event;
  * @author Chris Vaughan
  */
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Script;
+
 class Group {
 
     private $arrayofevents;
@@ -28,7 +30,7 @@ class Group {
             $this->arrayofevents[] = $walk;
         }
 
-     //   Script::registerWalks(array_values($arrayofwalks));
+        Script::registerWalks(array_values($arrayofwalks));
     }
 
     // used by Download ICS
@@ -93,5 +95,4 @@ class Group {
             $event->Event_ics($icsfile);
         }
     }
-
 }

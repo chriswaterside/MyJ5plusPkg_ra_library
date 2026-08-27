@@ -3,12 +3,12 @@
 
     <name>RA Header</name>
     <author>Chris Vaughan Derby and South Derbyshire</author>
-    <creationDate>18 May 2026</creationDate>
+    <creationDate>28-06-2026</creationDate>
     <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
     <license>This extension is released under the GNU/GPL License</license>
     <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
     <authorUrl>www.ramblers-webs.org.uk</authorUrl>
-    <version>2.0.0</version>
+    <version>5.0.0</version>
     <description>This module displays a customizable header module for Ramblers branding (Joomla 5/6 compatible)</description>
 
     <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
@@ -46,9 +46,9 @@
                     <option value="Custom">CUSTOM</option>
                 </field>
                 <field name="title_color_value" 
-				type="text" 
-				showon="title_color:Custom"
-				default="#000000" size="8" label="TITLE_CUSTOM_COLOR" description="TITLE_CUSTOM_COLOR_DESC" />
+                       type="text" 
+                       showon="title_color:Custom"
+                       default="#000000" size="8" label="TITLE_CUSTOM_COLOR" description="TITLE_CUSTOM_COLOR_DESC" />
 
                 <field name="website_subtitle" type="text" default="" size="100" label="WEBSITE_SUBTITLE" description="WEBSITE_SUBTITLE_DESC" />
                 <field name="subtitle_color" type="list" default="_blank" label="SUBTITLE_COLOR" description="SUBTITLE_COLOR_DESC">
@@ -64,9 +64,9 @@
                     <option value="Custom">CUSTOM</option>
                 </field>
                 <field name="subtitle_color_value" 
-				type="text" 
-				showon="subtitle_color:Custom"
-				default="#000000" size="8" label="SUBTITLE_CUSTOM_COLOR" description="SUBTITLE_CUSTOM_COLOR_DESC" />
+                       type="text" 
+                       showon="subtitle_color:Custom"
+                       default="#000000" size="8" label="SUBTITLE_CUSTOM_COLOR" description="SUBTITLE_CUSTOM_COLOR_DESC" />
             </fieldset>
 
             <fieldset name="logo">
@@ -102,9 +102,9 @@
                     <option value="Custom">CUSTOM</option>
                 </field>
                 <field name="background_custom_color" 
-				type="text" 
-				showon="background_color:Custom"
-				default="#FFFFFF" size="8" label="BACKGROUND_CUSTOM_COLOR" description="BACKGROUND_CUSTOM_COLOR_DESC" />
+                       type="text" 
+                       showon="background_color:Custom"
+                       default="#FFFFFF" size="8" label="BACKGROUND_CUSTOM_COLOR" description="BACKGROUND_CUSTOM_COLOR_DESC" />
                 <field name="horizon_image" type="media" directory="images" label="BACKGROUND_IMAGE" description="BACKGROUND_IMAGE_DESC" />
             </fieldset>
 
