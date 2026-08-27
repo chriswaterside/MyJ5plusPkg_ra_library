@@ -1,0 +1,37 @@
+<p>Add one or more of the keywords below, separated by <strong>spaces</strong>, in the <strong>Options</strong> column for each row. This works the same way whether the table's data comes from the SQL option, the JSON feed option, or a CSV file with "Where are the column options for this CSV file?" set to "Set below".</p>
+
+<p><strong>Putting rows on the map</strong></p>
+<ul>
+    <li><strong>latitude</strong> - together with a column marked <strong>longitude</strong>, these two columns are used as the row's position on the map. Both the List tab and the Map tab are shown.</li>
+    <li><strong>longitude</strong> - see <strong>latitude</strong> above.</li>
+    <li><strong>gridref</strong> - marks this column as an OS Grid Reference to use as the row's position instead of latitude/longitude. Also shows the Map tab. Note this can be slower, as the software has to calculate the latitude and longitude from the grid reference.</li>
+</ul>
+<p>If none of <strong>latitude</strong>/<strong>longitude</strong> or <strong>gridref</strong> is used on any column, the data is not shown on a map - only the List tab is displayed.</p>
+
+<p><strong>Display</strong></p>
+<ul>
+    <li><strong>table</strong> - the column is displayed in the List tab.</li>
+    <li><strong>popup</strong> - the column is displayed in the marker pop-up shown when you click a marker on the map.</li>
+    <li><strong>sort</strong> - adds a sort option for the column, if it is displayed in the table.</li>
+    <li><strong>filter</strong> - adds a filter option for the column, if it is displayed in the table.</li>
+    <li><strong>linkmarker</strong> - adds a link in the table row that shows the marker on the map when clicked.</li>
+    <li><strong>link</strong> - the column's values are URLs; they are displayed as hyperlinks rather than plain text.</li>
+</ul>
+
+<p><strong>Data type (used for correct sorting)</strong></p>
+<ul>
+    <li><strong>int</strong> or <strong>integer</strong> - the column only contains whole numbers, so the sort option sorts numerically rather than alphabetically.</li>
+    <li><strong>real</strong> or <strong>float</strong> - the column only contains decimal numbers, so the sort option sorts numerically.</li>
+    <li><strong>date</strong> - the column is a date in the format DD/MM/YYYY, so the sort option sorts by date rather than as text.</li>
+</ul>
+
+<p><strong>Alignment in the List view</strong></p>
+<ul>
+    <li><strong>left</strong> - the column is left aligned.</li>
+    <li><strong>right</strong> - the column is right aligned.</li>
+    <li><strong>centre</strong> or <strong>center</strong> - the column is centre aligned.</li>
+</ul>
+
+<p><strong>Example</strong></p>
+<div><samp><code>table sort filter left</code></samp></div>
+<p>shows the column in the List tab, sortable, filterable, and left-aligned.</p>

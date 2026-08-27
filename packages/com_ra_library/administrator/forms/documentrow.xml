@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
+    <field name="id" type="hidden" filter="int"/>
+
+    <field name="file_path"
+           type="filepreview"
+           label="COM_RA_LIBRARY_ATTACHMENT_FIELD_FILE_LABEL"
+    />
+
+    <field name="document_upload"
+           type="file"
+           accept=".pdf"
+           label="COM_RA_LIBRARY_DOCUMENT_FIELD_UPLOAD_LABEL"
+           description="COM_RA_LIBRARY_DOCUMENT_FIELD_UPLOAD_DESC"
+    />
+
+    <field name="title"
+           type="text"
+           label="COM_RA_LIBRARY_ATTACHMENT_FIELD_TITLE_LABEL"
+           filter="safehtml"
+           size="30"
+    />
+</form>

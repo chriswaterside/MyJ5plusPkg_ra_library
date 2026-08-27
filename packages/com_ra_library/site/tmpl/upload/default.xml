@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="Upload file title">
+        <message><![CDATA[Provide user with upload option]]></message>
+    </layout>
+    <fields name="params">
+        <fieldset name="basic" label="Basic Settings">
+            <field
+                name="upload_folder"
+                type="text"
+                label="Upload folder"
+                default="images/uploads"
+                description="Folder inside site, e.g. 'images/uploads'."
+            />
+            <field
+                name="allowed_extensions"
+                type="text"
+                label="Allowed extensions"
+                default="pdf,csv,docx"
+                description="Comma-separated list of extension types, e.g. .pdf,.csv,.docx "
+            />
+            <field
+                name="notify_admins_on_upload"
+                type="radio"
+                label="Notify Admins on Upload"
+                default="0"
+                filter="integer"
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="text_before"
+                   type="editor"
+                   label="Text Before Form"
+                   description="This text will appear above the upload form."
+                   class="full"
+                   filter="safehtml"
+            />
+            <field name="text_after"
+                   type="editor"
+                   label="Text After Form"
+                   description="This text will appear below the upload form."
+                   class="full"
+                   filter="safehtml"
+            />
+        </fieldset>
+    </fields>
+</metadata>

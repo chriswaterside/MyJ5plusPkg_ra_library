@@ -1,0 +1,118 @@
+/*
+Copyright (C) 2024 chris
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+/* 
+    Created on : 25 Jun 2024, 07:42:19
+    Author     : chris
+*/
+
+:root {
+    /* Ramblers colours */
+    /* 2021  */
+    --mintcake:#9BC8AB;
+    --sunset:#F08050;
+    --granite:#404141;
+    --rosycheeks:#F6B09D;
+    --sunrise:#F9B104;
+    --cloudy:#FFFFFF;
+    --skyBlue:#00A9FF;
+    --lightgrey: #C0C0C0;
+    --midgrey: #808080;
+
+}
+div.paginatedList {
+    margin-top: 5px;
+}
+
+div.paginatedList table{
+    border:2px solid;
+    border-color: #b0b0b0;
+    border-radius: 5px;
+    width:100%;
+}
+div.paginatedList table tr th{
+    background-color: #b0b0b0;
+}
+div.paginatedList table tr th,
+div.paginatedList table tr td{
+    padding:3px 6px 3px 6px;
+}
+div.paginatedList table tr th{
+    background-color: #ccc;
+    color: #111;
+}
+div.paginatedList .even{
+    background-color: #EEEEEE;
+}
+div.paginatedList .odd{
+    background-color: #FFFFFF;
+}
+div.paginatedList .odd:hover,
+div.paginatedList .even:hover{
+    background-color: #DDDDDD;
+}
+
+div.paginatedList table tr th.right,
+div.paginatedList table tr td.right{
+    text-align:right;
+}
+div.paginatedList table tr th.left,
+div.paginatedList table tr td.left{
+    text-align:left;
+}
+div.paginatedList table tr th.center,
+div.paginatedList table tr td.center{
+    text-align:center;
+}
+
+div.paginatedList div.pagination{
+    display: flex;
+    justify-content: space-between;
+}
+
+div.paginatedList div.pagination.top {
+    padding-bottom: 10px;
+    clear:both;
+}
+div.paginatedList div.pagination.bottom{
+    padding-top: 10px;
+    clear:both;
+}
+.paginationRemoveCol{
+    display:none;
+}
+@media only screen and (max-width: 820px){
+    div.paginatedList div.pagination div:nth-child(1),
+    div.paginatedList div.pagination div:nth-child(3){
+        display:none;
+    }
+    div.paginatedList div.pagination div:nth-child(2){
+        max-width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+@media only screen and (max-width: 860px){ /* tablet */
+    .notTablet{
+        display:none;
+    }
+}
+@media only screen and (max-width: 650px){ /* mobile */
+    .notMobile{
+        display:none;
+    }
+}

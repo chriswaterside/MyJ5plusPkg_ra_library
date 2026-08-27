@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<svg width="580" height="580" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.0">
+ <metadata id="metadata2975">image/svg+xmlen</metadata>
+
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="g1327">
+   <path d="m66.28,1.77c-41.34,0 -64.58,21.37 -64.58,65.03l0,450.13c0,40.84 20.9,62.23 62.2,62.23l452.02,0c41.31,0 62.23,-20.32 62.23,-62.23l0,-450.13c0,-42.6 -20.92,-65.03 -63.52,-65.03c-0.01,0 -448.5,-0.14 -448.36,0l0.01,0z" fill="#00007f" id="path1329" stroke="#eee" stroke-width="3.41"/>
+  </g>
+  <path d="m85.44,125.06c0,0 -44.02,338.29 148.92,337.56c4.71,0.26 9.18,0.33 13.44,0.26c4.26,0.07 8.74,0 13.44,-0.26c192.94,0.73 148.92,-337.56 148.92,-337.56l-162.36,0.67l-162.36,-0.67z" fill="#ffffff" fill-rule="evenodd" id="path3407" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-width="18.62"/>
+  <path d="m387.15,197.01c0,0 44.95,-34.02 80.5,-34.02c35.54,0 51.84,55.38 51.08,92.56c-0.75,37.19 -27.98,128.17 -160.32,129.75c-132.34,1.58 29.49,-188.29 28.74,-188.29z" fill="none" fill-rule="evenodd" id="path3409" stroke="#ffffff" stroke-miterlimit="4" stroke-width="45.63"/>
+ </g>
+</svg>

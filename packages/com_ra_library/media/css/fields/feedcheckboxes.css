@@ -1,0 +1,98 @@
+/*
+copyright: Chris Vaughan
+email: ruby.tuesday@ramblers-webs.org.uk
+*/
+/* 
+    Created on : 24 Apr 2026, 09:01:05
+    Author     : chris
+*/
+.feedcheckboxes-field {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #fafafa;
+}
+
+.feedcheckboxes-selected {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+    padding: 5px;
+    min-height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+}
+
+.selected-chip {
+    background: #007cba;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.remove-x {
+    margin-left: 5px;
+    font-weight: bold;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.feedcheckboxes-list {
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+    resize: vertical;
+}
+
+.feedcheckbox-item {
+    display: block;
+    margin: 5px 0;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.feedcheckbox-item:hover {
+    background: #f0f0f0;
+}
+
+.feedcheckbox-item input {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.feedcheckbox-item.area {
+    border-left: 4px solid #007cba;
+}
+.feedcheckbox-item.group {
+    border-left: 4px solid #dc3545;
+    margin-left: 15px;
+}
+.feedcheckboxes-search {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-end;  /* Aligns input to right */
+}
+
+.search-input {
+    width: 300px;  /* Fixed width or adjust as needed */
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}

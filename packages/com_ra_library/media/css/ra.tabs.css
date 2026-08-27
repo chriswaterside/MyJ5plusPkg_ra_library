@@ -1,0 +1,129 @@
+/*
+Copyright (C) 2024 Chris Vaughan
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+/* 
+    Created on : 21 Jun 2024, 15:18:29
+    Author     : chris
+*/
+
+/* Style the tabs */
+div.ra.tabs {
+    overflow: auto;
+    position: relative;
+    clear:both;
+}
+
+div.ra.tabContainer{
+    display: inline-block;
+    position: relative;
+    bottom: -2px;
+}
+div.ra.tabContainer.left {
+
+}
+div.ra.tabContainer.right {
+    display: flex;
+    justify-content: flex-end;
+
+}
+div.ra.contentContainer {
+    border: 2px solid #D8D8D8;
+    background-color:#f1f1f1;
+    border-radius: 10px;
+}
+div.ra.contentContainer.left {
+    border-top-left-radius: 0px
+}
+div.ra.contentContainer.right {
+    border-top-right-radius: 0px
+}
+/* Style the buttons that are used to open the tab content */
+div.ra.tabContainer > button {
+    cursor: pointer;
+    padding-top:5px;
+    padding-bottom: 5px;
+    padding-left:10px;
+    padding-right:10px;
+    font-size: 135%;
+    border-radius: 10px 10px 0px 0px;
+    background-color: #DDDDDD;
+    border: 2px solid #ccc;
+    border-bottom: 0px;
+}
+div.ra.tabContainer.left > button{
+    margin-right: 3px;
+}
+div.ra.tabContainer.right > button{
+    margin-left: 3px;
+}
+div.ra.tabs > div.ra.tabContainer.small > button{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 14px;
+    line-height: 100%;
+    border-radius: 5px 5px 0px 0px;
+}
+div.ra.tabs > div.ra.tabContainer.medium > button{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 115%;
+    border-radius: 5px 5px 0px 0px;
+}
+
+div.ra.tabs > div.ra.tabContainer > button:hover {
+    background-color: #9BC8AB;
+}
+
+div.ra.tabs > div.ra.tabContainer > button.active {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+/* small right below */
+
+div.ra.tabs > div.ra.tabContainer.small button{
+    border: 2px solid #888;
+    border-radius: 5px;
+}
+/* Style the tab content */
+
+div.ra.tabs > div.ra.contentContainer > div {
+    padding:5px;
+}
+div.ra.tabs > div.ra.tabContainer.middle.small{
+    position: relative;
+    top: 10px;
+    z-index: 1000;
+}
+div.ra.tabs > div.ra.tabContainer.below.small{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 22px;
+    z-index: 10;
+}
+
+div.ra.tabs > div.ra.contentContainer.below  {
+    width: 100%;
+    height: 100%;
+}
+div.ra.tabs > div.ra.contentContainer.right.below {
+    border-top-right-radius: 5px
+}

@@ -1,0 +1,45 @@
+{
+    "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+    "name": "com_ra_library",
+    "version": "CVS: 1.0.0",
+    "license": "GNU General Public License version 2 or later; see LICENSE.txt",
+    "assets": [
+        {
+            "name": "com_ra_library.admin",
+            "type": "style",
+            "uri": "com_ra_library/admin.css"
+        },
+        {
+            "name": "com_ra_library.admin",
+            "type": "script",
+            "uri": "com_ra_library/admin.js",
+            "dependencies": [
+                "jquery"
+            ],
+            "attributes": {
+                "defer": true
+            }
+        },
+        {
+            "name": "com_ra_library.list",
+            "type": "style",
+            "uri": "com_ra_library/list.css"
+        },
+
+        {
+            "name": "com_ra_library.filters",
+            "type": "style",
+            "uri": "com_ra_library/filters.css"
+        },
+        {
+            "name": "com_ra_library.layoutcheck",
+            "type": "script",
+            "uri": "com_ra_library/inputchecks/layoutcheck.js",
+            "dependencies": ["core"],
+            "attributes": {
+                "defer": true
+            },
+            "version": "0.0.9"
+        }
+    ]
+}

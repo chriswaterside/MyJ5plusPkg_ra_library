@@ -1,0 +1,202 @@
+:root {
+    --button:#9BC8AB;
+    --disabled: #C0C0C0;
+    --slider:#CCCCCC;
+    --active:#F9B104;
+    --granite:#404141;
+}
+.cvList{
+    font-family: Arial, Helvetica, sans-serif;
+}
+button.cvList.pagination {
+    background: var(--button);
+    border-width: 0px;
+    border-radius:5px;
+    margin-right: 3px;
+    min-height: 25px;
+    min-width: 25px;
+    width: auto;
+    cursor: pointer;
+    display: inline-block;
+}
+button.cvList.pagination.disabled {
+    background: var(--disabled);
+    cursor: default;
+}
+button.cvList.pagination.active {
+    background: var(--active);
+    cursor: default;
+}
+select.cvList.itemsPerPage {
+    min-height: 25px;
+    min-width: 25px;
+}
+
+div.cvList.filter {
+    width: 350px;
+    background-color: #dfdfdf;
+    border-radius: .25rem;
+    padding: 7px;
+    margin: 5px;
+    font-size: 16px;
+}
+
+div.cvList.text.filter span.title,
+div.cvList.number.range.filter span.title{
+    font-weight: bold;
+    width:80px;
+    display:inline-block;
+}
+div.cvList.text.filter label{
+    margin-left:5px;
+    margin-right:5px;
+    font-size: 14px;
+}
+XXXdiv.cvList.text.filter{
+    margin-left:0px;
+    margin-right:0px;
+}
+div.cvList.text.filter  input.textFilter{
+    width:330px;
+}
+div.cvList.number.range.filter div.minText,
+div.cvList.number.range.filter div.maxText{
+    font-weight: bold;
+    width:68px;
+    text-align: center;
+    display:inline-block;
+}
+div.cvList.number.range.filter div.min-max-slider{
+    display:inline-block;
+    width: 200px;
+}
+
+/* sort arrows */
+div.cvList.sortArrows {
+    display: block;
+    float:right;
+    width:20px;
+}
+div.cvList.sortArrows img{
+    cursor: pointer;
+    height:11px;
+    width:11px;
+}
+div.cvList.sortArrows img.asc{
+    content: url(up.png);
+}
+div.cvList.sortArrows img.desc{
+    content: url(down.png);
+}
+
+
+
+
+/* range slider control */
+div.min-max-slider input{
+    margin : 0px;
+}
+input[type=range].rangeslider {
+    width: 100%;
+    margin: 3px 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+div.cvList.across{
+    display: flex;
+}
+div.cvList.across div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+/*
+input[type=range].rangeslider:focus {
+  outline: none;
+}*/
+input[type=range].rangeslider::-webkit-slider-runnable-track {
+    background: rgba(204, 204, 204, 0.78);
+    border: 0.2px solid #cccccc;
+    border-radius: 1.3px;
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+}
+input[type=range].rangeslider::-webkit-slider-thumb {
+    margin-top: -3.2px;
+    width: 5px;
+    height: 18px;
+    background: #9bc8ab;
+    border: 1px solid #00001e;
+    border-radius: 3px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+/*
+input[type=range].rangeslider:focus::-webkit-slider-runnable-track {
+  background: #e6e6e6;
+}
+*/
+input[type=range].rangeslider::-moz-range-track {
+    background: rgba(204, 204, 204, 0.78);
+    border: 0.2px solid #cccccc;
+    border-radius: 1.3px;
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+}
+input[type=range].rangeslider::-moz-range-thumb {
+    width: 5px;
+    height: 18px;
+    background: #9bc8ab;
+    border: 1px solid #00001e;
+    border-radius: 3px;
+    cursor: pointer;
+}
+input[type=range].rangeslider::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 3.9px 0;
+    color: transparent;
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+}
+input[type=range].rangeslider::-ms-fill-lower {
+    background: #b3b3b3;
+    border: 0.2px solid #cccccc;
+    border-radius: 2.6px;
+}
+input[type=range].rangeslider::-ms-fill-upper {
+    background: rgba(204, 204, 204, 0.78);
+    border: 0.2px solid #cccccc;
+    border-radius: 2.6px;
+}
+input[type=range].rangeslider::-ms-thumb {
+    width: 5px;
+    height: 18px;
+    background: #9bc8ab;
+    border: 1px solid #00001e;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 0px;
+    /*Needed to keep the Edge thumb centred*/
+}
+
+/*input[type=range].rangeslider:focus::-ms-fill-lower {
+  background: rgba(204, 204, 204, 0.78);
+}
+input[type=range].rangeslider:focus::-ms-fill-upper {
+  background: rgba(204, 204, 204, 0.78);
+}
+*/
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+    /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+    input[type=range].rangeslider {
+        margin: 0;
+        /*Edge starts the margin from the thumb, not the track as other browsers do*/
+    }
+}

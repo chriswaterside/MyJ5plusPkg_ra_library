@@ -1,0 +1,443 @@
+/* pantone0110 '#D7A900';           */
+/* pantone0159 '#C75B12';           */
+/* pantone0186 '#C60C30';           */
+/* pantone0555 '#206C49';           */
+/* pantone0583 '#A8B400';           */
+/* pantone1815 '#782327';           */
+/* pantone4485 '#5B491F';           */
+/* pantone5565 '#8BA69C';           */
+/* pantone7474 '#007A87';           */
+
+p.mapcopyright {
+    font-size:10px;
+    line-height: 14px;
+    text-align: right;
+    margin:0px;
+}
+div.leaflet-container{
+    border-radius: 5px;
+}
+div.ra.tabs > div.ra.contentContainer > div[data-container="map"] {
+    padding: 0px;
+}
+
+/* fix to menu with leaflet */
+div#rt-header {
+    z-index: 1000;
+}
+XXXdivREMOVE.leaflet-container{
+    z-index:0;
+}
+
+/* leaflet/joomla fix so that overlay pane is displayed */
+.leaflet-overlay-pane svg{
+    max-width:none
+}
+.osgridref {
+    font-weight: 700;
+    font-size:125%;
+}
+
+#ra-error-text {
+    margin-left: 30px;
+    font-weight: bold;
+    color:red;
+}
+.a-cluster-progress-bar {
+    left: 0;
+    line-height: 20px;
+    margin-top: -10px;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 100%;
+    width:200px;
+    left:-100px;
+    font-weight: 700;
+    font-size:125%;
+    padding:10px;
+    border-radius: 10px;
+    background:#FFFFFF;
+}
+div.inlineBlock{
+    display:inline-block;
+}
+#ra-cluster-progress {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index:2000;
+}
+div.event-list-cal-hover > div.odd,
+div.walks >div.odd{
+    background-color: #EEEEEE !important;
+}
+div.event-list-cal-hover > div.even,
+div.walks >div.even{
+    background-color: #FFFFFF !important;
+}
+div.event-list-cal-hover > div.odd:hover,
+div.event-list-cal-hover > div.even:hover,
+div.walks >div.odd:hover,
+div.walks >div.even:hover{
+    background-color: #DDDDDD !important;
+}
+
+
+
+div.ra.routeinfo {
+    margin:5px;
+}
+
+
+
+div.leaflet-marker-icon.leaflet-div-icon.leaflet-editing-icon{
+    background: rgba(0, 0, 255, 0.3);
+}
+input.ra.colourselector{
+    padding:2px;
+}
+
+span.placelocation{
+    margin-right: 30px;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+.agreebutton{
+    font-size: 1.5em;
+
+}
+
+
+.placebutton-green{
+    background-color: #206C49;
+
+}
+.placebutton-red{
+    background-color: #782327;
+
+}
+.placebutton-green, .placebutton-red {
+    width: auto;
+    font-size: 0.8em;
+    margin: 4px;
+    border-radius: 7px;
+    color: #FFFFFF
+}
+.placebutton-green a, .placebutton-red a{
+    margin:4px;
+    color: #FFFFFF;
+    text-decoration: none
+}
+.placebutton-green a:hover, .placebutton-red a:hover{
+    color: #DDDDDD;
+    text-decoration: none
+}
+.leaflet-popup-content p {
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+.group-icon {
+    background: rgba(120, 35, 39, 0.7);
+    padding:5px;
+    border-radius: 5px;
+    font-weight: bold;
+    color:white;
+    width: max-content;/* to fix bug in walk popup map */
+}
+
+.group-icon.a {
+    background: rgba(120, 35, 39, 0.7);
+}
+.group-icon.g {
+    background: rgba(0, 122, 135, 0.7);
+}
+.group-icon.s {
+    background: rgba(139, 165, 156, 0.7);
+}
+a.w3w{
+    font-weight: bold;
+}
+select.map-select {
+    border: 0;
+    padding: 0px 10px 2px 10px;
+    -webkit-appearance: none;
+    width: auto;
+    -moz-border-radius: 9px 9px 9px 9px;
+    -webkit-border-radius: 9px 9px 9px 9px;
+    border-radius: 9px 9px 9px 9px;
+    /*  box-shadow: 1px 1px 11px #330033;*/
+    margin-bottom: 4px;
+}
+select.map-select optgroup{
+    font-weight: bold;
+}
+
+div.leaflet-control-mylocation.leaflet-control{
+    margin-left: 0px !important;
+    margin-top: 0px !important;
+}
+
+input.map-select {
+    width:408px;
+}
+label.map-select {
+    display:inline-block;
+}
+label.help-label{
+    display:inline-block;
+    margin-left:10px;
+}
+
+
+p.smaller{
+    font-size: 90%
+}
+label.map-select {
+    margin-right:10px;
+}
+input.map-select {
+    margin-right:10px;
+}
+div#search >  div > button {
+    margin-bottom:10px;
+}
+div.ra-map-container{
+    background-color: #bbbbbb;
+    border-width:  10px;
+    border-radius: 10px;
+    padding: 5px;
+    break-inside: avoid-column;
+    contain: paint
+}
+.leaflet-draw-tooltip {
+    margin-left:75px !important;
+}
+div.ra-gray-container{
+    background-color: #DDDDDD;
+    border-radius: 10px;
+    padding: 10px;
+}
+div.ra-gpx-popup label{
+    font-weight: bold;
+    margin-top:5px;
+    margin-bottom:0px;
+}
+div.ra-gpx-popup input{
+    margin-top:5px;
+    margin-bottom:4px;
+    margin-right:20px;
+
+}
+div.ra-inline{
+    display:inline-block;
+}
+div.ra-inline label{
+    padding-right: 20px;
+}
+.area-icon {
+    background: rgba(120, 35, 39, 0.7);
+    padding:5px;
+    border-radius: 5px;
+    font-weight: bold;
+    color:white;
+}
+
+.area-icon.a {
+    background: rgba(120, 35, 39, 0.7);
+}
+.area-icon a {
+    color:white;
+}
+
+table th {
+    border: 0 none;
+    font-weight: bold;
+}
+div.component-content table th, div.component-content table td {
+    border: 1px solid #ddd;
+    line-height: 1.5em;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+table th {
+    background-color: #8BA69C;
+    background-image: -moz-linear-gradient(center top , #8BA69C, #A3B8B0);
+    background-repeat: repeat-x;
+    color: #000000;
+}
+
+.leaflet-top .leaflet-control {
+    margin-top: 5px !important;
+}
+
+.leaflet-control-places {
+    background-color:white;
+    padding:10px;
+    border:3px;
+    border-radius:5px;
+    border: 2px solid #AAAAAA;
+}
+.ramblers-places-options {
+
+}
+.ramblers-places-options img{
+    width:18px;
+    height:18px;
+}
+
+#ra-cluster-progress-bar {
+    left: 0;
+    line-height: 20px;
+    margin-top: -10px;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 100%;
+    width:200px;
+    left:-100px;
+    font-weight: 700;
+    font-size:125%;
+    padding:10px;
+    border-radius: 10px;
+    background:#FFFFFF;
+}
+#ra-cluster-progress {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index:2000;
+}
+
+.ra-map-tools-icon{
+    background:#fff url(images/tools.png) no-repeat 0 0;
+    cursor: pointer;
+    background-size:32px 32px;
+    background-position: center;
+    width:35px;
+    height:35px;
+    border-radius:5px;
+
+}
+.ra-zoomall-icon{
+    background:#fff url(images/extent.png) no-repeat 0 0;
+    cursor: pointer;
+    background-size:32px 32px;
+    background-position: center;
+    width:30px;
+    height:31px;
+    border-radius:5px;
+
+}
+
+.ra-zoomall-icon.disabled{
+    background:#fff url(images/extentdisabled.png) no-repeat 0 0;
+    background-size:32px 32px;
+    background-position: center;
+    cursor: not-allowed;
+}
+.ra-help-icon{
+    background:#fff url(images/help.png) no-repeat 0 0;
+    cursor: pointer;
+    background-size:28px 28px;
+    background-position: center;
+    width:30px;
+    height:31px;
+    border-radius:5px;
+
+}
+.ra-map-tools-icon.leaflet-control{
+    margin-left:0px;
+}
+.leaflet-control-search.leaflet-bar.leaflet-control{
+    background:#fff url(images/search.png) no-repeat 0 0;
+    cursor: pointer;
+    background-size:20px 20px;
+    background-position: center;
+    width:30px;
+    height:30px;
+    border-radius:5px;
+}
+div.ra-clear-rightclick{
+    margin-top:30px;
+}
+div.ra-clear-rightclick button{
+    margin-top:30px;
+}
+/* grid layout for tools option */
+.leaflet-tools-container {
+    display: grid;
+    grid-template-columns: 40px 40px 40px;
+    grid-template-rows: auto 40px 40px;
+    column-gap: 3px;
+    row-gap: 3px;
+    justify-items: start;
+    align-items: start;
+    background-color:#fff;
+    border-radius:5px;
+    border: 2px solid rgba(0,0,0,0.2);
+    padding:10px;
+    padding-left:0px;
+}
+.leaflet-control-zoom {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 1;
+    grid-row-end: 8;
+}
+
+
+div[leaflet-browser-print-content].grid-print-container {
+    grid-template: auto 1fr auto / 1fr;
+    background-color: orange;
+}
+div[leaflet-browser-print-content].grid-map-print {
+    grid-row: 2;
+}
+div[leaflet-browser-print-content].title {
+    grid-row: 1;
+    justify-self: center;
+    color: white;
+}
+div[leaflet-browser-print-content].sub-content {
+    grid-row: 5;
+    padding-left: 10px;
+}
+
+div.ra-map-compare.sidebyside{
+    width:48%;
+    display: inline-block;
+
+}
+div.ra-map-compare{
+    margin-top:20px;
+}
+div.ra-map-compare.sidebyside.second{
+    margin-left:2%;
+}
+
+div.ra.tabs.walksDisplay span.walkdetail{
+    padding:2px;
+}
+
+@media print {
+    div[leaflet-browser-print-pages] {
+        page-break-before: always;
+        break-before: page;
+    }
+
+}
+.clearBoth {
+    clear:both;
+}
+div.leaflet-top.leaflet-right{
+    margin-top: 20px;
+}
+
+/* Map Settings */
+div[data-container="help"] iframe{
+    width:100%;
+    height:1000px;
+}

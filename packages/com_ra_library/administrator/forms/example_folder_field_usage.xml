@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Example: using the custom "Folder" field (dynamic / lazy-loading version)
+    inside one of your component's own XML forms, e.g.
+    administrator/components/com_yourcomponent/forms/yourform.xml.
+
+    Requires all three companion files to be in place first:
+      - FolderField.php       anywhere your component autoloads (portable
+                               via addfieldprefix, see below)
+      - FolderController.php  MUST live in your component's real
+                               src/Controller/ namespace (see that file's
+                               docblock — this one is not portable)
+      - field-folder.js       published at
+                               administrator/components/com_yourcomponent/media/js/field-folder.js
+
+    - addfieldprefix must match the namespace declared at the top of
+      FolderField.php (change both together if you rename it).
+    - roots is optional; defaults to "images,files". If you set it, also
+      update FolderController.php's ALLOWED_ROOTS constant to match, or the
+      AJAX calls for the extra root(s) will be rejected server-side.
+-->
+<form>
+    <fieldset name="example">
+
+        <field
+            name="myfolder"
+            type="Folder"
+            label="Choose a folder"
+            description="Browse for any existing sub-folder under /images or /files."
+            addfieldprefix="Acme\Component\Yourcomponent\Administrator\Field"
+            roots="images,files"
+        />
+
+        <!-- Restrict browsing to just one root: -->
+        <field
+            name="gallery_folder"
+            type="Folder"
+            label="Gallery folder"
+            addfieldprefix="Acme\Component\Yourcomponent\Administrator\Field"
+            roots="images"
+        />
+
+    </fieldset>
+</form>

@@ -1,0 +1,332 @@
+/* com_ra_library front-end views: Past Walks / Routes - List, Blog, Single */
+
+.ra-list-item {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ra-blog-item {
+    margin-bottom: 2em;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ra-blog-full {
+    margin-bottom: 1em;
+}
+
+.ra-blog-intro-columns {
+    display: grid;
+    grid-template-columns: repeat(var(--ra-blog-intro-columns, 2), 1fr);
+    gap: 0 2em;
+}
+
+@media (max-width: 480px) {
+    .ra-blog-intro-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ra-blog-links {
+    list-style: disc;
+    padding-left: 1.5em;
+    margin-top: 1em;
+}
+
+.ra-blog-link-item {
+    margin-bottom: 0.4em;
+}
+
+.ra-item-intro h2 {
+    margin-top: 0;
+}
+
+/* .ra-featured-float is a floated child - clearing has to happen on the
+   CONTAINER that wraps the float and the text next to it (ra-item-intro),
+   not on the float itself. Without this, a short description leaves the
+   float taller than the rest of ra-item-intro's content, the container
+   collapses to the shorter height, and the next blog/list item starts
+   before the float has visually finished - this is what wraps items. */
+.ra-item-intro::after,
+.ra-item-more::after,
+.ra-blog-item::after,
+.ra-list-item::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.ra-featured-float {
+    float: left;
+    margin: 0 1em 0.5em 0;
+    max-width: 45%;
+}
+
+.ra-item-more {
+    clear: both;
+}
+
+.ra-meta {
+    color: #555;
+    font-size: 0.9em;
+}
+
+.ra-readmore {
+    margin-top: 0.5em;
+}
+
+.ra-readmore a {
+    display: inline-block;
+    padding: 0.4em 1em;
+    background: #2a6f2a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.ra-readmore a:hover,
+.ra-readmore a:focus {
+    background: #1f521f;
+    color: #fff;
+}
+
+.ra-featured-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.ra-image-grid {
+    /* --ra-grid-columns / --ra-grid-thumb-ratio are set inline per grid by
+       ItemRenderer::buildImageGrid(), from Components > Ra_library >
+       Options > Image Gallery - these values here are just the fallback
+       if that's somehow missing. */
+    display: grid;
+    grid-template-columns: repeat(var(--ra-grid-columns, 4), 1fr);
+    gap: 8px;
+    margin: 1em 0;
+    clear: both;
+}
+
+.ra-image-grid-item {
+    /* The box's shape (proportions) comes from the configured ratio, but
+       its actual rendered size still follows the grid column's width -
+       stays responsive to Grid columns and screen width, only the shape
+       is fixed. A light background shows through around any photo whose
+       own proportions don't match, rather than a jarring blank gap. */
+    display: block;
+    aspect-ratio: var(--ra-grid-thumb-ratio, 140 / 110);
+    background: #f2f2f2;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ra-image-grid-item img {
+    width: 100%;
+    height: 100%;
+    /* contain, not cover - shows the whole photo, never crops it, to fit
+       "best fit" inside the configured box shape. */
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    /* However many columns the webmaster has configured, don't let them
+       get so narrow on a phone screen that the photos become unusable. */
+    .ra-image-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.ra-image-grid-item.ra-page-hidden {
+    display: none;
+}
+
+/* The featured image's own "gallery of one" (see ItemRenderer::
+   buildFeaturedImage()) - reuses .ra-image-grid/.ra-image-grid-item so the
+   lightbox click-handling picks it up, but cancels their grid/thumbnail-box
+   styling so the featured image keeps its own larger, floated appearance
+   (from .ra-featured-image) instead of shrinking to gallery thumbnail size. */
+.ra-featured-image-grid.ra-image-grid {
+    display: inline-block;
+    grid-template-columns: none;
+    gap: 0;
+    margin: 0;
+    clear: none;
+}
+
+.ra-featured-image-grid .ra-image-grid-item {
+    display: inline-block;
+    aspect-ratio: auto;
+    background: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.ra-featured-image-grid .ra-image-grid-item img {
+    width: auto;
+    height: auto;
+    object-fit: initial;
+}
+
+.ra-image-grid-pager {
+    margin-top: 0.75em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.ra-image-grid-pager-status {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.ra-image-grid-pager button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.ra-gpx-list,
+.ra-document-list,
+.ra-route-points-list,
+.ra-gpx-map-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.ra-gpx-list li,
+.ra-document-list li,
+.ra-gpx-map-list li {
+    padding: 0.25em 0;
+}
+
+.ra-gpx-map-link {
+    display: inline-block;
+}
+
+/* Gives the GPX-on-a-map popup (ra.gpxlightbox.js) an explicit width to
+   size around - the modal itself shrink-wraps to its content (the same
+   trick that sizes the photo lightbox around its <img>), which doesn't
+   work for an empty map div with no intrinsic size of its own. */
+.ra-gpx-map-modal {
+    width: 700px;
+    max-width: 90vw;
+}
+
+/* The item-preview popup (ra.itempreview.js) holds a full rendered item -
+   description, photos, possibly its own {gpx_map} - so it gets a wider,
+   more generous box than the GPX-only popup above. Still an explicit
+   width rather than a true "size to content" - the same reasoning as
+   .ra-gpx-map-modal applies to any {gpx_map} nested inside this content:
+   its map div has no intrinsic size of its own to shrink-wrap around,
+   so the modal needs a concrete width for that to resolve against. */
+.ra-item-preview-modal {
+    width: 900px;
+    max-width: 92vw;
+}
+
+.ra-item-preview-modal .ra-single-item {
+    text-align: left;
+}
+
+.ra-table-unmapped-heading {
+    margin-top: 2em;
+}
+
+.ra-route-points-list li {
+    margin-bottom: 0.75em;
+}
+
+.ra-route-point-gr {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.ra-route-point-desc {
+    margin-top: 0.25em;
+}
+
+.ra-pagination {
+    margin-top: 1.5em;
+}
+
+.ra-no-items {
+    font-style: italic;
+    color: #666;
+}
+
+.ra-categorytree-heading {
+    margin-bottom: 0.5em;
+}
+
+.ra-categorytree-breadcrumb {
+    display: block;
+    margin-bottom: 1em;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.ra-categorytree-breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.ra-categorytree-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.ra-categorytree-item {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ra-categorytree-item::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.ra-categorytree-count {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.ra-categorytree-desc {
+    margin-top: 0.25em;
+    color: #555;
+}
+
+.ra-categorytree-featured {
+    float: left;
+    margin: 0 1em 0.5em 0;
+    max-width: 30%;
+}
+
+.ra-categorytree-meta {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.ra-category-breadcrumb {
+    margin-bottom: 1em;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.ra-category-breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.ra-category-breadcrumb-sep {
+    margin: 0 0.4em;
+    color: #999;
+}
+
+.ra-category-breadcrumb-prefix {
+    font-weight: bold;
+    color: #444;
+}

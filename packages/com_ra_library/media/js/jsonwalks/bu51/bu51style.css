@@ -1,0 +1,263 @@
+/*
+BU51 styles to override ramblers-webs defaults
+*/
+div.ra  div.ra.contentContainer{
+    background-color: var(--mintcake);
+    border:0px;
+    border-radius: 0px;
+}
+div.ra.tabs div.ra.tabContainer{
+    bottom:0px;
+}
+div.ra.tabs div.ra.tabContainer button{
+    background-color: #f6b09d;
+    border-right: 4px solid #fff !important;
+    font-weight: normal;
+    border-radius: 0px;
+    border:0px;
+}
+div.ra.tabs div.ra.tabContainer button:hover,
+div.ra  div.ra.contentContainer button:hover{
+    background-color: #F9B104;
+}
+div.ra.tabs div.ra.tabContainer button.active{
+    background-color: var(--mintcake);
+    font-weight: bold;
+}
+div.modal-master div.ra-modal-container div.js-modal.ramblers div button,
+div.ra.contentContainer button{
+    border: none;
+    background: none;
+    color: #fff;
+    box-shadow: none;
+    background-color: #d7a900;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    line-height: 1.15;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    padding: 0.4rem;
+    border-radius: 4px;
+    margin-right: 2px;
+}
+div.paginatedList div,
+div.paginatedList div.odd{
+    background-color: var(--mintcake);
+}
+div.paginatedList div.even{
+    background-color:var(--rosycheeks);
+}
+div.paginatedList div.odd:hover{
+    color:#fff;
+    background-color: var(--mintcake);
+}
+div.paginatedList div.even:hover{
+    color:#fff;
+    background-color:var(--rosycheeks);
+}
+div.paginatedList div > h3{
+    margin: 0.6rem 0 0.2rem 0;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+th[scope="colgroup"] div.fc-list-day-cushion.fc-cell-shaded {
+    background-color: #5b491f !important;
+}
+th[scope="colgroup"] div.fc-list-day-cushion.fc-cell-shaded a{
+    color: #d7a900;
+    text-decoration: underline;
+    text-underline-offset: 4%;
+}
+
+
+.js-modal.ramblers abbr[title] {
+    border-bottom: none;
+    text-decoration: none;
+}
+
+div.js-modal.ramblers {
+    padding-top: unset;
+    margin-top: 2%;
+    max-height: 97%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255 , 1), rgba(91, 73, 31, .6));
+}
+
+
+div.js-modal.ramblers     .modal-content,
+div.js-modal.ramblers .ra-modal-content {
+    margin: auto;
+    width: 95%;
+    max-width: 75rem;
+    background-color: rgba(64, 65, 65, 0.9);
+    border-radius: unset;
+    padding: 3px;
+    border: solid 1px #F9B104;
+}
+
+.ra-modal-content > div > p, .ra-modal-content > div > ul {
+    padding:1px 5px;
+}
+
+.ra-modal-content .ra-modal-header {
+    padding: 4px;
+    border-bottom: 0px solid #eee;
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+    position:  sticky;
+    top: 0px;
+    background-color: rgba(91, 73, 31, .9);
+}
+
+.ra-modal-header .btn {
+    border: none;
+    background: none;
+    color:#fff;
+    box-shadow:none;
+    background-color: #d7a900;
+    text-transform:uppercase;
+    letter-spacing:0.1rem;
+    line-height:1.15;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    padding: 0.4rem;
+    border-radius: 4px;
+    margin-right: 2px;
+}
+
+.mappopup {
+    cursor: pointer;
+    background-color: #d7a900;
+    color: #fff;
+    letter-spacing: 0.1rem;
+    border-radius: 4px;
+    padding: 0.2rem;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.ra-modal-header .btn:hover,
+span.mappopup:hover{
+    background-color: #C75B12;
+    color: #fff;
+}
+
+div.walkstdfulldetails{
+    background-color: unset;
+    border:none;
+    border-radius: unset;
+}
+
+@media only screen and (max-width: 768px){
+    div.walkstdfulldetails {
+        padding: 0;
+    }
+}
+
+div.walkstdfulldetails div.walkitem.group,
+div.walkstdfulldetails div.walkitem.reason,
+div.walkstdfulldetails div.walkitem.basics,
+div.walkstdfulldetails div.walkitem.nomeetplace,
+div.walkstdfulldetails div.walkitem.meeting,
+div.walkstdfulldetails div.walkitem.start,
+div.walkstdfulldetails div.walkitem.nostartplace,
+div.walkstdfulldetails div.walkitem.finish,
+div.walkstdfulldetails div.walkitem.difficulty,
+div.walkstdfulldetails div.walkitem.contact,
+div.walkstdfulldetails div.walkitem.media,
+div.walkstdfulldetails div.walkitem.flags,
+div.walkstdfulldetails div.walkitem.theme,
+div.walkstdfulldetails div.walkitem.specialStatus,
+div.walkstdfulldetails div.walkitem.facilities,
+div.walkstdfulldetails div.walkitem.walkdates,
+div.walkstdfulldetails div.walkitem,
+div.walkstdfulldetails div.walkitem.map,
+div.ra-map-container {
+    border:none;
+    border-radius: unset;
+    margin: 3px 2px;
+    line-height: 1.5;
+    width: 98%;
+    font-size: 100%;
+}
+div.walkstdfulldetails span.walktitle {
+    font-size: 150%;
+}
+div.walkstdfulldetails div.description p {
+    margin: 0 0 0.75rem 0;
+}
+
+@media only screen and (max-width: 414px){
+    div.walkstdfulldetails div.reason, div.walkstdfulldetails div.basics div.description, div.walkstdfulldetails div.meetplace div.place, div.walkstdfulldetails div.startplace div.place, div.walkstdfulldetails div.finishplace div.place, div.walkstdfulldetails div.group, div.walkstdfulldetails div.additionalnotes
+    {
+        font-size: 100%;
+    }
+    div.walkmedia img.walkmedia {
+        max-width: 70%
+    }
+}
+
+img.walkmedia {
+    -webkit-border-radius: unset;
+    -moz-border-radius: unset;
+    border-radius: unset;
+    max-height: 250px;
+    max-width: 85%;
+}
+
+div.walk-image {
+    font-size: 80%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 2px 0px;
+}
+
+div.ra-map-container {
+    background: unset;
+    padding:unset;
+    margin:unset
+}
+
+.fc-theme-standard a,
+.fc-list-day-cushion a {
+    color: #d7a900;
+}
+
+.fc-event:hover{
+    color: #5b491f !important;
+}
+
+.cancelledWalks {
+    background-color:#d7a900;
+    border-radius: unset;
+    padding: 5px;
+    border-style: unset;
+
+}
+.cancelledWalks h3 {
+    color:#5b491f;
+}
+
+.cancelledWalk {
+    color:#fff;
+}
+.cancelreason {
+    margin-left: unset;
+    color:#5b491f;
+    font-size: 100%;
+}
+
+.nextwalkCancelled a,
+span.walkCancelled,
+div.fc a.walkCancelled{
+    color:#ccc;
+}
+div.bu51-nextwalk img {
+    margin-bottom: 10px;
+}

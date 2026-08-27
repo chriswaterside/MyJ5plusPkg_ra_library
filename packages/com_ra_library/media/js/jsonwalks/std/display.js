@@ -1,0 +1,743 @@
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+var ra, FullCalendar, displayGradesRowClass, displayTableRowClass, displayListRowClass;
+
+if (typeof (ra) === "undefined") {
+    ra = {};
+}
+if (typeof (ra.display) === "undefined") {
+    ra.display = {};
+}
+ra.display.walksTabs = function (mapOptions, data) {
+    this.events = new ra.events();
+    this.map = null;
+    this.lmap = null;
+    this.cluster = null;
+    this.elements = null;
+    this.settings = {
+        walkClass: "walk",
+        displayClass: "detailsView",
+        tabOrder: ["Grades", "Table", "List", "Calendar", "Map"],
+        tableFormat: [{"title": "Date", "items": "{dowddmm}"},
+            {"title": "Meet", "items": "{meet}{, ?meetGR}{, ?meetPC} "},
+            {"title": "Start", "items": "{start}{, ?startGR}{, ?startPC}"},
+            {"title": "Title", "items": "{title}{mediathumbr}"},
+            {"title": "Difficulty", "items": "{difficulty+}"},
+            {"title": "Contact", "items": "{contact}"}],
+        listFormat: "{dowdd}{, ?meet}{, ?start}{, ?title}{, ?distance}{, ?contactname}{, ?telephone} ",
+        gradesFormat: "{gradeimg}{dowddmm}{, ?title}{, ?distance}{, ?contactname}",
+        calendarFormat: "{gradeimgMiddle}{title}{, ?distance}, {meetTime}{ or ?meetTime}{startTime} ",
+        withMonth: ["dowShortddmm", "dowddmm", "dowddmmyyyy"],
+        itemsPerPage: 20,
+        options: null,
+        displayBookingsTable: false
+    };
+
+    this.listTemplate = {};
+    this.gradesTemplate = {};
+    this.calendarTemplate = {};
+
+    this.paginationOptions = {pagination: {
+            "10 per page": 10,
+            "20 per page": 20,
+            "25 per page": 25,
+            "50 per page": 50,
+            "100 per page": 100,
+            "View all": 0
+        },
+        itemsPerPage: 25,
+        currentPage: 1
+    };
+    this.optionTag = {};
+    this.printContent = null;
+    this.mapOptions = mapOptions;
+    if (data.customTabOrder !== null) {
+        this.settings.tabOrder = data.customTabOrder;
+    }
+    if (data.customGradesFormat !== null) {
+        this.settings.gradesFormat = data.customGradesFormat;
+    }
+    if (data.customListFormat !== null) {
+        this.settings.listFormat = data.customListFormat;
+    }
+    if (data.customTableFormat !== null) {
+        this.settings.tableFormat = data.customTableFormat;
+    }
+    if (data.customCalendarFormat !== null) {
+        this.settings.calendarFormat = data.customCalendarFormat;
+    }
+
+    if (data.displayClass !== "") {
+        this.settings.displayClass = data.displayClass;
+    }
+
+    this.settings.displayBookingsTable = data.displayBookingsTable;
+
+    //  set up simpleTemplate for each layout format
+    this.gradesTemplate.template = new ra.SimpleTemplate(this.settings.gradesFormat);
+    this.gradesTemplate.fields = this.gradesTemplate.template.getFields();
+
+    this.listTemplate.template = new ra.SimpleTemplate(this.settings.listFormat);
+    this.listTemplate.fields = this.listTemplate.template.getFields();
+
+    this.calendarTemplate.template = new ra.SimpleTemplate(this.settings.calendarFormat);
+    this.calendarTemplate.fields = this.calendarTemplate.template.getFields();
+
+    this.settings.tableFormat.forEach((col) => {
+        var columnTemplate = {};
+        columnTemplate.template = new ra.SimpleTemplate(col.items);
+        columnTemplate.fields = columnTemplate.template.getFields();
+        col.template = columnTemplate;
+    });
+
+    data.walks.forEach(phpwalk => {
+        var newEvent = new ra.event();
+        newEvent.convertPHPWalk(phpwalk);
+        this.events.registerEvent(newEvent);
+        ra.walk.registerEvent(newEvent);
+    });
+    data.walks = null;
+    ra.walk.displayUrlWalkPopup();
+    this.load = function () {
+
+        var tags = [
+            {name: 'walksFilter', parent: 'root', tag: 'div', attrs: {class: 'walksFilter'}},
+            {name: 'clear', parent: 'root', tag: 'div', attrs: {class: 'clear'}},
+            {name: 'tabs', parent: 'root', tag: 'div'},
+            {name: 'bookings', parent: 'root', tag: 'div'}
+        ];
+        this.masterdiv = document.getElementById(this.mapOptions.divId);
+        this.elements = ra.html.generateTags(this.masterdiv, tags);
+        this.events.setAllWalks();
+        this.events.setFilters(this.elements.walksFilter);
+        var _this = this;
+        this.addTabs();
+        if (this.settings.displayBookingsTable) {
+            var book = new ra.bookings.displayEvents();
+            book.display(this.elements.bookings);
+        }
+        document.addEventListener("reDisplayWalks", function () {
+            _this.events.setDisplayFilter();
+            _this.displayWalks();
+        });
+
+    };
+    this.addTabs = function () {
+        var _this = this;
+        var options = {tabClass: 'walksDisplay',
+            tabs: {}};
+        this.settings.tabOrder.forEach(function (value, index, array) {
+            options.tabs[value] = {title: value};
+        });
+        this.elements.tabs.addEventListener("displayTabContents", function (e) {
+            _this.option = e.tabDisplay.tab;
+            _this.displayTag = e.tabDisplay.displayInElement;
+            _this.displayWalks();
+        });
+        var tabs = new ra.tabs(this.elements.tabs, options);
+        tabs.display();
+    };
+
+    this.displayWalks = function () {
+        var tag = this.displayTag;
+        tag.innerHTML = '';
+        this.printContent = null;
+        if (this.events.length() === 0) {
+            tag.innerHTML = '<h3>Sorry there are no walks at the moment.</h3>';
+            return;
+        }
+        if (this.events.getNoEventsToDisplay() === 0) {
+            tag.innerHTML = "<h3>Sorry, but no walks meet your filter search.</h3>";
+            return;
+        }
+        switch (this.option) {
+            case "Grades":
+                this.displayWalksGrades(tag);
+                break;
+            case "List":
+                this.displayWalksList(tag);
+                break;
+            case "Table":
+                this.displayWalksTable(tag);
+                break;
+            case "Calendar":
+                this.displayWalksCalendar(tag);
+                break;
+            case "Map":
+                this.displayMap(tag);
+                break;
+            case "Contacts":
+                this.displayContacts(tag);
+                break;
+        }
+    };
+
+
+    this.displayWalksGrades = function (tag) {
+        var tags = [
+            {name: 'legend', parent: 'root', tag: 'div'},
+            {name: 'content', parent: 'root', tag: 'div'}
+        ];
+        var self = this;
+        var elements = ra.html.generateTags(tag, tags);
+        elements.legend.innerHTML = "<p class='noprint'>Click on item to display full details of walk</p>";
+        elements.content.addEventListener('reportPagination', function (e) {
+            self.paginationOptions.itemsPerPage = e.cvList.itemsPerPage;
+            self.paginationOptions.currentPage = e.cvList.currentPage;
+        });
+        this.addPrintCalButtons(elements.legend);
+        var month = "";
+        var div;
+        var should = this.shouldDisplayMonth('Grades');
+        var list = new ra.paginatedList(elements.content, this.paginationOptions);
+        this.events.forEachFiltered($walk => {
+            var displayMonth = month !== $walk.getIntValue("basics", "displayMonth") && should;
+            div = this.displayWalk_Grades($walk, displayMonth);
+            list.listItem(div);
+            month = $walk.getIntValue("basics", "displayMonth");
+        });
+        list.listEnd();
+        this.printContent = list;
+    };
+    this.displayWalksList = function (tag) {
+        var div;
+        var self = this;
+        var month = "";
+        var should = this.shouldDisplayMonth('List');
+        var tags = [
+            {name: 'legend', parent: 'root', tag: 'div'},
+            {name: 'content', parent: 'root', tag: 'div'}
+        ];
+        var elements = ra.html.generateTags(tag, tags);
+        elements.legend.innerHTML = "<p class='noprint'>Click on item to display full details of walk</p>";
+        elements.content.addEventListener('reportPagination', function (e) {
+            self.paginationOptions.itemsPerPage = e.cvList.itemsPerPage;
+            self.paginationOptions.currentPage = e.cvList.currentPage;
+
+        });
+        this.addPrintCalButtons(elements.legend);
+
+        var list = new ra.paginatedList(elements.content, this.paginationOptions);
+        this.events.forEachFiltered($walk => {
+            var displayMonth = month !== $walk.getIntValue("basics", "displayMonth") && should;
+            div = this.displayWalk_List($walk, displayMonth);
+            list.listItem(div);
+            month = $walk.getIntValue("basics", "displayMonth");
+        });
+        list.listEnd();
+        this.printContent = list;
+    };
+    this.displayWalksTable = function (tag) {
+        var month = "";
+        var self = this;
+        var should = this.shouldDisplayMonth('Table');
+        var tags = [
+            {name: 'legend', parent: 'root', tag: 'div'},
+            {name: 'content', parent: 'root', tag: 'div'}
+        ];
+        var elements = ra.html.generateTags(tag, tags);
+        elements.legend.innerHTML = "<p class='noprint'>Click on item to display full details of walk</p>";
+        elements.content.addEventListener('reportPagination', function (e) {
+            self.paginationOptions.itemsPerPage = e.cvList.itemsPerPage;
+            self.paginationOptions.currentPage = e.cvList.currentPage;
+
+        });
+        this.addPrintCalButtons(elements.legend);
+
+        var table = new ra.paginatedTable(elements.content, this.paginationOptions);
+        table.tableHeading(this.settings.tableFormat);
+        this.events.forEachFiltered($walk => {
+            var displayMonth = month !== $walk.getIntValue("basics", "displayMonth") && should;
+            this.displayWalk_Table(table, $walk, displayMonth);
+            month = $walk.getIntValue("basics", "displayMonth");
+        });
+        table.tableEnd();
+        this.printContent = table;
+    };
+    this.displayWalksCalendar = function (tag) {
+        var events = [];
+        var template = this.calendarTemplate;
+        var tags = [
+            {name: 'legend', parent: 'root', tag: 'div'},
+            {name: 'content', parent: 'root', tag: 'div'}
+        ];
+        var elements = ra.html.generateTags(tag, tags);
+        elements.legend.innerHTML = "<p class='noprint'>Click on item to display full details of walk</p>";
+
+        this.events.forEachFiltered($walk => {
+            var event = {};
+            event.id = $walk.admin.id;
+            event.start = $walk.basics.walkDate;
+            if ($walk.basics.multiDate) {
+                event.end = $walk.basics.finishDate;
+            }
+            event.raContent = '<div class="ra calendar event">' + $walk.getWalkText(template, false) + '</div>';
+            event.textColor = '#111111';
+            if ($walk.admin.status === 'Cancelled') {
+                event.textColor = 'red';
+                event.backgroundColor = 'white';
+            } else {
+                event.backgroundColor = '#EFEFEF';
+                event.borderColor = '#AAAAAA';
+            }
+
+            event.classNames = ['pointer'];
+            event.display = 'block';
+            event.eventContent = {html: ''};
+            events.push(event);
+        });
+
+        var calendar = new FullCalendar.Calendar(elements.content, {
+            height: 'auto',
+            selectable: true,
+            displayEventTime: false,
+            headerToolbar: {center: 'dayGridMonth,listMonth'}, // buttons for switching between views
+            events: events,
+            views: {
+                dayGrid: {
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                },
+                timeGrid: {
+                    // options apply to timeGridWeek and timeGridDay views
+                },
+                week: {
+                    // options apply to dayGridWeek and timeGridWeek views
+                },
+                day: {
+                    // options apply to dayGridDay and timeGridDay views
+                }
+            },
+            eventClick: function (info) {
+                var id = info.event.id;
+                ra.walk.displayWalkID(info, id);
+            },
+            eventContent: function (arg) {
+                return {
+                    html: arg.event.extendedProps.raContent
+                };
+            }
+
+        });
+        calendar.render();
+    };
+    this.displayMap = function (tag) {
+        var b = ra.baseDirectory();
+        this.lmap = new ra.leafletmap(tag, this.mapOptions);
+        this.lmap.display();
+        this.map = this.lmap.map();
+        this.cluster = new ra.map.cluster(this.map);
+        var sImg = b + "media/com_ra_library/images/marker-start.png";
+        var cImg = b + "media/com_ra_library/images/marker-cancelled.png";
+        var aImg = b + "media/com_ra_library/images/marker-area.png";
+
+        var leg = document.createElement('p');
+        leg.innerHTML = '<strong>Zoom</strong> in to see where our walks are going to be. <strong>Click</strong> on a walk to see details.';
+        this.lmap.preMapDiv().appendChild(leg);
+        leg = document.createElement('div');
+        leg.innerHTML += '<img src="' + sImg + '" alt="Walk start" height="26" width="26">&nbsp; Start locations&nbsp; <img src="' + cImg + '" alt="Cancelled walk" height="26" width="26"> Cancelled walk&nbsp; <img src="' + aImg + '" alt="Walking area" height="26" width="26"> Walk in that area.';
+        this.lmap.preMapDiv().appendChild(leg);
+
+        this.events.forEachFiltered($walk => {
+            $walk.addWalkMarker(this.cluster, this.settings.walkClass);
+        });
+        this.cluster.addClusterMarkers();
+        this.cluster.zoomAll();
+        this.map.invalidateSize();
+    };
+    this.displayContacts = function (tag) {
+        var $contacts = [];
+        this.events.forEachFiltered($walk => {
+            var contactName = $walk.getEventValue("{contactperson}");
+            var telephone1 = $walk.getEventValue("{telephone1}");
+            var telephone2 = $walk.getEventValue("{telephone2}");
+            var $contact = {name: contactName, telephone1: telephone1, telephone2: telephone2};
+            if (!ra.contains($contacts, $contact)) {
+                $contacts.push($contact);
+            }
+        });
+        $contacts.sort(function (a, b) {
+            if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                return 1;
+            }
+            return -1;
+        });
+        var contactsFormat = [{"title": "Contact Name", "options": {align: "left"}, field: {type: 'text', filter: true, sort: false}},
+            {"title": "Telephone", "options": {align: "left"}},
+            {"title": "Alt Telephone", "options": {align: "left"}}];
+        var table = new ra.paginatedTable(tag);
+        table.tableHeading(contactsFormat);
+        $contacts.forEach($contact => {
+            table.tableRowStart();
+            table.tableRowItem($contact.name, contactsFormat[0]);
+            table.tableRowItem($contact.telephone1);
+            table.tableRowItem($contact.telephone2);
+            table.tableRowEnd();
+        });
+        table.tableEnd();
+    };
+
+    this.shouldDisplayMonth = function (view) {
+        var $template = "";
+        switch (view) {
+            case "Grades":
+                $template = this.gradesTemplate;
+                break;
+            case "List":
+                $template = this.listTemplate;
+                break;
+            case "Table":
+                var $cols = this.settings.tableFormat;
+                for (let i = 0; i < $cols.length; i++) {
+                    if (this.groupByMonth($cols[i].template)) {
+                        return true;
+                    }
+                }
+                return false;
+                break;
+            default:
+                return false;
+        }
+        return this.groupByMonth($template);
+    };
+    this.groupByMonth = function ($template) {
+        $temp = $template;
+        $fields = $template.fields;
+        for (let i = 0; i < this.settings.withMonth.length; i++) {
+            if ($fields.includes(this.settings.withMonth[i])) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    this.displayWalk_Grades = function (walk, displayMonth) {
+        var out, div, span;
+
+        div = document.createElement('div');
+        if (displayMonth) {
+            var month = document.createElement('h3');
+            month.innerHTML = walk.getIntValue("basics", "displayMonth");
+            month.classList.add('ra', 'walk', 'month');
+            div.appendChild(month);
+        }
+
+        div.classList.add("walk" + walk.admin.status);
+        span = document.createElement('span');
+        span.classList.add('walkdetail');
+        if (typeof displayGradesRowClass === 'function') {
+            span.classList.add(displayGradesRowClass(walk));
+        }
+        out = walk.getWalkText(this.gradesTemplate);
+        span.innerHTML = walk.addTooltip(out);
+        div.appendChild(span);
+        return div;
+    };
+    this.displayWalk_List = function (walk, displayMonth) {
+        var template = this.listTemplate;
+        var div = document.createElement('div');
+        if (displayMonth) {
+            var month = document.createElement('h3');
+            month.innerHTML = walk.getIntValue("basics", "displayMonth");
+            month.setAttribute('class', 'ra walk month');
+            div.appendChild(month);
+        }
+        var span = document.createElement('span');
+        span.innerHTML = walk.addTooltip(walk.getWalkText(template));
+        span.classList.add("walk" + walk.admin.status);
+        span.classList.add("walkdetail");
+        if (typeof displayListRowClass === 'function') {
+            span.classList.add(displayListRowClass(walk));
+        }
+        div.appendChild(span);
+        return div;
+    };
+
+    this.displayWalk_Table = function (table, walk, displayMonth) {
+
+        var tr = table.tableRowStart();
+        tr.classList.add("walk" + walk.admin.status);
+        if (typeof displayTableRowClass === 'function') {
+            tr.classList.add(displayTableRowClass(walk));
+        }
+        this.settings.tableFormat.forEach($col => {
+            table.tableRowItem(walk.addTooltip(walk.getWalkText($col.template)));
+        });
+        var monthDisplay = null;
+        if (displayMonth) {
+            monthDisplay = document.createElement('h3');
+            monthDisplay.innerHTML = walk.getIntValue("basics", "displayMonth");
+        }
+        table.tableRowEnd(monthDisplay, 'ra walk month');
+        return tr;
+    };
+    this.addPrintCalButtons = function (tag) {
+        var container = document.createElement('div');
+        container.setAttribute('class', 'vertalign');
+        tag.appendChild(container);
+        this.addPrintButton(container);
+        this.addToDiaryButton(container);
+    };
+
+    this.addPrintButton = function (tag) {
+
+        var printButton = document.createElement('button');
+        printButton.classList.add('link-button', 'tiny', 'button', 'mintcake');
+        printButton.textContent = 'Print';
+        tag.appendChild(printButton);
+        var _this = this;
+        printButton.addEventListener('click', function () {
+            if (this.printContent !== null) {
+                _this._print();
+            }
+        });
+    };
+    this._print = function () {
+        var content = document.createElement('div');
+        var heading = document.createElement('h2');
+        heading.innerHTML = "Walking Programme";
+        content.appendChild(heading);
+        var node = this.printContent.getPrintAll();
+        content.appendChild(node);
+        ra.html.printHTML(content);
+    };
+    this.addToDiaryButton = function (tag) {
+        var diaryButton = document.createElement('button');
+        diaryButton.classList.add('link-button', 'tiny', 'button', 'mintcake');
+        diaryButton.textContent = 'Add to calendar';
+        tag.appendChild(diaryButton);
+        var _this = this;
+        diaryButton.addEventListener('click', function (e) {
+            ra.display.subscribeCalendarForm(_this.events);
+        });
+    };
+};
+ra.display.subscribeCalendarForm = function (events) {
+    var types = ['Walks', 'Events'];
+
+    var numberOptions = [
+        {text: '100', value: '100'},
+        {text: '50', value: '50'},
+        {text: '25', value: '25'},
+        {text: '10', value: '10'},
+        {text: '5', value: '5'}];
+
+    var div = document.createElement("div");
+    div.style.display = "inline-block";
+    ra.modals.createModal(div, false);
+    var groups = events.getGroups();
+    const desc = document.createElement('div');
+    desc.classList.add('ra-calendar-desc');
+    desc.innerHTML = '<b>This option allows you to add our Walks/Events to your calendar</b>' +
+            '<p>There are two basic options:</p><ul style="margin-top:0px;">' +
+            '<li>Download a calendar/.ICS file of the currently displayed Walks/Events and manually add this to your calendar</li>' +
+            '<li>Subscribe to our Walks/Events, and your calendar will automatically update information</li>' +
+            '</ul>';
+    div.appendChild(desc);
+    div.appendChild(document.createElement('hr'));
+    var down = addButton(div, 'Download calendar .ics file', 'Add walks to calendar, you will need to repeat this action to get updates');
+    down.addEventListener('click', function (e) {
+        events.setDisplayFilter();
+        var file = new ra.ics.file();
+        events.forEachFiltered($walk => {
+            $walk.addWalktoIcs(file);
+        });
+        file.download();
+    });
+    div.appendChild(document.createElement('hr'));
+
+    const filters = [
+        {title: 'Groups', type: 'groups', values: groups},
+        {title: 'Day of week', type: 'dow', values: ra.events.filterOptions.dow.order},
+        {title: 'Type', type: 'type', values: types},
+        {title: 'Grade', type: 'grades', values: ra.events.filterOptions.grades.order},
+        {title: 'Distance', type: 'distance', values: ra.events.filterOptions.distance.order},
+        {title: 'Maximum walks/events', select: 'yes', type: 'number', values: numberOptions}
+    ];
+    var filtersForm = new ra.html.groupedItemsSelect();
+    filtersForm.display(div, filters);
+
+    var sub = addButton(div, 'Subscribe to calendar', 'Subscribe and select which calendar app you use');
+    sub.addEventListener('click', function (e) {
+        subscribeToCalendar('webcal', filtersForm);
+    });
+    var google = addButton(div, 'Subcribe via Google Calendar', 'Subscribe to walks using Google');
+    google.addEventListener('click', function (e) {
+        subscribeToCalendar('google', filtersForm);
+    });
+    var outlook = addButton(div, 'Subcribe via Outlook', 'Subscribe to walks using Outlook');
+    outlook.addEventListener('click', function (e) {
+        subscribeToCalendar('outlook', filtersForm);
+    });
+
+};
+
+function subscribeToCalendar(type, form) {
+    var result = form.getStatus();
+    var groups = result.groups;
+    var options = '';
+    if (result.type) {
+        options += '&type=' + form.getMask(result.type);
+    } else {
+        ra.showError('You must select at least one type');
+        return;
+    }
+    if (result.dow) {
+        options += '&dow=' + form.getMask(result.dow);
+    } else {
+        ra.showError('You must select at least one day of the week');
+        return;
+    }
+    if (result.grades) {
+        options += '&grades=' + form.getMask(result.grades);
+    } else {
+        ra.showError('You must select at least one grade');
+        return;
+    }
+    if (result.distance) {
+        options += '&dist=' + form.getMask(result.distance);
+    } else {
+        ra.showError('You must not deselect all distance options');
+        return;
+    }
+    options += '&limit=' + result.number;
+
+    var link = window.location.host + '/index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=' + groups + options.replace(/ /g, '%20');
+    var url = 'webcal:' + link;
+    switch (type) {
+        case 'google':
+            url = 'https://calendar.google.com/calendar/r?cid=webcal:' + link;
+            break;
+        case 'outlook':
+            url = 'https://outlook.office.com/calendar/0/addfromweb?url=webcal:' + link;
+            break;
+    }
+    window.open(url, '_blank');
+}
+function addButton(tag, name, title = '') {
+    var div = document.createElement('button');
+    div.innerHTML = name;
+    div.classList.add('link-button', 'tiny', 'button', 'mintcake');
+    if (title !== '') {
+        div.title = title;
+    }
+    tag.appendChild(div);
+    return div;
+}
+
+ra.html.groupedItemsSelect = function () {
+    this.container = null;
+    this.form = null;
+    this.display = function (tag, options) {
+        this.container = document.createElement('div');
+        this.container.classList.add('ra-container');
+        tag.appendChild(this.container);
+        var heading = document.createElement('h3');
+        heading.classList.add('ra-container-header');
+        heading.innerHTML = "Deselect any walks/events you don't wish to subscribe to";
+        this.container.appendChild(heading);
+        this.form = document.createElement('div');
+        this.form.classList.add('ra-walksfilter');
+        this.container.appendChild(this.form);
+
+        options.forEach(option => {
+            const set = document.createElement('div');
+            set.classList.add("ra-filtergroup");
+            const heading = document.createElement('h3');
+            heading.innerHTML = option.title;
+            const container = document.createElement('div');
+            set.append(heading, container);
+            this.form.appendChild(set);
+            if (option.select === 'yes') {
+                this.createDropDown(container, option.type, option.values);
+            } else {
+                this._renderCheckboxGroup(container, option.type, option.values);
+            }
+        });
+        return this.container;
+    };
+    this.getStatus = function () {
+        if (this.form === null) {
+            return null;
+        }
+        const result = {};
+        this.form.querySelectorAll('.active[data-type][data-code]').forEach(el => {
+            const type = el.dataset.type;
+            const code = el.dataset.code;
+            if (!result[type]) {
+                result[type] = [];
+            }
+            result[type].push(code);
+        });
+        this.form.querySelectorAll('select[data-type]').forEach(el => {
+            const type = el.dataset.type;
+            var value = el.value;
+            result[type] = value;
+        });
+        return result;
+    };
+    this.getMask = function (values) {
+        // var distanceValues = [1, 2, 4, 8, 16, 32, 64, 128];
+        var mask = 0;
+        values.forEach((value) => {
+            var val = 2 ** parseInt(value);
+            mask += val;
+        }
+        );
+        return mask;
+    };
+
+    this._renderCheckboxGroup = function (container, type, items) {
+        const fragment = document.createDocumentFragment();
+
+        items.forEach((item, index) => {
+            const label = typeof item === 'object' && item.name ? item.name : item;
+            const code = typeof item === 'object' && item.code ? item.code : index;
+
+            const input = document.createElement('div');
+            input.setAttribute('data-code', code);
+            input.setAttribute('data-type', type);
+            input.innerHTML = label;
+            input.classList.add('feed-field', 'active');
+            input.addEventListener('click', (event) => {
+                var tag = event.target;
+                if (tag.classList.contains('active')) {
+                    tag.classList.remove('active');
+                    tag.classList.add('inactive');
+                } else {
+                    tag.classList.add('active');
+                    tag.classList.remove('inactive');
+                }
+            });
+            fragment.appendChild(input);
+        });
+        container.appendChild(fragment);
+    };
+    this.createDropDown = function (tag, type, options) {
+//         var config = [
+//            {text: 'Add to calendar options:-', value: 'none'},
+//            {text: 'Subscribe to calendar', value: 'webcal'},
+//            {text: 'Add to Google Calendar', value: 'google'},
+//            {text: 'Add to Outlook', value: 'outlook'},
+//            {text: 'Download calendar(.ics) file', value: 'download'}];
+        var div = ra.html.createElement(tag, 'span');
+
+
+        var select = ra.html.createElement(div, 'select');
+        select.setAttribute('data-type', type);
+        options.forEach(opt => {
+            var ele = document.createElement('option');
+            ele.setAttribute('value', opt.value);
+            ele.innerHTML = opt.text;
+            select.appendChild(ele);
+        });
+        return select;
+
+    };
+};

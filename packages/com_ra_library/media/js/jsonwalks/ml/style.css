@@ -1,0 +1,34 @@
+table.mlprint{
+    border: 2px solid skyblue !important;
+    margin:10px;
+    width:95%;
+}
+table.mlprint tr th,
+table.mlprint tr td{
+    border: 2px solid skyblue !important;
+    page-break-inside: avoid;
+    vertical-align: top;
+}
+span.title{
+    color:skyblue;
+}
+
+div#ml-buttons button {
+    float: right;
+    margin-left:5px;
+    margin-bottom:5px;
+    cursor: pointer;
+    padding: 5px ;
+    background-color: lightgrey;
+    border-radius: 5px;
+}
+
+div#ml-buttons button:hover {
+    background-color: grey;
+}
+div#ml-buttons button.active {
+    background-color: var(--mintcake);
+}
+span.mlTitle{
+    color: #2698de;
+}

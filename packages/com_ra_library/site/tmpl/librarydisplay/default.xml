@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_RA_LIBRARY_TITLE_ITEM_VIEW_LIBRARYDISPLAY" option="View">
+        <message>
+         <![CDATA[COM_RA_LIBRARY_TITLE_ITEM_VIEW_LIBRARYDISPLAY_DESC]]>
+        </message>
+    </layout>
+    <fields name="request" addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field">
+        <fieldset
+            name="request"
+            label="COM_RA_LIBRARY_FIELDSET_ITEM_ID_SELECT_LABEL">
+            <field
+                name="id"
+                type="LibraryDisplay"
+                label="COM_RA_LIBRARY_ITEM_ID_SELECT_LABEL"
+                require="true"
+                description="JGLOBAL_SHOW_TITLE_DESC">
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

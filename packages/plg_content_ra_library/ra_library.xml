@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="content" method="upgrade">
+    <name>plg_content_ra_library</name>
+    <author>Chris Vaughan</author>
+    <creationDate>28-06-2026</creationDate>
+    <copyright>Copyright (C) 2026 Chris Vaughan. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorEmail>you@example.com</authorEmail>
+    <authorUrl>https://example.com</authorUrl>
+    <version>5.0.0</version>
+    <description>PLG_CONTENT_RA_LIBRARY_XML_DESCRIPTION</description>
+
+    <!-- PSR‑4 mapping -->
+    <namespace path="src">Ramblers\Plugin\Content\Ra_library</namespace>
+
+    <!-- Folders and files -->
+    <files>
+        <filename plugin="ra_library">ra_library.php</filename>
+        <folder>src</folder>
+        <folder>services</folder>
+        <folder>language</folder>
+    </files>
+
+    <!-- Provider entry -->
+    <services>
+        <provider>services/provider.php</provider>
+    </services>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/plg_content_ra_library.sys.ini</language>
+    </languages>
+</extension>

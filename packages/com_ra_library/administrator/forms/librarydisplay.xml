@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form 
+    addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+    addrulepath="/administrator/components/com_ra_library/models/rule"
+>
+    <fieldset>
+        <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
+        <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+            <option value="2">JARCHIVED</option>
+            <option value="-2">JTRASHED</option>
+        </field>
+        <field name="ordering"/>
+        <field name="checked_out" type="hidden" filter="unset"/>
+        <field name="checked_out_time" type="hidden" filter="unset"/>
+        <field name="created_by" type="createdby" default="0" label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_CREATED_BY"/>
+        <field name="modified_by" type="modifiedby" default="0" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" description="JGLOBAL_FIELD_MODIFIED_BY_DESC" hidden="true" hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_MODIFIED_BY"/>
+        <field name="title" filter="safehtml" 
+               type="text" 
+               required="true" 
+               message="You must give this item a name" 
+               label="JGLOBAL_TITLE" 
+               description="Title of this displayed, must be unique" 
+               hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"
+        />
+        <field
+            name="displayoption_note" 
+            type="note" 
+            class="alert alert-error displayoption-note"
+            label="When you change the display option, you must SAVE the form so the correct tabs/fields are shown." 
+            description=""  
+        />
+        <field
+            name="displaymethods" 
+            type="note" 
+            class="alert alert-info w-100"
+            label="How to add display to site" 
+            description="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_DISPLAYMETHODS"
+              
+        />
+        <field name="selectedgroup" 
+               type="feedcheckboxes" 
+               feedurl="https://groups.theramblers.org.uk/" 
+               scope="global" 
+               cache_lifetime="3600" 
+               label="Select Groups" 
+        />
+        <field name="displayoption" 
+               type="NestedPanels" 
+               default="" 
+               required="true"
+               label="Select a display type" 
+               description="Select option from lowest level">
+            <group label="Future led walks and events" value="walks">
+                <group label="Recommended" >
+                    <option value="future_display" >Display of led walks (tabbed layout)</option>
+                    <option value="future_nextwalks">Next walks</option>
+                </group>
+                <group label="Legacy formats" >
+                    <option value="future_table">Table of led walks</option>
+                    <option value="future_list">List of led walks</option>
+                    <option value="future_map">Map of led walks</option>
+                    <option value="future_fulldetails">Full details</option>
+                    <option value="future_calendar">Calendar</option>
+                </group>
+                <group label="Group custom displays - only for these groups" >
+                    <group label="Chiltern Young Walkers Group" >
+                        <option value="future_BU51a">Fulldetails </option>
+                        <option value="future_BU51b">Groupstabs </option>
+                        <option value="future_BU51c">Microtabs </option>
+                        <option value="future_BU51d">Tabs </option>
+                    </group> 
+                    <group label="Mid Lancashire Area" >
+                        <option value="future_MLa">Print</option>
+                    </group>
+                    <group label="Staffordshire Area" >
+                        <option value="future_NSa">Walksprinted</option>
+                    </group> 
+                    <group label="East Surrey Walkers" >
+                        <option value="future_SR02a">Display</option>
+                        <option value="future_SR02b">Nextwalks</option>
+                        <option value="future_SR02c">Table2</option>
+                    </group> 
+                </group>
+            </group>
+            <group label="Walking routes" >
+                <option value="routes_plot">Plot a walking route</option>
+                <option value="routes_display_single">Display single walking route(GPX)</option>
+                <option value="routes_display_multi">Display mutliple walking routes(GPX)</option>
+            </group>
+            <group label="Display table of data">     
+                <option value="table_csv">Display data from a CSV file</option>
+                <option value="table_sql">Display data from an SQL table</option>
+                <option value="table_json">Display data from a JSON feed</option>
+            </group>
+            <group label="Documents" >     
+                <option value="documents_folder">Display list of documents in folder</option>
+            </group>
+            <group label="Past Walks">
+                <option value="pastwalks_blog">Past Walks - Blog</option>
+                <option value="pastwalks_list">Past Walks - List</option>
+                <option value="pastwalks_categorytree">Past Walks - List all Categories in a Category Tree</option>
+                <option value="pastwalks_table">Past Walks - Table</option>
+                <option value="pastwalks_maptable">Past Walks - Map and Table</option>
+            </group>
+            <group label="Routes">
+                <option value="routes_blog">Routes - Blog</option>
+                <option value="routes_list">Routes - List</option>
+                <option value="routes_categorytree">Routes - List all Categories in a Category Tree</option>
+                <option value="routes_table">Routes - Table</option>
+                <option value="routes_maptable">Routes - Map and Table</option>
+            </group>
+        </field>
+       
+        <fields name="options" label="Options" description="Nested options structure">
+                                  
+            <field name="custom_tabs" 
+                   type="Sortablelist" 
+                   label="Customise Tabs" 
+                   multiple="true"
+                   default=""
+                   description="Select the tabs you want and then sort into order, deselect them all to have the default order which is Grades, Table, List, Calendar, Map" 
+            >
+                <option value="Grades">Grades</option>
+                <option value="Table">Table</option>
+                <option value="List">List</option>
+                <option value="Calendar">Calendar</option>
+                <option value="Map">Map</option>
+                <option value="Contacts">Contacts</option>
+            </field>
+            <field name="custom_grades" 
+                   type="LayoutHelpTextarea" 
+                   helptype="walks"
+                   class="layout-check"
+                   label="Customise Grades layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}{, ?contactname}"
+            />
+            <field name="custom_list" 
+                   type="LayoutHelpTextarea"  
+                   helptype="walks"
+                   filter="raw"   
+                   label="Customise List layout" 
+                   class="layout-check"
+                   description="Default is {dowdd}{, ?meet}{, ?start}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}" 
+            />
+            <field name="custom_table" 
+                   type="tableitems" 
+                   helptype="walks"
+                   fieldsperitem ="2"
+                   filter="raw"
+                   fieldnames='["heading","layout"]'
+                   classes='["","layout-check"]' 
+                   widths='["25%","75%"]' 
+                   inputtypes='["text","text"]'
+                   filters='["normal","raw"]'
+                   hints='["Column heading","Custom layout"]'
+                   label="Customise Table layout" 
+                   description='Add column headers/layouts and drag to reorder&lt;br /&gt;
+Default is&lt;br /&gt;
+.  Date -  {dowddmm}&lt;br /&gt;
+.  Meet -  {meet}{, ?meetGR}{, ?meetPC}&lt;br /&gt;
+.  Start -  {start}{, ?startGR}{, ?startPC}&lt;br /&gt;
+.  Title -  {title}{mediathumbr}&lt;br /&gt;
+.  Difficulty -  {difficulty+}&lt;br /&gt;
+.  Contact -  {contact} '
+            />
+            <field name="custom_title" 
+                   type="tableitems" 
+                   fieldsperitem ="2"
+                   filter="raw"
+                   fieldnames='["code","text"]'
+                   widths='["40%","60%"]' 
+                   inputtypes='["text","text"]'
+                   filters='["normal","normal"]'
+                   hints='["Group Code","Text to add to start of title"]'
+                   label="Customise Event Title" 
+                   description='Add text to start of title, e.g. AV53, (WWW) adds (WWW) to start of titles for this group'
+            />
+           
+            <field
+                name="custom_calendar"
+                type="LayoutHelpTextarea"
+                helptype="walks"
+                class="layout-check"
+                filter="raw"  
+                label="Customise Calendar layout"
+                description="Default is {gradeimgMiddle}{title}{, ?distance}, {meetTime}{ or ?meetTime}{startTime}"
+            />
+  
+            <field name="custom_nextwalks" 
+                   type="LayoutHelpTextarea"  
+                   helptype="walks"
+                   class="layout-check" 
+                   filter="raw"    
+                   label="Customise layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance} "
+            />
+            <field name="custom_simplelist" 
+                   type="LayoutHelpTextarea" 
+                   helptype="walks"
+                   class="layout-check"  
+                   filter="raw"    
+                   label="Customise layout" 
+                   description="Default is {dowdd}{, ?meet}{, ?meetGR}{, ?start}{, ?startGR}{, ?title}{, ?distance}{, ?contactname}{, ?telephone}"
+            />
+            <field name="custom_fulldetails" 
+                   type="LayoutHelpTextarea"  
+                   helptype="walks"
+                   class="layout-check"  
+                   filter="raw"   
+                   label="Customise layout" 
+                   description="Default is {gradeimg}{dowddmm}{, ?title}{, ?distance}"
+            />
+            <field name="custom_pastwalks_list"
+                   type="LayoutHelpTextarea"
+                   helptype="pastwalks"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise List layout"
+                   description="Default is {walk_date}: {title_link}{, ?national_grade}{, ?distance_miles}"
+            />
+            <field name="custom_routes_list"
+                   type="LayoutHelpTextarea"
+                   helptype="routes"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise List layout"
+                   description="Default is {title_link}{, ?category}{, ?national_grade}{, ?distance_miles}"
+            />
+            <field
+                name="pastwalks_routes_note"
+                type="note"
+                class="alert alert-info w-100"
+                label="Item layout"
+                description="Each item's look is defined once, globally, in Components &gt; Ra_library &gt; Options (Past Walks Layout / Routes Layout tabs) - there's no per-page override here. Every item links straight to its own single-item page automatically - nothing else needs setting up for that."
+            />
+            <field
+                name="table_note"
+                type="note"
+                class="alert alert-info w-100"
+                label="Table / Map and Table"
+                description="Shows a fixed set of columns (Title, Date or Category, Grade, Distance) rather than the customisable item template used elsewhere - click a column heading to sort. Every title links to its single-item page. Map and Table also plots each item with a location as a marker; anything without one is listed separately underneath rather than left off."
+                showon="displayoption:pastwalks_table,pastwalks_maptable,routes_table,routes_maptable"
+            />
+            <field
+                name="pw_catid"
+                type="category"
+                extension="com_ra_library.pastwalk"
+                label="Category filter"
+                description="Only show past walks from this category, or All to show every category"
+                default="0"
+                showon="displayoption:pastwalks_blog,pastwalks_list,pastwalks_table,pastwalks_maptable"
+            >
+                <option value="0">JALL</option>
+            </field>
+            <field
+                name="pw_items_per_page"
+                type="number"
+                default="10"
+                min="1"
+                max="100"
+                label="Items per page"
+                description="How many past walks to show per page before pagination kicks in"
+                showon="displayoption:pastwalks_list"
+            />
+            <field
+                name="pw_blog_full_items"
+                type="number"
+                default="1"
+                min="0"
+                max="20"
+                label="Number of full items"
+                description="Shown in full (Intro + More, same as the Single Item page) at the top of the page. 0 for none."
+                showon="displayoption:pastwalks_blog"
+            />
+            <field
+                name="pw_blog_intro_items"
+                type="number"
+                default="4"
+                min="0"
+                max="50"
+                label="Number of intro items"
+                description="Shown next, Intro only (with a Read More link), arranged in the columns below. 0 for none."
+                showon="displayoption:pastwalks_blog"
+            />
+            <field
+                name="pw_blog_intro_columns"
+                type="number"
+                default="2"
+                min="1"
+                max="6"
+                label="Intro columns"
+                description="How many columns to arrange the intro items into"
+                showon="displayoption:pastwalks_blog"
+            />
+            <field
+                name="pw_blog_link_items"
+                type="number"
+                default="4"
+                min="0"
+                max="50"
+                label="Number of links"
+                description="Shown last, as a plain list of titled links to further items. 0 for none."
+                showon="displayoption:pastwalks_blog"
+            />
+            <field
+                name="rt_catid"
+                type="category"
+                extension="com_ra_library.route"
+                label="Category filter"
+                description="Only show routes from this category, or All to show every category"
+                default="0"
+                showon="displayoption:routes_blog,routes_list,routes_table,routes_maptable"
+            >
+                <option value="0">JALL</option>
+            </field>
+            <field
+                name="rt_items_per_page"
+                type="number"
+                default="10"
+                min="1"
+                max="100"
+                label="Items per page"
+                description="How many routes to show per page before pagination kicks in"
+                showon="displayoption:routes_list"
+            />
+            <field
+                name="rt_blog_full_items"
+                type="number"
+                default="1"
+                min="0"
+                max="20"
+                label="Number of full items"
+                description="Shown in full (Intro + More, same as the Single Item page) at the top of the page. 0 for none."
+                showon="displayoption:routes_blog"
+            />
+            <field
+                name="rt_blog_intro_items"
+                type="number"
+                default="4"
+                min="0"
+                max="50"
+                label="Number of intro items"
+                description="Shown next, Intro only (with a Read More link), arranged in the columns below. 0 for none."
+                showon="displayoption:routes_blog"
+            />
+            <field
+                name="rt_blog_intro_columns"
+                type="number"
+                default="2"
+                min="1"
+                max="6"
+                label="Intro columns"
+                description="How many columns to arrange the intro items into"
+                showon="displayoption:routes_blog"
+            />
+            <field
+                name="rt_blog_link_items"
+                type="number"
+                default="4"
+                min="0"
+                max="50"
+                label="Number of links"
+                description="Shown last, as a plain list of titled links to further items. 0 for none."
+                showon="displayoption:routes_blog"
+            />
+            <field
+                name="categorytree_note"
+                type="note"
+                class="alert alert-info w-100"
+                label="Category Tree"
+                description="Starting from a root category, this browses down through subcategories one level at a time. Once it reaches a category with no subcategories of its own, it shows that category's items as a List or a Blog (your choice below)."
+                showon="displayoption:pastwalks_categorytree,routes_categorytree"
+            />
+            <field
+                name="pw_categorytree_rootcat"
+                type="category"
+                extension="com_ra_library.pastwalk"
+                label="Start at category"
+                description="Which category to start browsing from, or Top Level to start from all top-level categories"
+                default="0"
+                showon="displayoption:pastwalks_categorytree"
+            >
+                <option value="0">JGLOBAL_ROOT_PARENT</option>
+            </field>
+            <field
+                name="pw_categorytree_style"
+                type="list"
+                default="list"
+                label="Leaf category shown as"
+                description="How to display the items once a category with no further subcategories is reached"
+                showon="displayoption:pastwalks_categorytree"
+            >
+                <option value="list">List</option>
+                <option value="blog">Blog</option>
+                <option value="table">Table</option>
+                <option value="maptable">Map and Table</option>
+            </field>
+            <field
+                name="pw_categorytree_items_per_page"
+                type="number"
+                default="10"
+                min="1"
+                max="100"
+                label="Items per page"
+                description="How many past walks to show per page, once a leaf category's items are shown"
+                showon="displayoption:pastwalks_categorytree"
+            />
+            <field name="custom_pastwalks_categorytree_list"
+                   type="LayoutHelpTextarea"
+                   helptype="pastwalks"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise List layout"
+                   description="Only used when 'Leaf category shown as' above is set to List. Default is {walk_date}: {title_link}{, ?national_grade}{, ?distance_miles}"
+                   showon="displayoption:pastwalks_categorytree"
+            />
+            <field name="custom_pastwalks_categorytree_branch"
+                   type="LayoutHelpTextarea"
+                   helptype="categorytree"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise Category/Branch layout"
+                   description="Default is &amp;lt;div class=&amp;quot;ra-categorytree-featured&amp;quot;&amp;gt;{featured_image}&amp;lt;/div&amp;gt;&amp;lt;h3&amp;gt;{title_link}&amp;lt;/h3&amp;gt;&amp;lt;p class=&amp;quot;ra-categorytree-meta&amp;quot;&amp;gt;{item_count} here, {total_item_count} in this branch&amp;lt;/p&amp;gt;{if:description}&amp;lt;div class=&amp;quot;ra-categorytree-desc&amp;quot;&amp;gt;{description}&amp;lt;/div&amp;gt;{/if}"
+                   showon="displayoption:pastwalks_categorytree"
+            />
+            <field
+                name="rt_categorytree_rootcat"
+                type="category"
+                extension="com_ra_library.route"
+                label="Start at category"
+                description="Which category to start browsing from, or Top Level to start from all top-level categories"
+                default="0"
+                showon="displayoption:routes_categorytree"
+            >
+                <option value="0">JGLOBAL_ROOT_PARENT</option>
+            </field>
+            <field
+                name="rt_categorytree_style"
+                type="list"
+                default="list"
+                label="Leaf category shown as"
+                description="How to display the items once a category with no further subcategories is reached"
+                showon="displayoption:routes_categorytree"
+            >
+                <option value="list">List</option>
+                <option value="blog">Blog</option>
+                <option value="table">Table</option>
+                <option value="maptable">Map and Table</option>
+            </field>
+            <field
+                name="rt_categorytree_items_per_page"
+                type="number"
+                default="10"
+                min="1"
+                max="100"
+                label="Items per page"
+                description="How many routes to show per page, once a leaf category's items are shown"
+                showon="displayoption:routes_categorytree"
+            />
+            <field name="custom_routes_categorytree_list"
+                   type="LayoutHelpTextarea"
+                   helptype="routes"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise List layout"
+                   description="Only used when 'Leaf category shown as' above is set to List. Default is {title_link}{, ?category}{, ?national_grade}{, ?distance_miles}"
+                   showon="displayoption:routes_categorytree"
+            />
+            <field name="custom_routes_categorytree_branch"
+                   type="LayoutHelpTextarea"
+                   helptype="categorytree"
+                   class="layout-check"
+                   filter="raw"
+                   label="Customise Category/Branch layout"
+                   description="Default is &amp;lt;div class=&amp;quot;ra-categorytree-featured&amp;quot;&amp;gt;{featured_image}&amp;lt;/div&amp;gt;&amp;lt;h3&amp;gt;{title_link}&amp;lt;/h3&amp;gt;&amp;lt;p class=&amp;quot;ra-categorytree-meta&amp;quot;&amp;gt;{item_count} here, {total_item_count} in this branch&amp;lt;/p&amp;gt;{if:description}&amp;lt;div class=&amp;quot;ra-categorytree-desc&amp;quot;&amp;gt;{description}&amp;lt;/div&amp;gt;{/if}"
+                   showon="displayoption:routes_categorytree"
+            />
+            <field name="css_file"
+                   type="text" 
+                   label="Add your own CSS Stylesheet file" 
+                   description="Enter a relative path to a CSS file" 
+                   size="10" 
+                   accept=".css,text/css"
+            />  
+            <field name="js_file"
+                   type="text" 
+                   label="Add your own JavaScript file" 
+                   description="Enter a relative path to a JavaScript file" 
+                   size="10" 
+                   accept=".js,application/javascript"
+            />  
+            <field name="walks_class"
+                   type="text" 
+                   label="Custom overall CSS Class" 
+                   description="Optional custom overall CSS Class" 
+                   size="10" 
+                   
+            />  
+            <field name="walk_class"
+                   type="text" 
+                   label="Custom CSS Class for each walk" 
+                   description="Optional custom CSS Class for each walk" 
+                   size="10" 
+                   
+            />  
+            <field name="calendar_size"
+                   type="list" 
+                   default="0"
+                   label="Calendar size" 
+                   description="" 
+            >
+                <option value="0">The calendar sets its size to fit the sidebar panel</option>
+                <option value="200">200 - fixed size of 200px</option>
+                <option value="250">250 - fixed size of 250px</option>
+                <option value="400">400 - fixed size of 400px</option>
+            </field>  
+            <field
+                name="routes_smartroutingnote"
+                type="note"
+                label="Smart Routing"
+                description="&lt;p&gt;The option can also support a smart routing option. When enabled, this option follows the paths, roads, etc. as defined on OpenStreetMap. This is instead of drawing a straight line between points. To enable this option, which is highly recommended, you need to take out a license from OpenRouteService as below:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Visit &lt;a href=&quot;https://openrouteservice.org/terms-of-service/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://openrouteservice.org/terms-of-service/&lt;/a&gt; and review the terms and conditions.&lt;/li&gt;
+    &lt;li&gt;If you are happy with these, sign up for an account at &lt;a href=&quot;https://openrouteservice.org/dev/#/signup&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://openrouteservice.org/dev/#/signup&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;Then take out a key/token and copy and save that key below.&lt;/li&gt;
+&lt;/ul&gt;"
+            />
+            <field name="routes_smartroutingkey"
+                   type="text"
+                   default=""
+                   label="Smart Routing key"
+                   description="Enable smart routing by providing open routing key"
+                   filter="raw"
+            />  
+ 
+            <field name="routes_latitude"
+                   type="number"
+                   default="52.891"
+                   max="90"
+                   min="-90"
+                   label="Map centre: Latitude"
+                   description="Latitude in the format 52.891"
+                   filter="raw"
+            />
+            <field name="routes_longitude"
+                   type="number"
+                   default="-1.234"
+                   max="180"
+                   min="-180"
+                   label="Map centre: Longitude"
+                   description="Longitude in the format -1.234"
+                   filter="raw"
+            />
+            <field name="routes_zoomlevel"
+                   type="number"
+                   default="10"
+                   max="13"
+                   min="5"
+                   step=".1"
+                   label="Zoom level"
+                   description="Initial zoom level of the map, between 5 and 13, default is 10"
+                   filter="raw"
+            />
+                     
+            <field name="routes_file"
+                   type="media" 
+                   label="Path to GPX file" 
+                   description="Choose a gpx file you have already uploaded" 
+                   types="documents"
+                   preview="false"
+            />  
+           
+            <field
+                name="routes_folder"
+                type="Folder"
+                label="Choose a folder"
+                description="Browse for any existing sub-folder under /images or /files."
+                roots="images,files"
+            />
+            <field name="routes_linecolour"
+                   type="color" 
+                   default="#782327" 
+                   format="rgba"
+                   label="Walking route: Track colour"
+                   description="Default colour is #782327, just blank the field to get the default"
+            />   
+            <field name="routes_download"
+                   type="list" 
+                   default="Public"
+                   label="Can GPX files be downloaded" 
+                   description="" 
+            >
+                <option value="None">None - no gpx download available</option>
+                <option value="Users">Users - only logged on users can download</option>
+                <option value="Public">Public - everyone can download gpx files</option>
+            </field>  
+            <field name="routes_displaytitle"
+                   type="list" 
+                   default="1"
+                   label="Display a title" 
+                   description="Display a title above display" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>    
+            </field>  
+            <field name="routes_displayasprevious"
+                   type="list" 
+                   default="0"
+                   label="Display as Previous Walks" 
+                   description="Display walks as previous walks, include date/leader" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>    
+            </field>  
+            
+            <field name="table_file"
+                   type="media"
+                   default=""
+                   label="Select a csv file"
+                   types="documents"
+                   preview="false"
+            />
+
+            <field name="table_csv_optionsmode"
+                   type="list"
+                   default="file"
+                   label="Where are the column options for this CSV file?"
+                   description="Either keep them on the second line of the CSV file (as before), or define them below in the same way as for SQL/JSON"
+            >
+                <option value="file">From the second line of the CSV file</option>
+                <option value="form">Set below (as for SQL/JSON)</option>
+            </field>
+
+            <field name="table_sqlselect" filter="safehtml"
+                   type="text"
+                   message="You must give this item a name"
+                   label="SQL statement"
+                   description="SQL to retrieve required database table"
+                   hint="Select * from #__ra_faults"
+            />
+            <field
+                name="table_json"
+                type="url"
+                default=""
+                label="Enter URL of json feed"
+                description=""
+            />
+
+
+            <field name="table_options"
+                   type="tableitems"
+                   fieldsperitem ="3"
+                   fieldnames='["heading","column","options"]'
+                   hints='["Heading","Column","Options"]'
+                   widths='["25%","25%","50%"]'
+                   label="Table options"
+                   description="Add Heading,Column and Options for each SQL/JSON/CSV field"
+                   helptype="tableoptions"
+                   showon="displayoption:table_sql[OR]displayoption:table_json[OR]table_csv_optionsmode:form"
+            />
+            <field name="table_markertype" 
+                   type="list" 
+                   default="0"
+                   label="Location markers" 
+                   description="Customise markers either as text or by value of column" 
+            >
+                <option value="default">Default Icon markers</option>
+                <option value="text">Text markers</option>
+                <option value="icons">Custom Icon markers</option>
+            </field>  
+            <field name="table_markercolumn" 
+                   filter="safehtml" 
+                   type="text" 
+                   label="Column" 
+                   showon="table_markertype:text[OR]table_markertype:icons"
+                   description="Which column's text value should be used as marker" 
+                   hint=""
+            />
+            <field name="table_textmarkerclass" 
+                   filter="safehtml" 
+                   type="text" 
+                   showon="table_markertype:text"
+                   label="Option class" 
+                   description="You can optionally add a CSS class to the text to add custom styling" 
+                   hint=""
+            />
+            <field
+                name="table_iconmarkers" 
+                type="tableitems" 
+                showon="table_markertype:icons"
+                fieldsperitem ="2"
+                fieldnames='["value","icon"]'
+                hints='["Column value","Required Icon"]'
+                label="Define custom icons" 
+                description="" 
+            /> 
+                
+            <field name="addarticles" 
+                   type="list" 
+                   default="0"
+                   label="Display text before or after the display" 
+                   description="Display text before or after the display" 
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>  
+             
+          
+            <field name="before" 
+                   showon="options.addarticles:1"
+                   type="editor" 
+                   buttons="true" 
+                   class="inputbox" 
+                   filter="safehtml" 
+                   label="Add text before display" 
+                   description="Add text before display" 
+                   height="250"
+            />
+            <field name="after" 
+                   showon="options.addarticles:1"
+                   type="editor" 
+                   buttons="true" 
+                   class="inputbox" 
+                   filter="safehtml" 
+                   label="Add text after display" 
+                   description="Add text after display" 
+                       
+            />
+                    
+       
+            
+        </fields>
+       
+     
+        <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
+    </fieldset>
+    
+    
+    <fieldset name="filters" label="Event Filters" description="Define additional filters to apply to the library events feed.">
+        <field
+            name="filters"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/filterrow.xml"         
+            
+            description="Each row defines one filter condition."
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+    <fieldset 
+        name="loadwalks" 
+        label="Retrieve Walk and Events" 
+        description="Define source of walks and events"
+    >
+        <field
+            name="eventsources"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/loadwalksrow.xml"         
+            label="Define source of walks and events"
+            description="Each row defines a extra source of walks and events"
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+    <fieldset 
+        name="documents" 
+        label="Display index of documents" 
+        description="Display an index of docuements from folder"
+    >
+        <field
+            name="document_sources"
+            type="subform"
+            multiple="true"
+            layout="joomla.form.field.subform.repeatable"
+            formsource="administrator/components/com_ra_library/forms/documentsrow.xml"         
+            label="Display list of documents in folder"
+            description="Each row defines a extra set of documents"
+            groupByFieldset="true"
+            min="0"
+            max="50"
+            buttons="add,remove"
+        />
+    </fieldset>
+   
+</form>

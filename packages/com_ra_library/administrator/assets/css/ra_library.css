@@ -1,0 +1,99 @@
+.icon-48-librarydisplays {
+    background-image: url(../images/l_librarydisplays.png);
+    padding-left:60px!important;
+}
+
+.icon-48-librarydisplay {
+    background-image: url(../images/l_librarydisplays.png);
+    padding-left:60px!important;
+}
+
+.color-box-librarydisplays {
+    float: left;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    border: 1px solid rgba(0, 0, 0, .2);
+}
+
+
+
+.other-filters{
+    padding: 0 14px;
+}
+
+/* Target the fieldset/container */
+#jform_options_ramblersgroups ~ .checkboxes .form-check,
+.checkboxes:has(#jform_options_ramblersgroups0) .form-check {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.75rem !important;
+    padding-left: 0 !important;
+}
+
+
+
+/* Ensure labels stack with inputs */
+.checkboxes .form-check-label {
+    width: 100%;
+    margin-left: 0 !important;
+}
+div.ramblers-group-select div.controls{
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+div.form-check.area{
+    font-weight: bold;
+    padding-left: 30px;
+    background-color: #ddd;
+    border-radius: 5px;
+}
+div.form-check.group{
+    padding-left: 50px;
+
+}
+
+/* nestedGroupedList field                */
+
+
+/* Style options by depth */
+optgroup.level-0 {
+    font-weight: 600;
+    font-style: normal;
+    color: #404040;
+    background-color: #9BC8AB;
+}
+optgroup.level-1 {
+    font-weight: 400;
+    color:#606060s;
+}
+optgroup.level-0 option,
+optgroup.level-1 option{
+    color:black;
+}
+/* input checks box */
+div.layout-check-status{
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+    width: fit-content;
+    z-index: 9999 !important;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    height: auto;
+    box-sizing: border-box;
+}

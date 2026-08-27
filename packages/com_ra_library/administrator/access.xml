@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<access component="com_ra_library">
+	<section name="component">
+		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN" />
+		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE" />
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE" />
+		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE" />
+		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN" />
+
+		<!-- Past Walks: separate action names (same component asset) so a user
+		     group can be granted access to Past Walks only, without any of the
+		     core.* actions above that unlock the rest of com_ra_library admin. -->
+		<action name="pastwalks.manage" title="COM_RA_LIBRARY_ACTION_PASTWALKS_MANAGE" description="COM_RA_LIBRARY_ACTION_PASTWALKS_MANAGE_DESC" />
+		<action name="pastwalks.create" title="COM_RA_LIBRARY_ACTION_PASTWALKS_CREATE" description="COM_RA_LIBRARY_ACTION_PASTWALKS_CREATE_DESC" />
+		<action name="pastwalks.edit" title="COM_RA_LIBRARY_ACTION_PASTWALKS_EDIT" description="COM_RA_LIBRARY_ACTION_PASTWALKS_EDIT_DESC" />
+		<action name="pastwalks.edit.own" title="COM_RA_LIBRARY_ACTION_PASTWALKS_EDITOWN" description="COM_RA_LIBRARY_ACTION_PASTWALKS_EDITOWN_DESC" />
+		<action name="pastwalks.edit.state" title="COM_RA_LIBRARY_ACTION_PASTWALKS_EDITSTATE" description="COM_RA_LIBRARY_ACTION_PASTWALKS_EDITSTATE_DESC" />
+		<action name="pastwalks.delete" title="COM_RA_LIBRARY_ACTION_PASTWALKS_DELETE" description="COM_RA_LIBRARY_ACTION_PASTWALKS_DELETE_DESC" />
+
+		<!-- Routes: same pattern as Past Walks above, separate action names so
+		     the two sections can be granted independently of each other. -->
+		<action name="routes.manage" title="COM_RA_LIBRARY_ACTION_ROUTES_MANAGE" description="COM_RA_LIBRARY_ACTION_ROUTES_MANAGE_DESC" />
+		<action name="routes.create" title="COM_RA_LIBRARY_ACTION_ROUTES_CREATE" description="COM_RA_LIBRARY_ACTION_ROUTES_CREATE_DESC" />
+		<action name="routes.edit" title="COM_RA_LIBRARY_ACTION_ROUTES_EDIT" description="COM_RA_LIBRARY_ACTION_ROUTES_EDIT_DESC" />
+		<action name="routes.edit.own" title="COM_RA_LIBRARY_ACTION_ROUTES_EDITOWN" description="COM_RA_LIBRARY_ACTION_ROUTES_EDITOWN_DESC" />
+		<action name="routes.edit.state" title="COM_RA_LIBRARY_ACTION_ROUTES_EDITSTATE" description="COM_RA_LIBRARY_ACTION_ROUTES_EDITSTATE_DESC" />
+		<action name="routes.delete" title="COM_RA_LIBRARY_ACTION_ROUTES_DELETE" description="COM_RA_LIBRARY_ACTION_ROUTES_DELETE_DESC" />
+	</section>
+
+</access>

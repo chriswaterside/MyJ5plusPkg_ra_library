@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+    <name>RA Next Walks</name>
+    <author>Chris Vaughan</author>
+    <creationDate>28-06-2026</creationDate>
+    <copyright>Copyright (C) 2026 Ramblers-webs.org.uk</copyright>
+    <license>This extension is released under the GNU/GPL License</license>
+    <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
+    <authorUrl>www.ramblers-webs.org.uk</authorUrl>
+    <version>5.0.0</version>
+    <description>Display Next Walks (Joomla 5/6 compatible)</description>
+
+    <!-- PSR-4 namespace declaration required by Joomla 5/6 -->
+    <namespace path="src">RamblersWebs\Module\Ranextwalks\Site</namespace>
+
+    <files>
+        <filename module="mod_ranextwalks">mod_ranextwalks.php</filename>
+        <folder>src</folder>
+        <folder>tmpl</folder>
+        <filename>index.html</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/mod_ranextwalks.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic" >
+                <field name="ramblersgroups" 
+                       type="feedcheckboxes" 
+                       addfieldprefix="Ramblers\Component\Ra_library\Administrator\Field"
+                       feedurl="https://groups.theramblers.org.uk/" 
+                       scope="global" 
+                       cache_lifetime="3600"                           
+                       label="Select Group(s)/Area" 
+                       multiple="true" 
+                /> 
+                <field name="limit" 
+                       type="integer" 
+                       label="Limit to number of walks and events" 
+                       first="1"
+                       last="100"
+                       step="1"
+                       default="7" 
+                />
+               
+            </fieldset>
+            <fieldset name="advanced">
+                <field name="moduleclass_sfx" type="text" label="Module Class" description="JFIELD_MODULE_CLASS_SUFFIX_DESC"/>
+                <field name="header_tag" type="list" label="Header Tag" default="h3">
+                    <option value="h1">h1</option>
+                    <option value="h2">h2</option>
+                    <option value="h3">h3</option>
+                    <option value="h4">h4</option>
+                    <option value="h5">h5</option>
+                    <option value="h6">h6</option>
+                    <option value="p">p</option>
+                    <option value="div">div</option>
+                </field>
+                <field name="header_class" type="text" label="Header Class"/>
+                <field name="module_style" type="modulestyle"/>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

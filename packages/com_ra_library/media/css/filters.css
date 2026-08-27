@@ -1,0 +1,75 @@
+/* Fix repeatable layout column alignment - Higher specificity */
+.subform-repeatable-wrapper .subform-repeatable-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    align-items: flex-start !important;
+}
+
+.subform-repeatable-wrapper .controls {  /* Enabled + Type fieldset */
+    flex: 0 0 200px !important;  /* Fixed width */
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+.subform-repeatable-wrapper .filter_value {  /* Value fieldset */
+    flex: 1 !important;  /* Take remaining space */
+    min-width: 150px !important;
+}
+
+/* Force fields full-width, override template floats/margins */
+.subform-repeatable-wrapper .filter_value .field-row,
+.subform-repeatable-wrapper .filter_value .control-group,
+.subform-repeatable-wrapper .filter_value .control-group *,
+.subform-repeatable-wrapper .chzn-container,
+.subform-repeatable-wrapper .calendar,
+.subform-repeatable-wrapper .checkboxes {
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    margin-bottom: 4px !important;  /* Tight spacing */
+    display: block !important;
+    float: none !important;
+    clear: both !important;
+}
+
+/* Checkboxes inline tight */
+.subform-repeatable-wrapper .checkboxes .checkboxes-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;  /* Increased for readability */
+    align-items: center !important;
+}
+.subform-repeatable-wrapper .checkboxes input[type="checkbox"] {
+    margin: 0 4px 0 0 !important;  /* Tighten checkbox spacing */
+    flex-shrink: 0 !important;
+}
+
+/* Calendar/dropdown sm + full width, prevent overflow */
+.subform-repeatable-wrapper .form-control-sm,
+.subform-repeatable-wrapper .form-select-sm {
+    width: 100% !important;
+    max-width: 140px !important;  /* As you had */
+    box-sizing: border-box !important;
+}
+
+/* Hide labels if using sr-only (compact mode) - Standard Bootstrap */
+.subform-repeatable-wrapper .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+fieldset div.control-group {
+    display: block !important;
+}
+fieldset div.control-group.hidden {
+    display: none !important;
+}
+

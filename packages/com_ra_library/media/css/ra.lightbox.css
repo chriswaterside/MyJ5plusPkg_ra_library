@@ -1,0 +1,41 @@
+/*
+ * Image gallery lightbox (see media/js/ra.lightbox.js) - styles for the
+ * content shown *inside* one of the component's existing ra.modals popups.
+ * The modal chrome itself (overlay, header, close/print buttons) is already
+ * styled by ramblerslibrary.css (.js-modal.ramblers, .ra-modal-content,
+ * .ra-modal-header) - these rules only cover the gallery-specific bits: the
+ * image, its caption, and the prev/next navigation row.
+ */
+.ra-lightbox-content {
+    max-width: 80vw;
+    text-align: center;
+}
+
+.ra-lightbox-image {
+    max-width: 100%;
+    max-height: 70vh;
+    display: block;
+    margin: 0 auto;
+}
+
+.ra-lightbox-caption {
+    margin-top: 0.5em;
+    font-size: 0.95em;
+}
+
+.ra-lightbox-nav {
+    margin-top: 0.75em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.ra-lightbox-counter {
+    color: #666;
+    font-size: 0.85em;
+}
+
+.ra-image-grid-item {
+    cursor: pointer;
+}

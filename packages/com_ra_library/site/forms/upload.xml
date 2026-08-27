@@ -1,0 +1,10 @@
+<!-- forms/upload.xml -->
+<form enctype="multipart/form-data">
+    <fieldset name="file_upload">
+        <field name="file"
+               type="file"
+               label="Select a file"
+               description="Upload a document or image"
+               required="true" />
+    </fieldset>
+</form>

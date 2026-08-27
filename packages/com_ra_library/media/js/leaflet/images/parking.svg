@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<svg width="580" height="580" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.0">
+ <metadata id="metadata10">image/svg+xmlen</metadata>
+ <defs id="defs4">
+  <style id="style6" type="text/css">.fil0 {fill:#EF7900}</style>
+ </defs>
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="g1327">
+   <path d="m66.28,1.77c-41.34,0 -64.58,21.37 -64.58,65.03l0,450.13c0,40.84 20.9,62.23 62.2,62.23l452.02,0c41.31,0 62.23,-20.32 62.23,-62.23l0,-450.13c0,-42.6 -20.92,-65.03 -63.52,-65.03c-0.01,0 -448.5,-0.14 -448.36,0l0.01,0z" fill="#00007f" id="path1329" stroke="#eeeeee" stroke-width="3.41"/>
+  </g>
+  <g id="g2319" transform="translate(879.29125,36.805119)">
+   <path fill="#ffffff" id="path2323"/>
+  </g>
+  <g id="g2325" transform="translate(879.29125,36.805119)">
+   <path fill="#ffffff" id="path2329"/>
+  </g>
+  <path d="m145.36,505.15l0,-419.58l158.27,0c27.86,0 49.14,1.33 63.83,4c20.6,3.44 37.87,9.97 51.8,19.61c13.93,9.63 25.14,23.13 33.63,40.5c8.49,17.36 12.74,36.44 12.74,57.24c0,35.68 -11.36,65.88 -34.06,90.58c-22.71,24.71 -63.73,37.07 -123.07,37.07l-107.62,0l0,170.58l-55.52,0zm55.52,-220.1l108.48,0c35.87,0.01 61.34,-6.67 76.41,-20.03c15.08,-13.36 22.62,-32.15 22.62,-56.38c0,-17.56 -4.44,-32.58 -13.31,-45.08c-8.88,-12.5 -20.56,-20.75 -35.06,-24.76c-9.35,-2.48 -26.62,-3.72 -51.81,-3.72l-107.33,0l0,149.97z" fill="#ffffff" id="text2419" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-width="22.69"/>
+ </g>
+</svg>

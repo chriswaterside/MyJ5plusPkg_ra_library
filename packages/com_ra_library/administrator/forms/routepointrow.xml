@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <field name="id" type="hidden" filter="int"/>
+
+    <field name="title"
+           type="text"
+           label="COM_RA_LIBRARY_ROUTEPOINT_FIELD_TITLE_LABEL"
+           description="COM_RA_LIBRARY_ROUTEPOINT_FIELD_TITLE_DESC"
+           filter="safehtml"
+           size="30"
+    />
+
+    <field name="description"
+           type="textarea"
+           label="COM_RA_LIBRARY_ROUTEPOINT_FIELD_DESCRIPTION_LABEL"
+           description="COM_RA_LIBRARY_ROUTEPOINT_FIELD_DESCRIPTION_DESC"
+           filter="safehtml"
+           rows="3"
+           cols="40"
+    />
+
+    <field name="grid_reference"
+           type="text"
+           label="COM_RA_LIBRARY_ROUTEPOINT_FIELD_GRID_REFERENCE_LABEL"
+           size="12"
+    />
+
+    <field name="latitude"
+           type="text"
+           label="COM_RA_LIBRARY_ROUTEPOINT_FIELD_LATITUDE_LABEL"
+           filter="float"
+           size="10"
+    />
+
+    <field name="longitude"
+           type="text"
+           label="COM_RA_LIBRARY_ROUTEPOINT_FIELD_LONGITUDE_LABEL"
+           filter="float"
+           size="10"
+    />
+</form>

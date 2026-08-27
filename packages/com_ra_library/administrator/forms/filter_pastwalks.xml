@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter">
+        <field name="search" type="text" description="COM_RA_LIBRARY_SEARCH_FILTER_SUBMIT"
+               label="COM_USERS_FILTER_SEARCH_DESC"
+               class="js-stools-search-string" />
+
+        <field name="state"
+               type="status"
+               label="COM_RA_LIBRARY_FILTER_STATE"
+               description="COM_RA_LIBRARY_FILTER_STATE_DESC"
+               onchange="this.form.submit();"
+        >
+            <option value="">JOPTION_SELECT_PUBLISHED</option>
+        </field>
+
+        <field name="category_id"
+               type="category"
+               extension="com_ra_library.pastwalk"
+               label="COM_RA_LIBRARY_PASTWALK_FIELD_CATID_LABEL"
+               onchange="this.form.submit();"
+        >
+            <option value="">JOPTION_SELECT_CATEGORY</option>
+        </field>
+
+        <field name="needs_review"
+               type="list"
+               label="COM_RA_LIBRARY_PASTWALKS_FILTER_NEEDS_REVIEW"
+               onchange="this.form.submit();"
+        >
+            <option value="">COM_RA_LIBRARY_PASTWALKS_FILTER_NEEDS_REVIEW</option>
+            <option value="1">COM_RA_LIBRARY_PASTWALKS_FILTER_NEEDS_REVIEW_ONLY</option>
+        </field>
+
+        <field name="day_of_week"
+               type="list"
+               label="COM_RA_LIBRARY_PASTWALKS_FILTER_DAY"
+               onchange="this.form.submit();"
+        >
+            <option value="">COM_RA_LIBRARY_PASTWALKS_FILTER_DAY</option>
+            <option value="1">COM_RA_LIBRARY_DAY_MONDAY</option>
+            <option value="2">COM_RA_LIBRARY_DAY_TUESDAY</option>
+            <option value="3">COM_RA_LIBRARY_DAY_WEDNESDAY</option>
+            <option value="4">COM_RA_LIBRARY_DAY_THURSDAY</option>
+            <option value="5">COM_RA_LIBRARY_DAY_FRIDAY</option>
+            <option value="6">COM_RA_LIBRARY_DAY_SATURDAY</option>
+            <option value="0">COM_RA_LIBRARY_DAY_SUNDAY</option>
+        </field>
+
+        <field name="month"
+               type="list"
+               label="COM_RA_LIBRARY_PASTWALKS_FILTER_MONTH"
+               onchange="this.form.submit();"
+        >
+            <option value="">COM_RA_LIBRARY_PASTWALKS_FILTER_MONTH</option>
+            <option value="1">COM_RA_LIBRARY_MONTH_JANUARY</option>
+            <option value="2">COM_RA_LIBRARY_MONTH_FEBRUARY</option>
+            <option value="3">COM_RA_LIBRARY_MONTH_MARCH</option>
+            <option value="4">COM_RA_LIBRARY_MONTH_APRIL</option>
+            <option value="5">COM_RA_LIBRARY_MONTH_MAY</option>
+            <option value="6">COM_RA_LIBRARY_MONTH_JUNE</option>
+            <option value="7">COM_RA_LIBRARY_MONTH_JULY</option>
+            <option value="8">COM_RA_LIBRARY_MONTH_AUGUST</option>
+            <option value="9">COM_RA_LIBRARY_MONTH_SEPTEMBER</option>
+            <option value="10">COM_RA_LIBRARY_MONTH_OCTOBER</option>
+            <option value="11">COM_RA_LIBRARY_MONTH_NOVEMBER</option>
+            <option value="12">COM_RA_LIBRARY_MONTH_DECEMBER</option>
+        </field>
+
+        <field name="year"
+               type="text"
+               label="COM_RA_LIBRARY_PASTWALKS_FILTER_YEAR"
+               description="COM_RA_LIBRARY_PASTWALKS_FILTER_YEAR"
+               size="6"
+               onchange="this.form.submit();"
+        />
+    </fields>
+
+    <fields name="list">
+
+        <field name="fullordering"
+               type="list"
+               label="COM_RA_LIBRARY_LIST_FULL_ORDERING"
+               description="COM_RA_LIBRARY_LIST_FULL_ORDERING_DESC"
+               onchange="this.form.submit();"
+               default="a.walk_date DESC"
+        >
+            <option value="">JGLOBAL_SORT_BY</option>
+            <option value="a.walk_date ASC">COM_RA_LIBRARY_PASTWALK_WALKDATE_ASC</option>
+            <option value="a.walk_date DESC">COM_RA_LIBRARY_PASTWALK_WALKDATE_DESC</option>
+            <option value="a.title ASC">COM_RA_LIBRARY_TITLE_ASC</option>
+            <option value="a.title DESC">COM_RA_LIBRARY_TITLE_DESC</option>
+            <option value="a.state ASC">COM_RA_LIBRARY_STATE_ASC</option>
+            <option value="a.state DESC">COM_RA_LIBRARY_STATE_DESC</option>
+            <option value="DAYOFWEEK(a.walk_date) ASC">COM_RA_LIBRARY_PASTWALK_DOW_ASC</option>
+            <option value="DAYOFWEEK(a.walk_date) DESC">COM_RA_LIBRARY_PASTWALK_DOW_DESC</option>
+        </field>
+
+        <field name="limit"
+               type="limitbox"
+               label="COM_RA_LIBRARY_LIST_LIMIT"
+               description="COM_RA_LIBRARY_LIST_LIMIT_DESC"
+               class="input-mini"
+               default="25"
+               onchange="this.form.submit();"
+        />
+
+    </fields>
+</form>

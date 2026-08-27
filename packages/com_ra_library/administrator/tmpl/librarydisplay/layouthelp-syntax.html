@@ -1,0 +1,23 @@
+<h4>The section below allows you to customise your selected display.&nbsp;</h4>
+<h3>Overview</h3>
+<p>Customising your walks display involves using a simple template using placeholders and conditional logic. It allows you to customise the display of the walk/event display.</p>
+<h3>Basic Syntax</h3>
+<h3>Simple Placeholders</h3>
+<p>Use curly braces with field names to insert values:</p>
+<div><samp><code>Hello {name}!</code></samp></div>
+<div><samp><code>When rendered, where 'name' = 'John', this outputs:&nbsp;<strong>Hello John!</strong></code></samp></div>
+<h3>Conditional Blocks (if)</h3>
+<p>Show content only when a field has a value:</p>
+<div><code>{if:company}Works at {company}{/if}</code></div>
+<ul>
+<li>If&nbsp;company&nbsp;is provided:&nbsp;<strong>Works at Acme Corp</strong></li>
+<li>If&nbsp;company&nbsp;is empty/missing:&nbsp;<em>(nothing)</em></li>
+</ul>
+<h3>Conditional Blocks (if_not)</h3>
+<p>Show content only when a field is empty or missing:</p>
+<div><code>{if_not:email}No email provided{/if_not}</code></div>
+<h3>Shorthand Syntax</h3>
+<p>There's a convenient shorthand for common patterns:</p>
+<div><samp><code>Hello {from ?company}</code></samp></div>
+<p>This automatically expands to:&nbsp;Hello {if:company}from {company}{/if}</p>
+<p>The&nbsp;?&nbsp;before the field name means "only show the preceding text if this field exists".</p>

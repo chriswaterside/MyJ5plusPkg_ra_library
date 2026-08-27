@@ -1,0 +1,72 @@
+table.sr02prog {
+    border-width: 1px ;
+    border-color: #333333;
+    border-style: solid ;
+}
+table.sr02prog tr.easy {
+    background-color: #81BEF7 ;  /* Easy: ambles */
+}
+table.sr02prog tr.leisurely {
+    background-color: #FFFFFF ;   /* Leisurely */
+}
+table.sr02prog tr.moderate {
+    background-color: #CCFFCC ;   /* Moderate: long/all day */
+}
+table.sr02prog tr.strenuous {
+    background-color: #EDB1F3 ;  /* mainly fast-fitness */
+}
+table.sr02prog tr.linear {
+    background-color: yellow ;  /* linear walks */
+}
+table.sr02prog tr.krew {
+    background-color: #66FFFF ;  /* ken's krew */
+    padding-left: 10px;
+}
+table {
+    border-width: 1px ;
+    border-color: #333333;
+    border-style: solid ;
+}
+span.walkdetail.sr02easy,
+table tr.sr02easy.odd ,
+table tr.sr02easy.even {
+    background-color: #81BEF7 ;  /* Easy: ambles */
+}
+span.walkdetail.sr02leisurely,
+table tr.sr02leisurely.odd ,
+table tr.sr02leisurely.even{
+    background-color: #FFFFFF ;   /* Leisurely */
+}
+
+span.walkdetail.sr02moderate,
+table tr.sr02moderate.odd ,
+table tr.sr02moderate.even {
+    background-color: #CCFFCC ;   /* Moderate: long/all day */
+}
+span.walkdetail.sr02strenuous,
+table tr.sr02strenuous.odd ,
+table tr.sr02strenuous.even {
+    background-color: #EDB1F3 ;  /* mainly fast-fitness */
+}
+span.walkdetail.sr02linear,
+table tr.sr02linear.odd ,
+table tr.sr02linear.even  {
+    background-color: yellow ;  /* linear walks */
+}
+table tr.sr02krew,
+table tr.sr02krew.odd ,
+table tr.sr02krew.even {
+    background-color: #66FFFF ;  /* ken's krew */
+    padding-left: 10px;
+}
+div.sr02walk div span.item::before {
+    content: "•";
+    color: black;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em
+}
+div.sr02walk div span.item{
+    line-height:12px;
+    font-size: 13px;
+}
