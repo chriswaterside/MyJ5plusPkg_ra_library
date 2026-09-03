@@ -1,7 +1,5 @@
 var ra, displayCustomValues, OsGridRef, LatLon;
-if (typeof (ra) === "undefined") {
-    ra = {};
-}
+var ra = ra || {};
 if (typeof (ra.data) === "undefined") {
     ra.data = {};
 }

@@ -75,6 +75,7 @@ class Script {
         Load::addScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
         // Load::addScript("media/com_ra_library/js/vendors/leaflet/leaflet.js");
         Load::addScript("media/com_ra_library/js/leaflet/ra.leafletmap.js");
+        Load::addStyleSheet("media/com_ra_library/css/ramblerslibrary.css");
         Load::addStyleSheet("media/com_ra_library/js/leaflet/ramblersleaflet.css");
         Load::addScript("https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.15.0/proj4.js");
         Load::addScript("https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js");
