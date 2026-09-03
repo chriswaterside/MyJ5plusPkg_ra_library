@@ -1,7 +1,5 @@
 var ra, document, performance;
-if (typeof (ra) === "undefined") {
-    ra = {};
-}
+var ra = ra || {};
 ra._isES6 = null;
 ra._baseDirectory = '';
 ra._jversion = "1.5.0";
@@ -2893,8 +2891,6 @@ ra.previousNext = function (tag, items, fnc) {
  * Namespaced as ra.SimpleTemplate
  */
 
-// Create ra namespace if it doesn't exist
-var ra = ra || {};
 ra.SimpleTemplate = function (template) {
     if (Object.prototype.toString.call(template) === '[object Array]') {
         template = ra.SimpleTemplate.convertOldTemplate(template);
@@ -3024,7 +3020,7 @@ ra.SimpleTemplate.prototype.tokenize = function () {
             }
         }
 
-        var next = this.template.indexOf('{', pos);
+        var next = this.template.indexOf('{', pos + 1);
         if (next === -1) {
             tokens.push({type: 'text', value: this.template.slice(pos)});
             break;

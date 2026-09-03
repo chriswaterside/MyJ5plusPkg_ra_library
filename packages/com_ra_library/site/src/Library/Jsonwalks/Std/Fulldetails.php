@@ -12,15 +12,20 @@ defined("_JEXEC") or die("Restricted access");
 
 class Fulldetails extends Simplelist {
 
-     private $listFormat = "{gradeimg}{dowddmm}{, ?title}{, ?distance}";
+    private $listFormat = "{gradeimg}{dowddmm}{, ?title}{, ?distance}";
 
     public function __construct() {
         parent::__construct();
         parent::inLineDisplay();
+        parent::customFormat($this->listFormat);
+    }
+
+    public function customFormat($format) {
+        parent::customFormat($format);
     }
 
     public function DisplayWalks($walks) {
-        parent::customFormat($this->listFormat);
+
         parent::DisplayWalks($walks);
     }
 }

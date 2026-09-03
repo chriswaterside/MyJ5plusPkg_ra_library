@@ -21,6 +21,7 @@ use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Fulldetails;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Nextwalks;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Simplelist;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Walktable;
+use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Diagnostics;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Leaflet\Mapmarker;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Mapdraw;
 use Ramblers\Component\Ra_library\Site\Library\License\License;
@@ -281,7 +282,7 @@ class DisplayHelper {
                 $display = new SR02Table2();
                 break;
             default:
-                return new Simplelist();
+                return new Diagnostics();
         }
         return $display;
     }
@@ -342,22 +343,26 @@ class DisplayHelper {
                 }
                 break;
 
-            case 'table':
+            case 'future_table':
                 if (count($data->custom_table) > 0) {
                     // rename property
-                    foreach ($data->custom_table as $item) {
-                        $item->items = $item->layout;
-                        unset($item->layout);
+                    $temp = json_encode($data->custom_table);
+                    $temp2 = json_decode($temp, true);
+                    foreach ($temp2 as $key => $item) {
+                        $temp2[$key]['title'] = $temp2[$key]['heading'];
+                        $temp2[$key]['items'] = $temp2[$key]['layout'];
+                        unset($temp2[$key]['heading']);
+                        unset($temp2[$key]['layout']);
                     }
-                    $display->customFormat($data->custom_table);
+                    $display->customFormat($temp2);
                 }
                 break;
-            case 'list':
+            case 'future_list':
                 if (strlen($data->custom_simplelist) > 0) {
                     $display->customFormat($data->custom_simplelist);
                 }
                 break;
-            case 'fulldetails':
+            case 'future_fulldetails':
                 if (strlen($data->custom_fulldetails) > 0) {
                     $display->customFormat($data->custom_fulldetails);
                 }

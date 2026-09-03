@@ -34,6 +34,7 @@ class Walktable extends Displaybase {
         $this->customFormat = $format;
     }
 
+    #[\Override]
     public function DisplayWalks($walks) {
 
         $walks->sort(Walk::SORT_DATE, Walk::SORT_TIME, Walk::SORT_DISTANCE);
