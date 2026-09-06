@@ -129,10 +129,6 @@ class LibrarydisplayModel extends AdminModel {
     public function getItem($pk = null) {
 
         if ($item = parent::getItem($pk)) {
-            if (isset($item->params)) {
-                $item->params = json_encode($item->params);
-            }
-
             // Do any procesing on fields here if needed
         }
 
