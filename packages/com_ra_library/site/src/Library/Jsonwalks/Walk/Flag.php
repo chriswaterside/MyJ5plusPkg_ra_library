@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,7 +26,13 @@ class Flag implements \JsonSerializable {
     }
 
     public function isFlag($flag) {
-        return $flag === $this->name;
+        if ($flag === $this->name) {
+            return true;
+        }
+        if ($flag === $this->code) {
+            return true;
+        }
+        return false;
     }
 
     public function jsonSerialize(): mixed {
@@ -33,5 +41,4 @@ class Flag implements \JsonSerializable {
             'name' => $this->name
         ];
     }
-
 }

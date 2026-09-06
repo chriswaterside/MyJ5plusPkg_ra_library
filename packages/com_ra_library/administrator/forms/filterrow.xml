@@ -26,7 +26,7 @@
             <option value="by_dist_shorter">Filter walks shorter than limit</option>
             <option value="by_dist_longer">Filter walks longer than limit</option>
             <option value="by_title">Filter walks and events by title</option>
-            <option value="by_flags">Filter walks and events by facility</option>
+            <option value="by_flags">Filter walks and events by Facility/Transport/Accessibility</option>
         </field>
     </fieldset>
     
@@ -196,25 +196,27 @@
                description="Select one or more flags">
     
             <group label= "Facilities">
-                <option value="refresh">Refreshments available (Pub/cafe)</option>
-                <option value="toilet">Toilets available</option>
+                <option value="refreshments">Refreshments available (Pub/cafe)</option>
+                <option value="toilets">Toilets available</option>
             </group>
             <group label="Transport">
-                <option value="access">Accessible by public transport</option>
-                <option value="park">Car parking available</option>
-                <option value="share">Car sharing available</option>
-                <option value="coach">Coach trip</option>
+                <option value="public-transport">Accessible by public transport</option>
+                <option value="car-parking">Car parking available</option>
+                <option value="car-sharing">Car sharing available</option>
+                <option value="coach-trip">Coach trip</option>
             </group>
             <group label= "Access" >
-                <option value="dog"> Dog friendly</option>
-                <option value="family">Family-Friendly</option>
-                <option value="intro">Introductory walk</option>
-                <option value="nostiles">No Stiles</option>
+                <option value="dog-friendly"> Dog friendly</option>
+                <option value="family-friendly">Family-Friendly</option>
+                <option value="introductory-walk">Introductory walk</option>
+                <option value="no-stiles">No Stiles</option>
                 <option value="muddy">May be muddy</option>
                 <option value="uneven">Uneven ground</option>
                 <option value="inclines">Some inclines</option>
                 <option value="rest">Rest stop available</option>
-                <option value="wheelchair">Wheelchair accessible</option>
+                <option value="wheelchair-accessible">Wheelchair accessible</option>
+                <option value="pushchair-friendly">Pushchair friendly</option>
+                <option value="no-car">No car needed</option>
             </group>
         </field>
     </fieldset>

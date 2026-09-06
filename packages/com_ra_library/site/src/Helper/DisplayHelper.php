@@ -227,8 +227,14 @@ class DisplayHelper {
                     $feed->filterWalksDistanceAbove($filter->dist_longer);
                     break;
                 case 'by_title':
+                    if ($filter->titlecontains === 'contains') {
+                        $feed->filterTitleContains($filter->titletext, $filter->titlekeep);
+                    } else {
+                        $feed->filterTitle($filter->titletext, $filter->titlekeep);
+                    }
                     break;
                 case 'by_flags':
+                    $feed->filterFlags($filter->flags, $filter->flagskeep === 'keep');
                     break;
             }
         }

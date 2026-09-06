@@ -6,6 +6,7 @@ L.Control.SmartRoute = L.Control.extend({
         _routingKey: 'nil'
     },
     _userOptions: null,
+    _routingservice: "https://api.heigit.org/openrouteservice/v2/directions/foot-hiking/geojson",
     onAdd: function (map) {
         this._map = map;
         // default is off as relies on Map Tools being loaded first.
@@ -80,7 +81,8 @@ L.Control.SmartRoute = L.Control.extend({
         this.pending = true;
         var self = this;
         let request = new XMLHttpRequest();
-        request.open('POST', "https://api.openrouteservice.org/v2/directions/foot-hiking/geojson");
+        //   request.open('POST', "https://api.openrouteservice.org/v2/directions/foot-hiking/geojson");
+        request.open('POST', this._routingservice);
         request.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
         request.setRequestHeader('Content-Type', 'application/json');
         request.setRequestHeader('Authorization', this.options._routingKey);
