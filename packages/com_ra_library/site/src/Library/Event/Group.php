@@ -33,6 +33,14 @@ class Group {
         Script::registerWalks(array_values($arrayofwalks));
     }
 
+    public function addWalksForCalendarFeed($feed) {
+        $walks = $feed->getWalks();
+        $arrayofwalks = $walks->allWalks();
+        foreach ($arrayofwalks as $walk) {
+            $this->arrayofevents[] = $walk;
+        }
+    }
+
     // used by Download ICS
     public function addWalksArray($arrayofwalks) {
         foreach ($arrayofwalks as $walk) {

@@ -72,7 +72,8 @@ class CalendarfeedController extends BaseController {
         $feed->limitNumberWalks($limit);
 
         $group = new Group();
-        $group->addWalks($feed);
+        $group->addWalksForCalendarFeed($feed);
+        // add walks without registering them for js code
 
         $events = new EventFeed();
         $ics = $events->getText($group);

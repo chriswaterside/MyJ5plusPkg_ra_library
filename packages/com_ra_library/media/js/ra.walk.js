@@ -229,6 +229,7 @@ ra.event = function () {
             "<b>WALK</b>", "{difficulty}", "{difficulty+}", "{type}", "{shape}",
             "{distance}", "{distanceMi}", "{distanceKm}", "{gradeimg}", "{gradeimgRight}",
             "{grade}", "{grade+}", "{nationalGrade}", "{nationalGradeAbbr}", "{localGrade}",
+            "{grade}", "{ascent}", "{ascentMetres}", "{ascentFeet}",
             "<b>CONTACT</b>", "{contact}", "{contactname}", "{contactperson}", "{telephone}",
             "{telephone1}", "{telephone2}", "{email}", "{emailat}", "{emaillink}",
             "<b>MEDIA</b>", "{mediathumbr}",
@@ -446,6 +447,9 @@ ra.event = function () {
             case "{nationalGrade}":
             case "{nationalGradeAbbr}":
             case "{localGrade}":
+            case "{ascent}":
+            case "{ascentMetres}":
+            case "{ascentFeet}":
             case "{type}":
             case "{shape}":
             case "{mapGrade}":
@@ -1172,16 +1176,16 @@ ra.event.walk = function () {
     this.nationalGrade = null;
     this.localGrade = '';
     this.shape = '';
-    this.pace = '';
-    this.ascent = '';
+    this.ascentMetres = null;
+    this.ascentFeet = null;
     this.convertPHPWalk = function (phpwalk) {
         this.distanceKm = phpwalk.distanceKm;
         this.distanceMiles = phpwalk.distanceMiles;
         this.nationalGrade = new ra.event.nationalGrade(phpwalk.nationalGrade);
         this.localGrade = phpwalk.localGrade;
         this.shape = phpwalk.shape;
-        this.pace = phpwalk.pace;
-        this.ascent = phpwalk.ascent;
+        this.ascentMetres = phpwalk.ascentMetres;
+        this.ascentFeet = phpwalk.ascentFeet;
         return this;
     };
     this.setFilter = function (valueSet) {
@@ -1260,6 +1264,21 @@ ra.event.walk = function () {
             case "{type}": // deprecated
             case "{shape}":
                 out = this.shape;
+                break;
+            case "{ascent}":
+                if (this.ascentMetres !== null) {
+                    out = this.ascentMetres + 'm / ' + this.ascentFeet + 'ft';
+                }
+                break;
+            case "{ascentMetres}":
+                if (this.ascentMetres !== null) {
+                    out = this.ascentMetres.toString();
+                }
+                break;
+            case "{ascentFeet}":
+                if (this.ascentMetres !== null) {
+                    out = this.ascentFeet.toString();
+                }
                 break;
             case "{mapGrade}":
                 out = this.nationalGrade.image() + "<br/>" + this.nationalGrade.toText();
@@ -1340,11 +1359,9 @@ ra.event.walk = function () {
             $link = this.localGrade;
             $html += ra.html.addDiv("localgrade", "<b>Local Grade</b>: " + $link);
         }
-        if (this.pace !== "") {
-            $html += ra.html.addDiv("pace", "<b>Pace</b>: " + this.pace);
-        }
-        if (this.ascent !== "") {
-            $html += ra.html.addDiv("ascent", "<b>Ascent</b>: " + this.ascent);
+        if (this.ascentMetres !== null) {
+            var ascent = this.ascentMetres + 'm / ' + this.ascentFeet + 'ft'
+            $html += ra.html.addDiv("ascent", "<b>Ascent</b>: " + ascent);
         }
 
         return $html;

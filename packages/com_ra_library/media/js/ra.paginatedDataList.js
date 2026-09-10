@@ -305,10 +305,27 @@ ra.paginatedTable = function (tag, userOptions = null) {
         var trs = this.elements.tbody.childNodes;
         for (let j = 0; j < trs.length; j++) {
             var tr = trs[j];
-            var tds = tr.childNodes;
             for (let i = 0; i < cols.length; i++) {
                 var col = cols[i];
-                tds[col].classList.add('paginationRemoveCol');
+                this.removeColumn(tr, col);
+            }
+        }
+    };
+    this.removeColumn = function (tr, col) {
+        var tds = tr.childNodes;
+        if (tds === null) {
+            return;
+        }
+        for (let i = 0; i < tds.length; i++) {
+            var td = tds[i];
+            var span = td.getAttribute("colspan");
+            if (span > col) {
+                td.setAttribute('colspan', span - 1);
+                break;
+            }
+            if (col === i) {
+                td.classList.add('paginationRemoveCol');
+                break;
             }
         }
     };

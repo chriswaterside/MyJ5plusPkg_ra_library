@@ -67,8 +67,8 @@ class Sourcewalksmanager extends Sourcebase {
     private function readFeed($rafeedurl) {
 //        $properties = array("id", "status", "difficulty", "strands", "linkedEvent", "festivals",
 //            "walkContact", "linkedWalks", "linkedRoute", "title", "description", "groupCode", "groupName",
-//            "additionalNotes", "date", "distanceKM", "distanceMiles", "finishTime", "suitability",
-//            "surroundings", "theme", "specialStatus", "facilities", "pace", "ascentMetres", "ascentFeet",
+//            "additionalNotes", "date", "distanceKM", "distance_miles", "finishTime", "suitability",
+//            "surroundings", "theme", "specialStatus", "facilities", "pace", "ascent_metres", "ascent_feet",
 //            "gradeLocal", "attendanceMembers", "attendanceNonMembers", "attendanceChildren", "cancellationReason",
 //            "dateUpdated", "dateCreated", "media", "points", "groupInvite", "isLinear", "url");
 
@@ -163,15 +163,12 @@ class Sourcewalksmanager extends Sourcebase {
                 }
                 $localGrade = "";
                 $distanceKm = 0;
-                $pace = ""; //$item->pace;
                 if ($item->distance_km !== null) {
                     $distanceKm = $item->distance_km;
                 }
-                $ascent = ""; //$item->ascentMetres;
-                if ($item->ascent_metres !== null) {
-                    $ascent = strval($item->ascent_feet) . " ft/" . strval($item->ascent_metres) . " m";
-                }
-                $singleWalk = new actualWalk($shape, $nationalGrade, $localGrade, $distanceKm, $pace, $ascent);
+                $ascentMetres = $item->ascent_metres;
+                $ascentFeet = $item->ascent_feet;
+                $singleWalk = new actualWalk($shape, $nationalGrade, $localGrade, $distanceKm, $ascentMetres, $ascentFeet);
                 $walk->addWalk($singleWalk);
 
                 // Add contact details
@@ -275,9 +272,9 @@ class Sourcewalksmanager extends Sourcebase {
                 $nationalGrade = 'Event';
                 $localGrade = "";
                 $distanceKm = 0;
-                $pace = "";
-                $ascent = "";
-                $singleWalk = new actualWalk($shape, $nationalGrade, $localGrade, $distanceKm, $pace, $ascent);
+                $ascentMetres = null;
+                $ascentFeet = null;
+                $singleWalk = new actualWalk($shape, $nationalGrade, $localGrade, $distanceKm, $ascentMetres, $ascentFeet);
                 $walk->addWalk($singleWalk);
 
                 // Add contact details
