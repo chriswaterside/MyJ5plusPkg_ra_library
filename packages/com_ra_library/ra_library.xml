@@ -7,7 +7,7 @@
     <author>Chris Vaughan</author>
     <authorEmail>ruby.tuesday@ramblers-webs.org.uk</authorEmail>
     <authorUrl>https://ramblers-webs.org.uk</authorUrl>
-    <version>5.0.80</version>
+    <version>5.0.81</version>
     <description>Component to Ramblers displays of events etc</description>
     <namespace path="src">Ramblers\Component\Ra_library</namespace>
     <scriptfile>script.php</scriptfile>
