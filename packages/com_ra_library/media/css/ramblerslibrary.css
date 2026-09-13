@@ -1103,3 +1103,6 @@ iframe.ra.contactForm {
     display: flex;
     align-items: center; /* vertical alignment */
 }
+.ra-calendar-url {
+    width:100%;
+}

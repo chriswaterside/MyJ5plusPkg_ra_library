@@ -128,6 +128,21 @@ class Walk implements \JsonSerializable {
             case "{type}":
                 $out = $this->shape;
                 break;
+            case "{ascent}":
+                if ($this->ascentMetres !== null) {
+                    $out = strval($this->ascentMetres) . 'm / ' . strval($this->ascentFeet) . 'ft';
+                }
+                break;
+            case "{ascentMetres}":
+                if ($this->ascentMetres !== null) {
+                    $out = (string) $this->ascentMetres;
+                }
+                break;
+            case "{ascentFeet}":
+                if ($this->ascentMetres !== null) {
+                    $out = (string) $this->ascentFeet;
+                }
+                break;
         }
         return $out;
     }
