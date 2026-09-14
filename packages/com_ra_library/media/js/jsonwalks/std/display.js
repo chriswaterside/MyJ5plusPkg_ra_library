@@ -575,51 +575,136 @@ ra.display.subscribeCalendarForm = function (events) {
     outlook.addEventListener('click', function (e) {
         subscribeToCalendar('outlook', filtersForm);
     });
+    sub.disabled = true;
+    google.disabled = true;
+    outlook.disabled = true;
 
+    // div.appendChild(document.createElement('hr'));
+
+    // Copyable link, for calendar apps that need a pasted URL rather than a one-click handoff
+    const linkDesc = document.createElement('div');
+    linkDesc.classList.add('ra-calendar-desc');
+    linkDesc.innerHTML = '<p>Having trouble? Copy the link below and use your calendar app\'s own \'Add by URL\' option instead</p>';
+    div.appendChild(linkDesc);
+
+    var urlField = document.createElement('input');
+    urlField.type = 'text';
+    urlField.readOnly = true;
+    urlField.classList.add('ra-calendar-url');
+    urlField.placeholder = 'Adjust the filters above to build a link';
+    div.appendChild(urlField);
+
+    var copyLink = addButton(div, 'Copy link', 'Copy the calendar link to your clipboard');
+    copyLink.disabled = true;
+
+    copyLink.addEventListener('click', function (e) {
+        if (!urlField.value) {
+            return;
+        }
+        navigator.clipboard.writeText(urlField.value).then(function () {
+            var original = copyLink.innerHTML;
+            copyLink.innerHTML = 'Copied!';
+            setTimeout(function () {
+                copyLink.innerHTML = original;
+            }, 1500);
+        });
+    });
+
+    // Auto-regenerate the link whenever a filter changes
+    var updateTimer = null;
+    function scheduleLinkUpdate() {
+        clearTimeout(updateTimer);
+        updateTimer = setTimeout(function () {
+            var urls = buildFeedUrls(filtersForm, {silent: true});
+            if (urls) {
+                urlField.value = urls.httpsUrl;
+                copyLink.disabled = false;
+                sub.disabled = false;
+                google.disabled = false;
+                outlook.disabled = false;
+            } else {
+                urlField.value = '';
+                copyLink.disabled = true;
+                sub.disabled = true;
+                google.disabled = true;
+                outlook.disabled = true;
+            }
+        }, 50);
+    }
+    div.addEventListener('click', scheduleLinkUpdate);
+    div.addEventListener('change', scheduleLinkUpdate);
+    scheduleLinkUpdate(); // populate immediately if defaults are already valid
 };
 
-function subscribeToCalendar(type, form) {
+// Reads the filter form and builds both feed URL forms.
+// opts.silent suppresses the error toast (used for live auto-updates).
+function buildFeedUrls(form, opts) {
+    opts = opts || {};
     var result = form.getStatus();
-    var groups = result.groups;
-    var options = '';
-    if (result.type) {
-        options += '&type=' + form.getMask(result.type);
+
+    function fail(message) {
+        if (!opts.silent) {
+            ra.showError(message);
+        }
+        return null;
+    }
+    var params = new URLSearchParams();
+    params.set('option', 'com_ra_library');
+    params.set('task', 'calendarfeed.calendarfeed');
+    params.set('groups', result.groups);
+    if (result.groups) {
+        params.set('groups', result.groups);
     } else {
-        ra.showError('You must select at least one type');
-        return;
+        return fail('You must select at least one Group');
+    }
+    if (result.type) {
+        params.set('type', form.getMask(result.type));
+    } else {
+        return fail('You must select at least one type');
     }
     if (result.dow) {
-        options += '&dow=' + form.getMask(result.dow);
+        params.set('dow', form.getMask(result.dow));
     } else {
-        ra.showError('You must select at least one day of the week');
-        return;
+        return fail('You must select at least one day of the week');
     }
     if (result.grades) {
-        options += '&grades=' + form.getMask(result.grades);
+        params.set('grades', form.getMask(result.grades));
     } else {
-        ra.showError('You must select at least one grade');
-        return;
+        return fail('You must select at least one grade');
     }
     if (result.distance) {
-        options += '&dist=' + form.getMask(result.distance);
+        params.set('dist', form.getMask(result.distance));
     } else {
-        ra.showError('You must not deselect all distance options');
+        return fail('You must not deselect all distance options');
+    }
+    params.set('limit', result.number);
+
+    var path = '/index.php?' + params.toString();
+    return {
+        webcalUrl: 'webcal://' + window.location.host + path,
+        httpsUrl: 'https://' + window.location.host + path
+    };
+}
+
+function subscribeToCalendar(type, form) {
+    var urls = buildFeedUrls(form);
+    if (!urls) {
         return;
     }
-    options += '&limit=' + result.number;
 
-    var link = window.location.host + '/index.php?option=com_ra_library&task=calendarfeed.calendarfeed&groups=' + groups + options.replace(/ /g, '%20');
-    var url = 'webcal:' + link;
+    var url = urls.webcalUrl;
     switch (type) {
         case 'google':
-            url = 'https://calendar.google.com/calendar/r?cid=webcal:' + link;
+            url = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(urls.httpsUrl);
             break;
         case 'outlook':
-            url = 'https://outlook.office.com/calendar/0/addfromweb?url=webcal:' + link;
+            url = 'https://outlook.office.com/calendar/0/addfromweb?url=' + encodeURIComponent(urls.httpsUrl)
+                    + '&name=' + encodeURIComponent('Ramblers Walks');
             break;
     }
     window.open(url, '_blank');
 }
+
 function addButton(tag, name, title = '') {
     var div = document.createElement('button');
     div.innerHTML = name;

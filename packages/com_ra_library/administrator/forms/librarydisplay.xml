@@ -745,7 +745,6 @@ Default is&lt;br /&gt;
             multiple="true"
             layout="joomla.form.field.subform.repeatable"
             formsource="administrator/components/com_ra_library/forms/filterrow.xml"         
-            
             description="Each row defines one filter condition."
             groupByFieldset="true"
             min="0"

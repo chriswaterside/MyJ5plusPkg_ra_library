@@ -601,6 +601,9 @@ class Walk implements \JsonSerializable {
             case "{nationalGradeAbbr}":
             case "{localGrade}":
             case "{shape}":
+            case "{ascent}":
+            case "{ascentMetres}":
+            case "{ascentFeet}":
             case "{type}":
                 $out = $this->walks->getValue($option);
                 break;

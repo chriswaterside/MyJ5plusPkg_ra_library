@@ -15,12 +15,12 @@ class Walk implements \JsonSerializable {
     private $localGrade;
     private $distanceKm;
     private $distanceMiles;
-    private $pace;
-    private $ascent;
+    private $ascentMetres = null; // int or null
+    private $ascentFeet = null;
     private $validGrades = ["Event", "Easy Access", "Easy", "Leisurely", "Moderate", "Strenuous", "Technical"];
 
     public function __construct(string $shape, string $nationalGrade, string $localGrade,
-            float $distanceKm, string $pace, string $ascent) {
+            float $distanceKm, ?int $ascentMetres, ?int $ascentFeet) {
         switch (strtolower($shape)) {
             case "linear":
                 $this->shape = "Linear";
@@ -52,8 +52,8 @@ class Walk implements \JsonSerializable {
         $this->distanceMiles = $distanceKm * 0.621371;
         $this->distanceKm = round($this->distanceKm, 1);
         $this->distanceMiles = round($this->distanceMiles, 1);
-        $this->pace = $pace;
-        $this->ascent = $ascent;
+        $this->ascentMetres = $ascentMetres;
+        $this->ascentFeet = $ascentFeet;
     }
 
     public function getValue($option) {
@@ -128,6 +128,21 @@ class Walk implements \JsonSerializable {
             case "{type}":
                 $out = $this->shape;
                 break;
+            case "{ascent}":
+                if ($this->ascentMetres !== null) {
+                    $out = strval($this->ascentMetres) . 'm / ' . strval($this->ascentFeet) . 'ft';
+                }
+                break;
+            case "{ascentMetres}":
+                if ($this->ascentMetres !== null) {
+                    $out = (string) $this->ascentMetres;
+                }
+                break;
+            case "{ascentFeet}":
+                if ($this->ascentMetres !== null) {
+                    $out = (string) $this->ascentFeet;
+                }
+                break;
         }
         return $out;
     }
@@ -144,10 +159,14 @@ class Walk implements \JsonSerializable {
                 return $this->nationalGrade;
             case "shape":
                 return $this->shape;
-            case "pace":
-                return $this->pace;
-            case "ascent":
-                return $this->ascent;
+            case "ascentMetres":
+                if ($this->ascentMetres !== null) {
+                    return $this->ascentMetres;
+                }
+            case "ascentFeet":
+                if ($this->ascentFeet !== null) {
+                    return $this->ascentFeet;
+                }
             case "schemaDistance":
                 if ($this->nationalGrade !== "None") {
                     return "A " . $this->nationalGrade . " " . $this->distanceMiles . "mile / " . $this->distanceKm . "km walk";
@@ -293,8 +312,8 @@ class Walk implements \JsonSerializable {
             'localGrade' => $this->localGrade,
             'distanceKm' => $this->distanceKm,
             'distanceMiles' => $this->distanceMiles,
-            'pace' => $this->pace,
-            'ascent' => $this->ascent
+            'ascentMetres' => $this->ascentMetres,
+            'ascentFeet' => $this->ascentFeet
         ];
     }
 }
