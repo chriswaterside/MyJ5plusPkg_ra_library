@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Calendar;
+
 /**
  * @author  Xu Ding
  * @email   thedilab@gmail.com
@@ -16,6 +18,7 @@ class Calendar {
     private $daysInMonth = 0;
     private $events;
     static $copyno = 0;
+    static $id = 1;
     private $baseno = 1;
     private $displayAll = false;
     private $monthFormat = "Y M";
@@ -31,9 +34,8 @@ class Calendar {
         $this->monthFormat = $format;
     }
 
-    public function show($display, $events) {
+    public function show($display, $events, $lastdate) {
         $this->display = $display;
-        $lastdate = $events->getLastDate();
         $this->events = $events;
         $this->baseno = self::$copyno * 20;
         $today = getdate();
@@ -54,14 +56,14 @@ class Calendar {
                 $navtype = navigationtype::none;
             }
             $this->showMonth($navtype);
-            $i+=1;
+            $i += 1;
             If ($i >= 12) {
                 return;
             }
-            $this->currentMonth+=1;
+            $this->currentMonth += 1;
             if ($this->currentMonth == 13) {
                 $this->currentMonth = 1;
-                $this->currentYear+=1;
+                $this->currentYear += 1;
             }
             $navtype = navigationtype::both;
             $enddate = sprintf("%04d", $this->currentYear) . "-" . sprintf("%02d", $this->currentMonth) . "-01";
@@ -107,20 +109,20 @@ class Calendar {
                 '</div>' . PHP_EOL .
                 '<div class="box-content">' . PHP_EOL .
                 '<ul class="label">' . $this->_createLabels() . '</ul>' . PHP_EOL;
-        $content.='<div class="clear"></div>' . PHP_EOL;
-        $content.='<ul class="dates">' . PHP_EOL;
+        $content .= '<div class="clear"></div>' . PHP_EOL;
+        $content .= '<ul class="dates">' . PHP_EOL;
         $weeksInMonth = $this->_weeksInMonth($this->currentMonth, $this->currentYear);
         // Create weeks in a month
         for ($i = 0; $i < $weeksInMonth; $i++) {
             //Create days in a week
             for ($j = 1; $j <= 7; $j++) {
-                $content.=$this->_showDay($i * 7 + $j);
+                $content .= $this->_showDay($i * 7 + $j);
             }
         }
-        $content.='</ul>' . PHP_EOL;
-        $content.='<div class="clear"></div>' . PHP_EOL;
-        $content.='</div>' . PHP_EOL;
-        $content.='</div>' . PHP_EOL;
+        $content .= '</ul>' . PHP_EOL;
+        $content .= '<div class="clear"></div>' . PHP_EOL;
+        $content .= '</div>' . PHP_EOL;
+        $content .= '</div>' . PHP_EOL;
         echo $content;
     }
 
@@ -166,13 +168,13 @@ class Calendar {
         // $preYear = $this->currentMonth == 1 ? intval($this->currentYear) - 1 : $this->currentYear;
         $out = '<div class="header">';
         if ($navtype == navigationtype::last or $navtype == navigationtype::both) {
-            $out.= '<a class="prev" ' . $this->getTogglePair($preMonth, $this->currentMonth) . ' >Prev</a>';
+            $out .= '<a class="prev" ' . $this->getTogglePair($preMonth, $this->currentMonth) . ' >Prev</a>';
         }
-        $out.= '<span class="title">' . date($this->monthFormat, strtotime($this->currentYear . '-' . $this->currentMonth . '-1')) . '</span>';
+        $out .= '<span class="title">' . date($this->monthFormat, strtotime($this->currentYear . '-' . $this->currentMonth . '-1')) . '</span>';
         if ($navtype == navigationtype::first or $navtype == navigationtype::both) {
-            $out.= '<a class="next" ' . $this->getTogglePair($nextMonth, $this->currentMonth) . ' >Next</a>';
+            $out .= '<a class="next" ' . $this->getTogglePair($nextMonth, $this->currentMonth) . ' >Next</a>';
         }
-        $out.= '</div>';
+        $out .= '</div>';
         return $out;
 
         // <a href="#" onclick="javascript:toggle_visibility('foo');">Click here to toggle visibility of element #foo</a>
@@ -194,7 +196,7 @@ class Calendar {
     private function _createLabels() {
         $content = '';
         foreach ($this->dayLabels as $index => $label) {
-            $content.='<li class="' . ($label == 6 ? 'end title' : 'start title') . ' title">' . $label . '</li>';
+            $content .= '<li class="' . ($label == 6 ? 'end title' : 'start title') . ' title">' . $label . '</li>';
         }
         return $content;
     }
@@ -221,12 +223,46 @@ class Calendar {
         return $number = cal_days_in_month(CAL_GREGORIAN, $month, $year);
     }
 
-    private function addEvents($cellContent, $currentDate) {
-        //  echo $cellContent;
-        //  echo $currentDate;
-        return $this->events->addEvent($this->display, $cellContent, $currentDate);
+    //  private function addEvents($cellContent, $currentDate) {
+    //  echo $cellContent;
+    //  echo $currentDate;
+    //     return $this->events->addEvent($this->display, $cellContent, $currentDate);
+    // }
+    public function addEvents($text, $currentDate) {
+        $found = false;
+        $out = "";
+        $class = "even";
+        $events = $this->events->allWalks();
+        foreach ($events as $event) {
+            if ($event->EventDateYYYYMMDD() === $currentDate) {
+                // echo "found";
+                if ($found == false) {
+                    self::$id += 1;
+                    $ident = "ev" . strval(self::$id);
+                    $out .= "<div class='event-list-cal-event'>" . PHP_EOL;
+                    $out .= "<div class='event-list-cal-day'><a onclick=\"javascript:ra.html.toggleVisibility('" . $ident . "')\">" . $text . "</a></div>" . PHP_EOL;
+                    $out .= "<div class='event-list-cal-hover' id='" . $ident . "'>" . PHP_EOL;
+                    $out .= $event->EventDate()->format('l, jS');
+                }
+                $found = true;
+                $out .= $event->EventList($this->display, $class);
+                if ($class === "odd") {
+                    $class = "even";
+                } else {
+                    $class = "odd";
+                }
+            }
+        }
+        if ($found) {
+            $out .= "</div>";
+            $out .= "</div>";
+            //$out.= "</a>";
+        } else {
+            $out .= "<div class='event-list-cal-day'>" . $text . "</div>";
+            // $out.= $text;
+        }
+        return $out;
     }
-
 }
 
 abstract class navigationtype {
@@ -236,7 +272,6 @@ abstract class navigationtype {
     const last = 2;
     const neither = 3;
     const none = 4;
-
 }
 
 //- See more at: http://www.startutorial.com/articles/view/how-to-build-a-web-calendar-in-php#sthash.dyuf6D75.dpuf

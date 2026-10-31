@@ -20,7 +20,10 @@ use Joomla\CMS\Component\Router\RouterServiceInterface;
 use Joomla\CMS\Component\Router\RouterServiceTrait;
 use Joomla\CMS\Extension\BootableExtensionInterface;
 use Joomla\CMS\Extension\MVCComponent;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Fields\FieldsServiceInterface;
 use Joomla\CMS\Helper\ContentHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
 use Joomla\CMS\Tag\TagServiceTrait;
 use Psr\Container\ContainerInterface;
@@ -31,7 +34,7 @@ use Joomla\CMS\Categories\CategoryServiceInterface;
  *
  * @since  1.0.0
  */
-class Ra_libraryComponent extends MVCComponent implements RouterServiceInterface, BootableExtensionInterface, CategoryServiceInterface
+class Ra_libraryComponent extends MVCComponent implements RouterServiceInterface, BootableExtensionInterface, CategoryServiceInterface, FieldsServiceInterface
 {
 	use AssociationServiceTrait;
 	use RouterServiceTrait;
@@ -39,6 +42,44 @@ class Ra_libraryComponent extends MVCComponent implements RouterServiceInterface
 	use CategoryServiceTrait, TagServiceTrait {
 		CategoryServiceTrait::getTableNameForSection insteadof TagServiceTrait;
 		CategoryServiceTrait::getStateColumnForSection insteadof TagServiceTrait;
+	}
+
+	/**
+	 * Joomla Custom Fields support (Components > Ra_library > Past Walk Fields /
+	 * Route Fields). Each section is its own context, so a field created for
+	 * Past Walks never appears on Routes (or on articles, users, etc.).
+	 * The context string doubles as the edit form's name - see
+	 * PastwalkModel::getForm() / RouteModel::getForm() - which is how the
+	 * "System - Fields" plugin finds the right fields for the form it is
+	 * preparing and saving.
+	 *
+	 * @param   string       $section  The section part of the context.
+	 * @param   object|null  $item     The item (unused).
+	 *
+	 * @return  string|null  The section if it is one we manage, otherwise null.
+	 *
+	 * @since   1.0.13
+	 */
+	public function validateSection($section, $item = null)
+	{
+		return \in_array($section, ['pastwalk', 'route'], true) ? $section : null;
+	}
+
+	/**
+	 * The contexts offered in the Fields screens' context selector.
+	 *
+	 * @return  array  context => title
+	 *
+	 * @since   1.0.13
+	 */
+	public function getContexts(): array
+	{
+		Factory::getLanguage()->load('com_ra_library', JPATH_ADMINISTRATOR);
+
+		return [
+			'com_ra_library.pastwalk' => Text::_('COM_RA_LIBRARY_FIELDS_CONTEXT_PASTWALK'),
+			'com_ra_library.route'    => Text::_('COM_RA_LIBRARY_FIELDS_CONTEXT_ROUTE'),
+		];
 	}
 
 	/** @inheritdoc  */

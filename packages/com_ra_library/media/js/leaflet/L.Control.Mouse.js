@@ -881,7 +881,7 @@ L.Control.Rightclick = L.Control.extend({
             desc += "<br/><b>Grid Reference: </b>" + gr +
                     "<br/><b>Grid Reference: </b>" + gr10 + " (8 Figure)";
             links += '<a href="javascript:ra.link.photos(\'' + gr10 + '\')">[Photos]</a>';
-           // links += '<a href="javascript:ra.link.streetmap(' + e.latlng.lat.toFixed(7) + ',' + e.latlng.lng.toFixed(7) + ')">[OS Map]</a>';
+            // links += '<a href="javascript:ra.link.streetmap(' + e.latlng.lat.toFixed(7) + ',' + e.latlng.lng.toFixed(7) + ')">[OS Map]</a>';
         } else {
             desc += "<br/>Outside UK OS Grid";
         }
@@ -1038,7 +1038,7 @@ L.Control.Rightclick = L.Control.extend({
                         }
                         popup += item.name + "</b><br/>" + item.description;
                         popup += "<br/>" + type + " information on <a href='" + item.url + "' target='_blank'>Ramblers.org.uk</a>";
-                        popup += "<br/>" + type + " site: <a href='http://" + item.website + "' target='_blank' >" + item.groupUrl + "</a>";
+                        popup += "<br/>" + type + " site: <a href='" + item.groupUrl + "' target='_blank' >" + item.groupUrl + "</a>";
                         if (item.scope !== "A") {
                             popup += "<br/>Part of " + item.areaName;
                         }
@@ -1307,10 +1307,10 @@ L.Control.Rightclick = L.Control.extend({
         title3.textContent = 'Select which information should be displayed';
         tag.appendChild(title3);
         var div = document.createElement('div');
-         div.setAttribute('class', 'ra-mouse-options');
+        div.setAttribute('class', 'ra-mouse-options');
         tag.appendChild(div);
         var so = document.createElement('select');
-       // so.setAttribute('class', 'ra-mouse-options');
+        // so.setAttribute('class', 'ra-mouse-options');
         so.title = "Select which information is displayed";
         this.rightClickOptions.forEach((group) => {
             var gr = document.createElement("optgroup");

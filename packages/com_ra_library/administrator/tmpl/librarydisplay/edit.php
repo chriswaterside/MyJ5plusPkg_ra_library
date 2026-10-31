@@ -63,13 +63,35 @@ $wa->useScript('com_ra_library.layoutcheck');
         echo $this->form->renderField('title');
         echo $this->form->renderField('displayoption');
         echo $this->form->renderField('displayoption_note');
-        echo $this->form->renderField('displaymethods');
+        // How to add this display (and the self-contained tags) to a site.
+        $helpId = (int) ($this->item->id ?? 0);
+        $helpTag = htmlspecialchars('{ra_library:display:' . ($helpId > 0 ? $helpId : 'ID') . '}', ENT_QUOTES, 'UTF-8');
+        $helpRef = static function (string $summaryKey, string $bodyKey, bool $open = false): string {
+            return '<details class="mb-2"' . ($open ? ' open' : '') . '><summary class="fw-bold">' . Text::_($summaryKey)
+                    . '</summary><div class="mt-2">' . Text::_($bodyKey) . '</div></details>';
+        };
+        echo '<div class="alert alert-info w-100"><h4>' . Text::_('COM_RA_LIBRARY_HELP_TITLE') . '</h4>'
+        . Text::sprintf('COM_RA_LIBRARY_HELP_WAYS', $helpTag, Text::_($helpId > 0 ? 'COM_RA_LIBRARY_HELP_ID_KNOWN' : 'COM_RA_LIBRARY_HELP_ID_NEW'))
+        . Text::_('COM_RA_LIBRARY_HELP_TAGS_INTRO')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_WALKS', 'COM_RA_LIBRARY_HELP_REF_WALKS', $displayOption === 'future_display')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_CALENDAR', 'COM_RA_LIBRARY_HELP_REF_CALENDAR', $displayOption === 'future_calendar')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_ADDTOCALENDAR', 'COM_RA_LIBRARY_HELP_REF_ADDTOCALENDAR', $displayOption === 'future_addtocalendar')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_PASTWALKS', 'COM_RA_LIBRARY_HELP_REF_PASTWALKS', \in_array($displayOption, ['pastwalks_blog', 'pastwalks_list', 'pastwalks_table', 'pastwalks_maptable', 'pastwalks_categorytree'], true))
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_ROUTES', 'COM_RA_LIBRARY_HELP_REF_ROUTES', \in_array($displayOption, ['routes_blog', 'routes_list', 'routes_table', 'routes_maptable', 'routes_categorytree'], true))
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_GPX', 'COM_RA_LIBRARY_HELP_REF_GPX', $displayOption === 'routes_display_single')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_GPXFOLDER', 'COM_RA_LIBRARY_HELP_REF_GPXFOLDER', $displayOption === 'routes_display_multi')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_PLOT', 'COM_RA_LIBRARY_HELP_REF_PLOT', $displayOption === 'routes_plot')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_CSV', 'COM_RA_LIBRARY_HELP_REF_CSV', $displayOption === 'table_csv')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_DOCUMENTS', 'COM_RA_LIBRARY_HELP_REF_DOCUMENTS', $displayOption === 'documents_folder')
+        . $helpRef('COM_RA_LIBRARY_HELP_SUMMARY_NOTES', 'COM_RA_LIBRARY_HELP_NOTES')
+        . '</div>';
         echo HTMLHelper::_('uitab.endTab');
 
         switch ($displayOption) {
             case 'future_display':
             case "future_nextwalks":
             case "future_calendar":
+            case "future_addtocalendar":
             case "future_table":
             case "future_list":
             case "future_map":
@@ -85,6 +107,14 @@ $wa->useScript('com_ra_library.layoutcheck');
             case "future_SR02c":
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'Define Walks/Events', Text::_('Walks/Events Source'));
                 echo $this->form->renderFieldset('loadwalks');
+                // 'Add to calendar' button option. Nothing saved yet => Yes for the tabbed display, No for the others
+                if ($displayOption !== 'future_addtocalendar') {
+                    $calLink = $this->form->getValue('show_calendar_link', 'options', null);
+                    if ($calLink === null || $calLink === '') {
+                        $this->form->setValue('show_calendar_link', 'options', $displayOption === 'future_display' ? '1' : '0');
+                    }
+                    echo $this->form->renderField('show_calendar_link', 'options');
+                }
                 echo HTMLHelper::_('uitab.endTab');
                 echo HTMLHelper::_('uitab.addTab', 'myTab', 'filters', 'Walk/event Filters');
                 echo '<div class="row">';

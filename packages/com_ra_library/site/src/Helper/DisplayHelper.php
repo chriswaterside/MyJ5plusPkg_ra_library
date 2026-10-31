@@ -19,6 +19,9 @@ use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Areawalks;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Display;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Fulldetails;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Nextwalks;
+use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Calendar;
+use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\IcsDownload;
+use Ramblers\Component\Ra_library\Site\Library\Ics\Calendarbutton;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Simplelist;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Walktable;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Std\Diagnostics;
@@ -34,8 +37,6 @@ use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Ns\Walksprinted as NSWa
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Sr02\Display as SR02Display;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Sr02\Sr02nextwalks;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Sr02\Table2 as SR02Table2;
-use \Ramblers\Component\Ra_library\Site\Library\Event\Group;
-use \Ramblers\Component\Ra_library\Site\Library\Event\Calendar;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Gpx\Map as GpxMap;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Gpx\Maplist as GpxMaplist;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Table\Csv as CsvList;
@@ -55,17 +56,13 @@ use Joomla\CMS\Factory;
 class DisplayHelper {
 
     private $displayoption;
-    //private $options;
+//private $options;
     private $data;
 
     public function __construct($displayoption, $options) {
         $this->displayoption = $displayoption;
         $this->data = json_decode($options);
-        // css_file/js_file aren't rendered on every displayoption's edit-form
-        // case (e.g. the Past Walks/Routes Blog and Single Item cases render
-        // neither, List renders only css_file) - so the decoded options
-        // object won't always have these properties at all. Read them
-        // defensively rather than assuming they're always present.
+        // Render css and js if set
         $css = $this->data->css_file ?? '';
         if (strlen($css) > 0) {
             Load::addStyleSheet($css);
@@ -102,9 +99,6 @@ class DisplayHelper {
                 break;
             case "documents_folder":
                 $this->displayDocumentsFolders();
-                break;
-            case "future_calendar":
-                $this->calendarDisplay();
                 break;
             case "pastwalks_blog":
                 $this->displayRecordBlog('pastwalk');
@@ -154,7 +148,29 @@ class DisplayHelper {
         $this->setClasses($this->displayoption, $display, $data);
         $this->customise_title($feed, $data);
         $this->customiseWalksDisplay($display, $this->displayoption, $data);
+        // Calendar link
+        $showLink = $this->showCalendarLink();
+        if ($this->displayoption === 'future_display') {
+            $display->setCalendarLink($showLink);  // button is inside the tabs
+        }
         $feed->Display($display);
+        if ($showLink && $this->displayoption !== 'future_display' && $this->displayoption !== 'future_addtocalendar') {
+            // groups and walk ids come from the walks this display actually shows
+            $options = Calendarbutton::getOptions($feed->getWalks());
+            echo Calendarbutton::render($options);
+        }
+    }
+
+    // Should this display show the 'Add to calendar' button?
+    // Saved value wins; with no saved value only the tabbed display has it on (so existing displays are unchanged).
+    private function showCalendarLink(): bool {
+        if ($this->displayoption === 'future_addtocalendar') {
+            return true;
+        }
+        if (isset($this->data->show_calendar_link) && $this->data->show_calendar_link !== '') {
+            return (string) $this->data->show_calendar_link === '1';
+        }
+        return $this->displayoption === 'future_display';
     }
 
     private function getFutureEventFeedoptions($sources) {
@@ -219,6 +235,7 @@ class DisplayHelper {
                     $feed->filterCancelled(); // removes walks that have been cancelled  
                     break;
                 case 'by_outside_area':
+                    $feed->filterDistanceFromLatLong($filter->filterlatitude, $filter->filterlongitude, $filter->filterradius);
                     break;
                 case 'by_dist_shorter':
                     $feed->filterWalksDistanceBelow($filter->dist_shorter);
@@ -242,11 +259,17 @@ class DisplayHelper {
 
     private function getEventsDisplay($type) {
         switch ($type) {
+            case 'future_display':
+                $display = new Display();
+                break;
             case 'future_nextwalks':
                 $display = new Nextwalks();
                 break;
-            case 'future_display':
-                $display = new Display();
+            case "future_calendar":
+                $display = new Calendar();
+                break;
+            case "future_addtocalendar":
+                $display = new IcsDownload();
                 break;
             case 'future_table':
                 $display = new Walktable();
@@ -254,6 +277,7 @@ class DisplayHelper {
             case 'future_list':
                 $display = new Simplelist();
                 break;
+
             case 'future_map':
                 $display = new Mapmarker();
                 break;
@@ -319,7 +343,7 @@ class DisplayHelper {
 
     private function customiseWalksDisplay($display, $option, $data) {
         switch ($option) {
-            case 'nextwalks':
+            case 'future_nextwalks':
                 if (strlen($data->custom_nextwalks) > 0) {
                     $display->customFormat($data->custom_nextwalks);
                 }
@@ -373,22 +397,12 @@ class DisplayHelper {
                     $display->customFormat($data->custom_fulldetails);
                 }
                 break;
+            case 'future_calendar':
+                if ($data->calendar_size) {
+                    $display->setSize(intval($data->calendar_size));
+                }
+                break;
         }
-    }
-
-    private function calendarDisplay() {
-        $data = $this->data;
-        $size = 0;
-        if ($data->calendar_size) {
-            $size = intval($data->calendar_size);
-        }
-        $feedoptions = $this->getFutureEventFeedOptions($data->eventsources);
-        $feed = new Feed($feedoptions);
-        $this->filtersEvents($feed, $data->filters);
-        $events = new Group(); // create a group of events
-        $events->addWalks($feed); // add walks to the group of events
-        $display = new Calendar($size); // code to display the walks in a particular format, size: 0, 250 or 400
-        $display->Display($events); // display walks information
     }
 
     private function displayPlot() {
@@ -442,7 +456,7 @@ class DisplayHelper {
 
         if (($data->table_csv_optionsmode ?? 'file') === 'form') {
             $options = $data->table_options;
-            // convert from object to arrays
+// convert from object to arrays
             $options = json_encode($options);
             $options = json_decode($options, true) ?: [];
             $list->setOptions($options);
@@ -455,7 +469,7 @@ class DisplayHelper {
         $data = $this->data;
         $select = $data->table_sqlselect;
         $options = $data->table_options;
-        // convert from object to arrays
+// convert from object to arrays
         $options = json_encode($options);
         $options = json_decode($options, true) ?: [];
         $list = new SqlList($select);
@@ -469,7 +483,7 @@ class DisplayHelper {
         $data = $this->data;
         $json = $data->table_json;
         $options = $data->table_options;
-        // convert from object to arrays
+// convert from object to arrays
         $options = json_encode($options);
         $options = json_decode($options, true) ?: [];
         $list = new JsonList($json);
@@ -519,7 +533,7 @@ class DisplayHelper {
             if ($source->introduction === '1' && $source->introductiontext) {
                 echo $source->introductiontext;
             }
-            //    $exts = $source->documents_exts;
+//    $exts = $source->documents_exts;
             $exts = array_column($source->documents_exts, 'Extension');
             $folder = $source->document_folder;
             $asc = $source->sort === "0";
@@ -548,10 +562,10 @@ class DisplayHelper {
 
         $catid = (int) ($data->{$prefix . 'catid'} ?? 0);
 
-        // Three-section "article blog" layout (mirrors com_content's
-        // classic Blog: leading/full items, then intro items in columns,
-        // then plain links) - the page size is simply the sum of the
-        // three counts, there's no separate "items per page" for Blog.
+// Three-section "article blog" layout (mirrors com_content's
+// classic Blog: leading/full items, then intro items in columns,
+// then plain links) - the page size is simply the sum of the
+// three counts, there's no separate "items per page" for Blog.
         $numFull = (int) ($data->{$prefix . 'blog_full_items'} ?? 1);
         $numIntro = (int) ($data->{$prefix . 'blog_intro_items'} ?? 4);
         $introColumns = (int) ($data->{$prefix . 'blog_intro_columns'} ?? 2);
@@ -672,14 +686,14 @@ class DisplayHelper {
             return;
         }
 
-        // Split mapped/unmapped BEFORE rendering - the "unmapped" group is
-        // rendered as its own plain table underneath (no latitude/longitude
-        // columns, so it never gets a Map tab of its own), rather than
-        // trying to make one table cope with rows that can't have a
-        // marker. See Table/Sql.php (the generic version of this same
-        // component) for why this couldn't just be one table with some
-        // rows silently missing a marker - Columns/Column has no concept
-        // of a "this row has no location" state within a single table.
+// Split mapped/unmapped BEFORE rendering - the "unmapped" group is
+// rendered as its own plain table underneath (no latitude/longitude
+// columns, so it never gets a Map tab of its own), rather than
+// trying to make one table cope with rows that can't have a
+// marker. See Table/Sql.php (the generic version of this same
+// component) for why this couldn't just be one table with some
+// rows silently missing a marker - Columns/Column has no concept
+// of a "this row has no location" state within a single table.
         $mapped = [];
         $unmapped = [];
 
@@ -793,21 +807,21 @@ class DisplayHelper {
 
         $map = new LeafletMap();
 
-        // \stdClass rather than an anonymous class ("new class {}") - both
-        // work as an arbitrary bag of properties for setDataObject() to
-        // json_encode(), but an anonymous class doesn't declare any of the
-        // properties being set below, which PHP 8.2+ deprecates ("Creation
-        // of dynamic property ... is deprecated"). stdClass is explicitly
-        // exempt from that deprecation.
+// \stdClass rather than an anonymous class ("new class {}") - both
+// work as an arbitrary bag of properties for setDataObject() to
+// json_encode(), but an anonymous class doesn't declare any of the
+// properties being set below, which PHP 8.2+ deprecates ("Creation
+// of dynamic property ... is deprecated"). stdClass is explicitly
+// exempt from that deprecation.
         $data = new \stdClass();
         $data->markerOptions = null;
         $data->list = $columns;
         $data->paginationDefault = 15;
 
         if ($withMap) {
-            // ra.display.tableList (ramblerstable.js) - the Map+Table tabs
-            // component also used by the existing generic SQL/JSON/CSV
-            // table display options.
+// ra.display.tableList (ramblerstable.js) - the Map+Table tabs
+// component also used by the existing generic SQL/JSON/CSV
+// table display options.
             $map->options->cluster = true;
             $map->options->fullscreen = true;
             $map->options->mouseposition = true;
@@ -828,15 +842,15 @@ class DisplayHelper {
             Load::addScript('media/com_ra_library/js/ra.tabs.js');
             Load::addStyleSheet('media/com_ra_library/css/ra.tabs.css');
         } else {
-            // ra.display.plainTable (ra.plaintable.js) - a plain sortable
-            // table, no Map tab at all. NOT ra.display.tableList: that
-            // component's load() unconditionally tries to build a Leaflet
-            // map into the Map tab's container even when there's no
-            // location data and that tab is disabled - and a disabled
-            // tab's container is never actually created, so it fails
-            // trying to build a map inside a container that doesn't exist
-            // ("root is null"). Sidestepping that entirely is simpler and
-            // safer than changing the shared component both options use.
+// ra.display.plainTable (ra.plaintable.js) - a plain sortable
+// table, no Map tab at all. NOT ra.display.tableList: that
+// component's load() unconditionally tries to build a Leaflet
+// map into the Map tab's container even when there's no
+// location data and that tab is disabled - and a disabled
+// tab's container is never actually created, so it fails
+// trying to build a map inside a container that doesn't exist
+// ("root is null"). Sidestepping that entirely is simpler and
+// safer than changing the shared component both options use.
             $map->setCommand('ra.display.plainTable');
             $map->setDataObject($data);
             $map->display();
@@ -879,10 +893,10 @@ class DisplayHelper {
         echo '<div class="ra-categorytree">';
         echo '<h2 class="ra-categorytree-heading">' . htmlspecialchars($heading) . '</h2>';
 
-        // Breadcrumb trail (root down to here) - not shown once we're back
-        // at the configured root. Replaces the old single "Up one level"
-        // link with a full clickable trail, each ancestor a link except
-        // the current category itself.
+// Breadcrumb trail (root down to here) - not shown once we're back
+// at the configured root. Replaces the old single "Up one level"
+// link with a full clickable trail, each ancestor a link except
+// the current category itself.
         if ($catid > 0 && $catid !== $rootCatid) {
             echo $this->buildCategoryTreeBreadcrumb($recordType, $catid, $rootCatid);
         }
@@ -912,12 +926,12 @@ class DisplayHelper {
             return;
         }
 
-        // Leaf category (or top level with no categories at all) - show its
-        // items. Table/Map+Table are handled separately, before the
-        // paginated fetch below, since they fetch and paginate everything
-        // themselves (via displayRecordTable()/renderItemsTable(), the
-        // same methods the standalone Table/Map+Table display options
-        // use) rather than using this method's server-side pagination.
+// Leaf category (or top level with no categories at all) - show its
+// items. Table/Map+Table are handled separately, before the
+// paginated fetch below, since they fetch and paginate everything
+// themselves (via displayRecordTable()/renderItemsTable(), the
+// same methods the standalone Table/Map+Table display options
+// use) rather than using this method's server-side pagination.
         if ($style === 'table' || $style === 'maptable') {
             $this->displayRecordTable($recordType, $style === 'maptable', $catid);
             echo '</div>';
@@ -989,8 +1003,8 @@ class DisplayHelper {
         $chain = FrontendHelper::getCategoryBreadcrumbChain($catid);
 
         if ($rootCatid > 0) {
-            // Drop any ancestors above the configured root - they're not
-            // part of this display's browsable subtree.
+// Drop any ancestors above the configured root - they're not
+// part of this display's browsable subtree.
             $startIndex = null;
 
             foreach ($chain as $index => $category) {
@@ -1002,8 +1016,8 @@ class DisplayHelper {
 
             $chain = $startIndex !== null ? array_slice($chain, $startIndex) : $chain;
         } else {
-            // Whole real tree - prepend a synthetic "All Categories" crumb
-            // linking back to the top (catid=0).
+// Whole real tree - prepend a synthetic "All Categories" crumb
+// linking back to the top (catid=0).
             $allCategories = new \stdClass();
             $allCategories->id = 0;
             $allCategories->title = Text::_('COM_RA_LIBRARY_CATEGORYTREE_ALL_CATEGORIES');
@@ -1021,7 +1035,7 @@ class DisplayHelper {
             $title = htmlspecialchars($category->title);
 
             if ($index === $lastIndex) {
-                // Current position - plain text, not a link.
+// Current position - plain text, not a link.
                 $parts[] = $title;
             } else {
                 $url = FrontendHelper::getCategoryTreeUrl((int) $category->id);
@@ -1060,12 +1074,14 @@ class DisplayHelper {
      */
     private const DEFAULT_CATEGORYTREE_BRANCH_TEMPLATE = '<div class="ra-categorytree-featured">{featured_image}</div><h3>{title_link}</h3><p class="ra-categorytree-meta">{item_count} here, {total_item_count} in this branch</p>{if:description}<div class="ra-categorytree-desc">{description}</div>{/if}';
     private const DEFAULT_PASTWALK_INTRO_TEMPLATE = '<div class="ra-featured-float">{featured_image}</div><h2>{title_link}</h2><p class="ra-meta">{walk_date_dow}{, ?walk_leader}{, ?national_grade}{, ?distance_miles}</p><div class="ra-description">{description}</div>';
-    private const DEFAULT_PASTWALK_MORE_TEMPLATE = '{if:image_grid}<h3>Photos</h3>{image_grid}{/if}
+    private const DEFAULT_PASTWALK_MORE_TEMPLATE = '{if:custom_fields}{custom_fields}{/if}
+{if:image_grid}<h3>Photos</h3>{image_grid}{/if}
 {if:document_list}<h3>Documents</h3>{document_list}{/if}
 {if:gpx_map_list}<h3>Additional routes</h3>{gpx_map_list}{/if}
 {if:gpx_map}<h3>Route</h3>{gpx_map}{/if}';
     private const DEFAULT_ROUTE_INTRO_TEMPLATE = '<div class="ra-featured-float">{featured_image}</div><h2>{title_link}</h2><p class="ra-meta">{national_grade}{, ?distance_miles}</p><div class="ra-description">{description}</div>';
-    private const DEFAULT_ROUTE_MORE_TEMPLATE = '{if:image_grid}<h3>Photos</h3>{image_grid}{/if}
+    private const DEFAULT_ROUTE_MORE_TEMPLATE = '{if:custom_fields}{custom_fields}{/if}
+{if:image_grid}<h3>Photos</h3>{image_grid}{/if}
 {if:route_points_list}<h3>Route points</h3>{route_points_list}{/if}
 {if:document_list}<h3>Documents</h3>{document_list}{/if}
 {if:gpx_map_list}<h3>Additional routes</h3>{gpx_map_list}{/if}
@@ -1120,12 +1136,12 @@ class DisplayHelper {
      * @since   1.0.0
      */
     private function renderPagination(int $total, int $limitstart, int $limit): void {
-        // Work out "is there more than one page" with plain arithmetic
-        // from values already in hand, rather than asking the Pagination
-        // object to introspect itself via a CMSObject-style get('pages.total')
-        // accessor - that generic accessor pattern is being removed from
-        // Joomla core as part of the Joomla 6 CMSObject cleanup, so this
-        // stays correct regardless of what Pagination's own API looks like.
+// Work out "is there more than one page" with plain arithmetic
+// from values already in hand, rather than asking the Pagination
+// object to introspect itself via a CMSObject-style get('pages.total')
+// accessor - that generic accessor pattern is being removed from
+// Joomla core as part of the Joomla 6 CMSObject cleanup, so this
+// stays correct regardless of what Pagination's own API looks like.
         if ($limit > 0 && $total > $limit) {
             $pagination = new Pagination($total, $limitstart, $limit);
             echo '<div class="ra-pagination">' . $pagination->getPagesLinks() . '</div>';
@@ -1141,49 +1157,49 @@ class DisplayHelper {
      */
     private function loadRecordDisplayAssets(): void {
         Load::addStyleSheet('media/com_ra_library/css/frontend.css');
-        // Image gallery lightbox (see media/js/ra.lightbox.js) - its own
-        // dedicated stylesheet, loaded wherever frontend.css is, since a
-        // custom template could embed {image_grid} in a Blog/List/Category
-        // Tree layout too, not just the Single Item view's default More
-        // template. Kept as its own file (rather than folded into
-        // frontend.css) so the Walks Manager display (which also uses this
-        // same lightbox now - see ra.walk.js) can load just this, without
-        // pulling in Past Walks/Routes-specific layout CSS it doesn't need.
-        //
-        // The lightbox plugs into ra.js's existing ra.modals popup system
-        // rather than building its own overlay, so ra.js (behaviour) and
-        // ramblerslibrary.css (the modal's own chrome) both need to be
-        // loaded here too - Load::addScript()/addStyleSheet() key each
-        // asset by its file path, so this is safe to call even on a page
-        // that also loads them some other way (e.g. a Leaflet map display),
-        // it won't be included twice.
+// Image gallery lightbox (see media/js/ra.lightbox.js) - its own
+// dedicated stylesheet, loaded wherever frontend.css is, since a
+// custom template could embed {image_grid} in a Blog/List/Category
+// Tree layout too, not just the Single Item view's default More
+// template. Kept as its own file (rather than folded into
+// frontend.css) so the Walks Manager display (which also uses this
+// same lightbox now - see ra.walk.js) can load just this, without
+// pulling in Past Walks/Routes-specific layout CSS it doesn't need.
+//
+// The lightbox plugs into ra.js's existing ra.modals popup system
+// rather than building its own overlay, so ra.js (behaviour) and
+// ramblerslibrary.css (the modal's own chrome) both need to be
+// loaded here too - Load::addScript()/addStyleSheet() key each
+// asset by its file path, so this is safe to call even on a page
+// that also loads them some other way (e.g. a Leaflet map display),
+// it won't be included twice.
         Load::addScript('media/com_ra_library/js/ra.js');
         Load::addStyleSheet('media/com_ra_library/css/ramblerslibrary.css');
         Load::addStyleSheet('media/com_ra_library/css/ra.lightbox.css');
         Load::addScript('media/com_ra_library/js/ra.lightbox.js');
-        // Image grid pagination (see media/js/ra.imagegrid.js) - only ever
-        // does anything on a grid that actually has a pager (see
-        // ItemRenderer::buildImageGrid()), so harmless to load unconditionally.
+// Image grid pagination (see media/js/ra.imagegrid.js) - only ever
+// does anything on a grid that actually has a pager (see
+// ItemRenderer::buildImageGrid()), so harmless to load unconditionally.
         Load::addScript('media/com_ra_library/js/ra.imagegrid.js');
 
-        // "Open items in a popup" (Components > Ra_library > Options >
-        // Item Preview) - loaded here rather than only when this specific
-        // page happens to render a .ra-item-preview-link itself, since
-        // every one of Blog/List/Category Tree/Table/Map+Table routes
-        // through this method and any of them can contain one.
+// "Open items in a popup" (Components > Ra_library > Options >
+// Item Preview) - loaded here rather than only when this specific
+// page happens to render a .ra-item-preview-link itself, since
+// every one of Blog/List/Category Tree/Table/Map+Table routes
+// through this method and any of them can contain one.
         if ((int) ComponentHelper::getParams('com_ra_library')->get('open_items_in_modal', 0) === 1) {
             Load::addScript('media/com_ra_library/js/ra.itempreview.js');
 
-            // Primes the full Leaflet/ra.js/ra.gpxlightbox.js stack even
-            // if THIS page never itself shows a map - a modal-fetched item
-            // might have its own {gpx_map} (needs ra.leafletmap /
-            // ra.bootstrapper already defined before its bootstrap script
-            // runs) or {gpx_map_list} (needs ra.gpxlightbox.js's click
-            // handling already registered) - reuses
-            // ItemRenderer::loadGpxMapAssets() rather than a separate,
-            // narrower priming call, so both are covered the same way
-            // {gpx_map}/{gpx_map_list} already prime themselves on a page
-            // that renders one directly.
+// Primes the full Leaflet/ra.js/ra.gpxlightbox.js stack even
+// if THIS page never itself shows a map - a modal-fetched item
+// might have its own {gpx_map} (needs ra.leafletmap /
+// ra.bootstrapper already defined before its bootstrap script
+// runs) or {gpx_map_list} (needs ra.gpxlightbox.js's click
+// handling already registered) - reuses
+// ItemRenderer::loadGpxMapAssets() rather than a separate,
+// narrower priming call, so both are covered the same way
+// {gpx_map}/{gpx_map_list} already prime themselves on a page
+// that renders one directly.
             ItemRenderer::loadGpxMapAssets();
         }
     }

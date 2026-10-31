@@ -46,6 +46,7 @@ class DisplayoptionLabelHelper {
         $disp['future_map'] = 'Led Walks: Map of led walks';
         $disp['future_fulldetails'] = 'Led Walks: Full details';
         $disp['future_calendar'] = 'Led Walks: Calendar';
+        $disp['future_addtocalendar'] = 'Led Walks: Add to Calendar button';
         $disp['future_BU51a'] = 'Led Walks: BU51:Fulldetails';
         $disp['future_BU51b'] = 'Led Walks: BU51:Groupstabs';
         $disp['future_BU51c'] = 'Led Walks: BU51:Microtabs';
@@ -60,7 +61,7 @@ class DisplayoptionLabelHelper {
         $disp['routes_list'] = 'Routes: List';
         $disp['routes_table'] = 'Routes: Table';
         $disp['routes_maptable'] = 'Routes: Map & Table';
-        $disp['routes_categorytree'] = 'Routes: List all Categories in a Category Tree';
+        $disp['routes_categorytree'] = 'Routes: List Categories in a Category Tree';
         $disp['routes_display_single'] = 'Routes: Display single walking route(GPX)';
         $disp['routes_display_multi'] = 'Routes: Display mutliple walking routes(GPX)';
         $disp['routes_plot'] = 'Routes: Plot a walking route';
@@ -69,7 +70,7 @@ class DisplayoptionLabelHelper {
         $disp['pastwalks_list'] = 'Past Walks: List';
         $disp['pastwalks_table'] = 'Past Walks: Table';
         $disp['pastwalks_maptable'] = 'Past Walks: Map & Table';
-        $disp['pastwalks_categorytree'] = 'Past Walks: List all Categories in a Category Tree';
+        $disp['pastwalks_categorytree'] = 'Past Walks: List Categories in a Category Tree';
 
         $disp['table_csv'] = 'Table: Display data from a CSV file';
         $disp['table_sql'] = 'Table: Display data from an SQL table';

@@ -28,7 +28,6 @@ $standardimage = $params->get('standardimage');
 $footer_image = $params->get('footer_image');
 $imageposition = $params->get('imageposition');
 $customcssfile = $params->get('custom_css_file');
-$alternativecssfile = $params->get('alternative_css_file');
 
 $document = Factory::getDocument();
 
@@ -59,12 +58,6 @@ if ($footerstyle == 1) {
     }
 }
 
-// Add stylesheets
-if ($alternativecssfile !== null && $alternativecssfile !== '') {
-    Load::addStyleSheet($alternativecssfile);
-} else {
-    Load::addStyleSheet('modules/mod_rafooter/css/ramblers.css');
-}
 if ($customcssfile !== null && $customcssfile !== '') {
     Load::addStyleSheet($customcssfile);
 }

@@ -1,8 +1,9 @@
 <?php
-use Ramblers\Component\Ra_library\Site\Library\Geometry;
+
+namespace Ramblers\Component\Ra_library\Site\Library\Geometry;
 
 /**
- * Description of greatcirlce
+ * Description of greatcircle
  *
  * @author Chris Vaughan
  */
@@ -71,9 +72,9 @@ Class Greatcircle {
     }
 
     public static function direction($lat1, $lon1, $lat2, $lon2) {
-        $bearing = RGeometryGreatcircle::bearing($lat1, $lon1, $lat2, $lon2);
+        $bearing = Greatcircle::bearing($lat1, $lon1, $lat2, $lon2);
         $inc = 11.25;
-       // $direction = array("North", "North East", "East", "South East", "South", "South West", "West", "North West", "North");
+        // $direction = array("North", "North East", "East", "South East", "South", "South West", "West", "North West", "North");
         $direction = array("North", "North NorthEast", "North East", "East NorthEast", "East", "East SouthEast", "South East", "South SouthEast", "South", "South SouthWest", "South West", "West SouthWest", "West", "West NorthWest", "North West", "North NorthWest", "North");
         $i = 0;
         for ($ang = 0; $ang <= 360; $ang += 22.5) {
@@ -100,9 +101,8 @@ Class Greatcircle {
 
     static function test() {
 
-        echo RGeometryGreatcircle::distance(40.76000, -73.98400, 40.76001, -73.98401, "KM") . " <br>";
-        echo RGeometryGreatcircle::bearing(40.76, -73.984, 40.89, -74) . " <br>";
-        echo RGeometryGreatcircle::direction(40.76, -73.984, 40.89, -74) . " <br>";
+        echo Greatcircle::distance(40.76000, -73.98400, 40.76001, -73.98401, "KM") . " <br>";
+        echo Greatcircle::bearing(40.76, -73.984, 40.89, -74) . " <br>";
+        echo Greatcircle::direction(40.76, -73.984, 40.89, -74) . " <br>";
     }
-
 }

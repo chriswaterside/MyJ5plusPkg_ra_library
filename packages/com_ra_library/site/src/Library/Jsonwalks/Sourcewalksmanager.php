@@ -32,6 +32,7 @@ class Sourcewalksmanager extends Sourcebase {
     private $readevents = false;
     private $wellbeingWalks = false;
     private $period = null;
+    private $ids = null;
 
     const TIMEFORMAT = "Y-m-d\TH:i:s";
 
@@ -51,9 +52,20 @@ class Sourcewalksmanager extends Sourcebase {
         }
     }
 
+    // Source that fetches specific walks/events by Walks Manager id
+    public function _initialiseIds($ids) {
+        $this->ids = $ids;
+        $this->readwalks = true;
+        $this->readevents = true;
+    }
+
     public function getWalks($walks) {
         $feed = new Feed();
-        $items = $feed->getGroupEventItems($this->groups, $this->readwalks, $this->readevents, $this->wellbeingWalks, $this->period);
+        if ($this->ids !== null) {
+            $items = $feed->getItemsByIds($this->ids, $this->readwalks, $this->readevents);
+        } else {
+            $items = $feed->getGroupEventItems($this->groups, $this->readwalks, $this->readevents, $this->wellbeingWalks, $this->period);
+        }
         foreach ($items as $item) {
             $walk = new Walk();
 

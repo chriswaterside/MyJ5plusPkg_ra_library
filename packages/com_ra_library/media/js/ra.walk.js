@@ -7,32 +7,6 @@ if (typeof (ra.data) === "undefined") {
 ra.events = function () {
     this.events = [];
     this.filter = null;
-    ra.events.filterOptions = {};
-    // these filter options are also used by calendar subscribe.
-    ra.events.filterOptions.grades = {order: [
-            'Easy Access',
-            'Easy',
-            'Leisurely',
-            'Moderate',
-            'Strenuous',
-            'Technical']};
-
-    ra.events.filterOptions.dow = {order: ['Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday']};
-    ra.events.filterOptions.distance = {displaySingle: true,
-        order: ['Not defined: See description',
-            'Up to 3 miles (5 km)',
-            '3+ to 5 miles (5-8 km)',
-            '5+ to 8 miles (8-13 km)',
-            '8+ to 10 miles (13-16 km)',
-            '10+ to 13 miles (16-21 km)',
-            '13+ to 15 miles (21-24 km)',
-            '15+ miles (24 km)']};
     this.registerEvent = function (event) {
         if (event.getIntValue('basics', 'future')) {
             var idx = this.events.findIndex(o => String(o.admin.id) === String(event.admin.id));
@@ -148,6 +122,32 @@ ra.events = function () {
         filter.display(tag);
     };
 };
+
+// filterOptions are defined once at script load. They are also used by the calendar subscribe form.
+ra.events.filterOptions = {};
+ra.events.filterOptions.grades = {order: [
+        'Easy Access',
+        'Easy',
+        'Leisurely',
+        'Moderate',
+        'Strenuous',
+        'Technical']};
+ra.events.filterOptions.dow = {order: ['Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday']};
+ra.events.filterOptions.distance = {displaySingle: true,
+    order: ['Not defined: See description',
+        'Up to 3 miles (5 km)',
+        '3+ to 5 miles (5-8 km)',
+        '5+ to 8 miles (8-13 km)',
+        '8+ to 10 miles (13-16 km)',
+        '10+ to 13 miles (16-21 km)',
+        '13+ to 15 miles (21-24 km)',
+        '15+ miles (24 km)']};
 ra.event = function () {
     this.admin = new ra.event.admin();
     this.basics = new ra.event.basics();
@@ -221,29 +221,34 @@ ra.event = function () {
         this.bookings.convertPHPBookings(phpwalk);
     };
     this.walkDiagnostics = function (tag) {
-        var options = ["{lf}", "<b>ADMIN</b>", "{group}", "{eventType}", "<b>BASICS</b>", "{title}", "{description}", "{additionalNotes}",
-            "{dowShortdd}", "{dowShortddmm}",
-            "{dowShortddmmyyyy}", "{dowdd}", "{dowddmm}", "{dowddmmyyyy}",
+        // Every value that getEventValue can return. {meetOSMap}, {startOSMap}, {meetOLC}, {startOLC}
+        // and {emailat} are accepted but return nothing, so they are not listed.
+        var options = ["{lf}", "<b>ADMIN</b>", "{group}", "{eventType}",
+            "<b>BASICS</b>", "{title}", "{description}", "{additionalNotes}",
+            "{dowShortdd}", "{dowShortddmm}", "{mapDowShortddmm}",
+            "{dowShortddmmyyyy}", "{dowShortddyyyy}", "{dowdd}", "{dowddmm}", "{dowddmmyyyy}",
             "<b>MEETING</b>", "{meet}", "{meetTime}", "{meetPlace}", "{meetGR}", "{meetPC}",
-            "{meetw3w}", "{meetOSMap}", "{meetDirections}",
-            "<b>START</b>", "{start}", "{startTime}", "{startPlace}", "{startGR}", "{startPC}", "{startw3w}", "{startOSMap}", "{startDirections}",
+            "{meetw3w}", "{meetDirections}",
+            "<b>START</b>", "{start}", "{startTime}", "{startPlace}", "{startGR}", "{startPC}",
+            "{startw3w}", "{startDirections}",
             "<b>FINISH</b>", "{finishTime}",
             "<b>WALK</b>", "{difficulty}", "{difficulty+}", "{type}", "{shape}",
-            "{distance}", "{distanceMi}", "{distanceKm}", "{gradeimg}", "{gradeimgRight}",
-            "{grade}", "{grade+}", "{nationalGrade}", "{nationalGradeAbbr}", "{localGrade}",
-            "{grade}", "{ascent}", "{ascentMetres}", "{ascentFeet}",
+            "{distance}", "{distanceMi}", "{distanceKm}", "{gradeimg}", "{gradeimgRight}", "{gradeimgMiddle}",
+            "{grade}", "{grade+}", "{nationalGrade}", "{nationalGradeAbbr}", "{localGrade}", "{mapGrade}",
+            "{ascent}", "{ascentMetres}", "{ascentFeet}",
             "<b>CONTACT</b>", "{contact}", "{contactname}", "{contactperson}", "{telephone}",
-            "{telephone1}", "{telephone2}", "{email}", "{emailat}", "{emaillink}",
+            "{telephone1}", "{telephone2}", "{email}", "{emaillink}",
             "<b>MEDIA</b>", "{mediathumbr}",
             "{mediathumbl}"];
+        // Every value that getIntValue can return, by section. The admin section has none in JS.
+        // meeting, start, finish and contacts show the first item only.
         var intValues = {admin: [],
-            basics: ["dayofweek", "displayMonth"],
-            walks: ["_filterDistance", "_nationalGradeCSS", "_nationalGrade",
-                "_icsWalkDuration", "_icsWalkGrade", "_icsWalkDistance"],
-            meeting: ["_latitude", "_longitude", "_icsDescription", "_icsTime"],
-            start: ["_latitude", "_longitude", "_icsDescription", "_icsTime", "_type"],
-            finish: ["_latitude", "_longitude", "_icsDescription", "_icsTime"],
-            contacts: ["_icsrecord"]};
+            basics: ["dayofweek", "displayMonth", "filterDaysofweek", "future"],
+            walks: ["shape", "_filterDistance", "_nationalGradeCSS", "_nationalGrade"],
+            meeting: ["_latitude", "_longitude", "_type"],
+            start: ["_latitude", "_longitude", "_type"],
+            finish: ["_latitude", "_longitude", "_type"],
+            contacts: ["contactName", "key"]};
         var tags = [
             {name: 'table', parent: 'root', tag: 'table', attrs: {class: 'ra-diagnostics'}},
             {name: 'tr', parent: 'table', tag: 'tr'},
@@ -275,7 +280,7 @@ ra.event = function () {
             var section = intValues[key];
             section.forEach(option => {
                 $value = this.getIntValue(key, option);
-                if ($value === null) {
+                if ($value === null || $value === undefined) {
                     $value = "undefined";
                 }
                 $value = $value.toString();
@@ -531,10 +536,11 @@ ra.event = function () {
         diary.textContent = 'Add to Calendar';
         tag.parentNode.insertBefore(diary, tag);
         var _this = this;
+        // the .ics is created by the server (calendarfeed controller) using the Walks Manager id
         diary.addEventListener('click', function () {
-            var file = new ra.ics.file();
-            _this.addWalktoIcs(file);
-            file.download();
+            window.location.href = window.location.origin + ra.baseDirectory() +
+                    'index.php?option=com_ra_library&task=calendarfeed.calendarfeed&ids=' +
+                    encodeURIComponent(_this.admin.id) + '&download=1';
         });
     };
     this.initialiseFilter = function (filter) {
@@ -572,141 +578,6 @@ ra.event = function () {
             valueSet.add("id" + flag.section, flag.name);
         });
         return valueSet;
-    };
-    this.addWalktoIcs = function (events) {
-        var ev = new ra.ics.event();
-        var $meetLocation, $startLocation, $before, $after, $summary, $description, $altDescription;
-        $meetLocation = this.getIntValue("meeting", "_icsDescription");
-        if ($meetLocation !== "") {
-            $meetLocation += "; <br/>";
-        }
-        $startLocation = this.getIntValue("start", "_icsDescription");
-        $before = $meetLocation + $startLocation + "<br/>Description: ";
-        $after = "<br/>" + this.getIntValue("contacts", "_icsrecord");
-        $after += this.getIntValue("walks", "_icsWalkGrade");
-        if (this.admin.nationalUrl !== "") {
-            $after += this.admin.nationalUrl;
-        }
-
-        $after += "<br/>Note: Finish times are very approximate!";
-        if (this.basics.additionalNotes !== '') {
-            $after += "<br/>Notes: " + this.basics.additionalNotes;
-        }
-        $summary = this.basics.title;
-        $summary += this.getIntValue("walks", "_icsWalkDistance");
-        if (this.isCancelled()) {
-            ev.method("CANCEL");
-            $summary = " CANCELLED " + $summary;
-            $description = "CANCELLED - REASON: " + this.admin.cancellationReason + " (" + this.basics.description + ")";
-        } else {
-            $description = $before + this.basics.description + $after;
-            $altDescription = $before + this.basics.descriptionHtml + $after;
-        }
-
-        var $time = this._ics_getFirstTime();
-        //  var d = ra.date.getDateTime(this.basics.walkDate);
-        if ($time !== null) {
-            ev.startDate($time);
-            $time = this._ics_getFinishTime();
-            if ($time !== null) {
-                ev.endDate(new Date($time));
-            }
-        } else {
-            ev.startDate(ra.date.getDateTime(this.basics.walkDate));
-        }
-        ev.createdDate(ra.date.getDateTime(this.admin.dateCreated));
-        ev.modifiedDate(ra.date.getDateTime(this.admin.dateUpdated));
-        ev.uid('walk' + this.admin.id + '-isc@ramblers-webs.org.uk');
-        ev.organiser(this.admin.groupName + ":mailto:ignore@ramblers-webs.org.uk");
-        ev.summary($summary);
-        ev.description($description);
-        ev.altDescription($altDescription);
-        ev.location($startLocation);
-        ev.url(this.admin.nationalUrl);
-        ev.categories("Walk," + this.admin.groupName);
-        ev.class('PUBLIC');
-        events.addEvent(ev);
-    };
-    this._ics_getFirstTime = function () {
-        var time = null;
-        this.meeting.forEach(loc => {
-            if (time === null) {
-                if (loc.time !== null) {
-                    time = loc.time;
-                    return time;
-                }
-            }
-        });
-        this.start.forEach(loc => {
-            if (time === null) {
-                if (loc.time !== null) {
-                    time = loc.time;
-                }
-            }
-        });
-        return time;
-    };
-    this._ics_getLastTime = function () {
-        var time = null;
-        this.start.forEach(loc => {
-            if (time === null) {
-                if (loc.time !== null) {
-                    time = loc.time;
-                }
-            }
-        });
-        this.meeting.forEach(loc => {
-            if (time === null) {
-                if (loc.time !== null) {
-                    time = loc.time;
-                }
-            }
-        });
-        return time;
-    };
-    this._ics_getFinishTime = function () {
-        var time = this.getIntValue("finish", "_icsTime");
-        if (time !== "") {
-            return time;
-        }
-        // calculate end time
-        var $durationFullMins = 0;
-        var $lasttime = this._ics_getLastTime();
-        if ($lasttime !== "") {
-            $durationFullMins = this.getIntValue("walks", "_icsWalkDuration");
-            if ($durationFullMins === "") {
-                $durationFullMins = 0;
-            }
-            if (this.getIntValue("start", "_type") === "Rough") {
-                $durationFullMins += 60;
-            }
-            $lasttime = ra.time.addMinutes($lasttime, $durationFullMins);
-        }
-        return $lasttime;
-    };
-    this.getEventDatetime = function () {
-        var earliest = this.basics.getIntValue('bookingdate');
-        this.meeting.forEach(item => {
-            var time = item.getIntValue('bookingtime');
-            if (earliest === null) {
-                earliest = time;
-            } else {
-                if (time < earliest) {
-                    earliest = time;
-                }
-            }
-        });
-        this.start.forEach(item => {
-            var time = item.getIntValue('bookingtime');
-            if (earliest === null) {
-                earliest = time;
-            } else {
-                if (time < earliest) {
-                    earliest = time;
-                }
-            }
-        });
-        return  earliest;
     };
     this.addTitleSection = function (tag) {
         var nationalGradeCSS = this.getIntValue("walks", "_nationalGradeCSS");
@@ -1154,8 +1025,6 @@ ra.event.basics = function () {
                 const yesterday = new Date(today);
                 yesterday.setDate(today.getDate() - 1);
                 return this.walkDate > yesterday;
-            case "bookingdate":
-                return this.walkDate;
         }
         console.log("Invalid internal request: " + $option);
         return "";
@@ -1300,21 +1169,6 @@ ra.event.walk = function () {
                 return  this.nationalGrade.gradeCSS();
             case "_nationalGrade":
                 return this.nationalGrade.toText();
-            case "_icsWalkDuration":
-                var dist = this.distanceMiles;
-                return Math.ceil(dist / 2) * 60;
-            case "_icsWalkGrade":
-                if (this.localGrade !== "") {
-                    return "Grade: " + this.localGrade + "/" + this.nationalGrade.toText() + "; <br/> ";
-                } else {
-                    return "Grade: " + this.nationalGrade.toText() + "; <br/> ";
-                }
-            case "_icsWalkDistance":
-                if (this.distanceMiles > 0) {
-                    return  ", " + this.distanceMiles + "mi/" + this.distanceKm + "km";
-                }
-                return "";
-                break;
         }
         console.log("Invalid internal request: " + $option);
         return "";
@@ -1453,54 +1307,11 @@ ra.event.timelocation = function () {
                 return this.latitude;
             case "_longitude":
                 return this.longitude;
-            case "_icsDescription":
-                return this.getICSTextDescription();
-            case "_icsTime":
-                return this.time;
             case "_type":
                 return this.type;
-            case "bookingtime":
-                return this.time;
         }
         console.log("Invalid internal request: " + $option);
         return "";
-    };
-    this.getICSTextDescription = function () {
-        var $textdescription = "";
-        switch (this.type) {
-            case "Meeting":
-                $textdescription = "Meet: ";
-                break;
-            case "Start":
-                $textdescription = "Start: ";
-                break;
-            case "Rough":
-                $textdescription = "Walking area: ";
-                break;
-            case "Location":
-                $textdescription = "Location: ";
-                break;
-            case "Finish":
-                $textdescription = "Finish: ";
-                break;
-            default:
-                ra.showError("Error 0003");
-        }
-        if (this.type !== "Rough") {
-            if (this.timeHHMMshort !== "") {
-                $textdescription += this.timeHHMMshort + " @ ";
-            }
-        }
-        var $place = this.gridref;
-        if (this.postcode !== null) {
-            $place += ", " + this.postcode.text;
-        }
-        if (this.description !== '') {
-            $textdescription += this.description + ' (' + $place + ')';
-        } else {
-            $textdescription += $place;
-        }
-        return $textdescription;
     };
     this.getSection = function (contentTag, tag) {
         var display = {title: "Unknown",
@@ -1869,19 +1680,6 @@ ra.event.contact = function (id) {
                 return this.contactName;
             case "key":
                 return this.key;
-            case "_icsrecord":
-                var out = "";
-                if (this.contactName !== "") {
-                    out = "Contact: " + this.contactName;
-                }
-                if (this.telephone1 !== "") {
-                    out += ", " + this.telephone1;
-                }
-                if (this.telephone2 !== "") {
-                    out += ", " + this.telephone2;
-                }
-                return out + "<br/>";
-                break;
         }
         console.log("Invalid internal request: " + $option);
         return "";
@@ -1974,10 +1772,7 @@ ra.event.bookings = function (id, event) {
         if (this.enabled === false) {
             return;
         }
-        var file = new ra.ics.file();
-        myEvent.addWalktoIcs(file);
-        var ics = file.getFile();
-        var bookings = new ra.bookings(tag, this.id, myEvent, ics);
+        var bookings = new ra.bookings(tag, this.id, myEvent, {subscribe: true});
         bookings.initialise();
     };
 };

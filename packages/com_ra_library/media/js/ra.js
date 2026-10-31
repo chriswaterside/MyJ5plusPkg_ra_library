@@ -583,12 +583,6 @@ ra.date = (function () {
         var options = {year: 'numeric', month: 'short', day: 'numeric', weekday: 'short'};
         return value.toLocaleDateString("en-UK", options);
     };
-    date.toICSFormat = function (datetime) {
-        var value = date.getDateTime(datetime);
-        var yyyymmdd = value.getFullYear().toString() + date.MM(value) + date.DD(value);
-        var out = yyyymmdd + "T" + value.getHours().toString().padStart(2, '0') + value.getMinutes().toString().padStart(2, '0') + value.getSeconds().toString().padStart(2, '0');
-        return out;
-    };
     date.YYYYMMDDmmhhss = function (datetime) {
         var value = date.getDateTime(datetime);
         var yyyymmdd = value.getFullYear().toString() + '-' + date.MM(value) + '-' + date.DD(value);
@@ -668,10 +662,6 @@ ra.date = (function () {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
-    };
-    date.secondsSinceMidnight = function (d) {
-        var e = new Date(d);
-        return d - e.setHours(0, 0, 0, 0);
     };
     date.isValidString = function (text) {
         if (typeof text === 'undefined') {
@@ -2534,264 +2524,6 @@ ra.filter.groupText = function (id, title, options = null) {
 };
 
 
-if (typeof (ra.ics) === "undefined") {
-    ra.ics = {};
-    // https://icalendar.org/
-    ra.ics.file = function () {
-        this.foldLength = 73;
-        this.newLineChar = '\r\n';
-        this.file = '';
-        this.dateStamp = ra.date.toICSFormat(new Date()) + 'Z';
-        var d = new Date();
-        this.createdDate = d.toISOString();
-        this.addEvent = function (event) {
-            var item = event.getItem();
-            this._addRecord('BEGIN:', 'VEVENT');
-            this._addRecord('DTSTART;VALUE=DATE-TIME:', item.startDate);
-            this._addRecord('DTEND;VALUE=DATE-TIME:', item.endDate);
-            this._addRecord('LOCATION:', item.location);
-            this._addRecord('TRANSP:', 'OPAQUE');
-            this._addRecord('SEQUENCE:', item.sequence);
-            this._addRecord('UID: ', item.uid);
-            this._addRecord('ORGANIZER;CN=', item.organiser);
-            this._addRecord('SUMMARY:', item.summary);
-            this._addRecord('DESCRIPTION:', item.description);
-            this._addRecord('X-ALT-DESC;FMTTYPE=text/html:', item.altDescription, true);
-            this._addRecord('CATEGORIES:', item.categories);
-            this._addRecord('DTSTAMP;VALUE=DATE-TIME:', this.dateStamp);
-            this._addRecord('CREATED;VALUE=DATE-TIME:', item.createdDate);
-            this._addRecord('LAST-MODIFIED;VALUE=DATE-TIME:', item.modifiedDate);
-            this._addRecord('PRIORITY:', '1');
-            this._addRecord('URL;VALUE=URI:', item.url);
-            this._addRecord('CLASS:', 'PUBLIC');
-            this._addRecord('END:', 'VEVENT');
-        };
-        this.getFile = function () {
-            this._addRecord('END:', 'VCALENDAR');
-            return this.file;
-        };
-        this.download = function () {
-            var data = this.getFile();
-            try {
-                var blob = new Blob([data], {type: "text/calendar"});
-                var name = "ramblerswalks.ics";
-                saveAs(blob, name);
-            } catch (e) {
-                ra.showMsg('Your web browser does not support this option!');
-            }
-        };
-        this._addRecord = function ($command, $content = "", $html = false) {
-            if ($content === null) {
-                return;
-            }
-            if (!(typeof $content === 'string' || $content instanceof String)) {
-                $content = $content.toString();
-            }
-            //var   $text= $command + $content+this.newLineChar;
-            //  return;
-            //  var $text = mb_convert_encoding($content, "UTF-8");
-            var $text = $content;
-            var $line;
-            if ($html) {
-                var $before = "<!DOCTYPE html><html><head><title></title></head><body>";
-                var $after = "</body></html>";
-                $text = this.escapeString($text);
-                $line = $command + $before + $text + $after;
-            } else {
-                $text = $text.replace(/&nbsp;/g, " ");
-                $text = $text.replace(/<p>/g, "");
-                $text = $text.replace(/<\/p>/g, "\\n");
-                $text = $text.replace(/<br>/g, "\\n");
-                $text = $text.replace(/<br\/>/g, "\\n");
-                $text = $text.replace(/<BR>/g, "\\n");
-                $text = $text.replace(/<BR\/>/g, "\\n");
-                $text = $text.replace(/&ndash;/g, "-");
-                //   $text = ra.html.stripTags($text);
-                // $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
-                //   $text = ra.html.convertToText($text);
-                $text = this.escapeString($text);
-                //   $lines = this.foldline($command + $text + this.newLineChar);
-                $line = $command + $text.trim();
-            }
-            this.file += this._stringIntoChunks($line, 73);
-        };
-        this._stringIntoChunks = function (string, chunkSize) {
-            const chunks = [];
-            var out = '';
-            while (string.length > 0) {
-                chunks.push(string.substring(0, chunkSize));
-                string = string.substring(chunkSize, string.length);
-            }
-
-            chunks.forEach(myFunction);
-            function myFunction(value, index, array) {
-                if (index === 0) {
-                    out += value + '\r\n';
-                } else {
-                    out += " " + value + '\r\n';
-                }
-
-            }
-            return out;
-        };
-        this.trimICSstring = function (str) {
-            var finished = false;
-            var out = str;
-            do {
-                finished = true;
-                if (out.endsWith("\\n")) {
-                    out = out.slice(0, -2);
-                    finished = false;
-                }
-                if (out.endsWith("\\r")) {
-                    out = out.slice(0, -2);
-                    finished = false;
-                }
-                if (out.endsWith(" ")) {
-                    out = out.slice(0, -1);
-                    finished = false;
-                }
-            } while (!finished);
-            return out;
-        };
-        this.escapeString = function (str) {
-            var out;
-            out = str.replace(/,/g, '\\,');
-            out = out.replace(/;/g, '\\;');
-            //  out = out.replace(/[^\x20-\x7E]+/g, '&nbsps;');
-
-            return out;
-        };
-        this.decodeEntities = function (s) {
-            var str, temp = document.createElement('p');
-            temp.innerHTML = s;
-            str = temp.textContent || temp.innerText;
-            temp = null;
-            return str;
-        };
-        /**
-         * Performs iCalendar line folding. A line ending character is inserted and
-         * the next line begins with a whitespace.
-         *
-         * @example
-         * SUMMARY:This line will be fold
-         *  ed right in the middle of a word.
-         *
-         * @param {String} aLine      The line to fold
-         * @return {String}           The folded line
-         */
-        this.foldline = function (aLine) {
-            var result = "";
-            var line = aLine || "", pos = 0, line_length = 0;
-            //pos counts position in line for the UTF-16 presentation
-            //line_length counts the bytes for the UTF-8 presentation
-            while (line.length) {
-                var cp = line.codePointAt(pos);
-                if (cp < 128)
-                    ++line_length;
-                else if (cp < 2048)
-                    line_length += 2; //needs 2 UTF-8 bytes
-                else if (cp < 65536)
-                    line_length += 3;
-                else
-                    line_length += 4; //cp is less than 1114112
-                if (line_length < this.foldLength + 1)
-                    pos += cp > 65535 ? 2 : 1;
-                else {
-                    result += this.newLineChar + " " + line.substring(0, pos);
-                    line = line.substring(pos);
-                    pos = line_length = 0;
-                }
-            }
-            return result.substr(this.newLineChar.length + 1);
-        };
-        this._addRecord('BEGIN:', 'VCALENDAR');
-        this._addRecord('VERSION:', '2.0');
-        this._addRecord('METHOD:', 'PUBLISH');
-        this._addRecord('PRODID:', 'ramblers-webs v1.2');
-    };
-    ra.ics.event = function () {
-        this.item = {
-            startDate: null,
-            endDate: null,
-            modifiedDate: null,
-            createdDate: null,
-            uid: null,
-            organiser: null,
-            summary: null,
-            description: null,
-            altDescription: null,
-            sequence: null,
-            location: null,
-            url: null,
-            class: null,
-            method: null
-        };
-        this.getItem = function () {
-            return this.item;
-        };
-        this.startDate = function (value) {
-            this.checkType('[object Date]', value);
-            this.item.startDate = ra.date.toICSFormat(value);
-        };
-        this.endDate = function (value) {
-            this.checkType('[object Date]', value);
-            this.item.endDate = ra.date.toICSFormat(value);
-        };
-        this.modifiedDate = function (value) {
-            this.item.modifiedDate = ra.date.toICSFormat(value) + 'Z';
-            var $date = new Date('2010-01-01');
-            var $days = ra.date.periodInDays(value, $date) - 1;
-            // Fix added to include number of seconds since midnight, forcing an update on each download. 
-            // Otherwise, the event would only update daily. 
-            this.item.sequence = $days.toString() + ra.date.secondsSinceMidnight(new Date()) % 86400;
-        };
-        this.createdDate = function (value) {
-            this.checkType('[object Date]', value);
-            this.item.createdDate = ra.date.toICSFormat(value) + 'Z';
-        };
-        this.location = function (value) {
-            this.item.location = value;
-        };
-        this.uid = function (value) {
-            this.item.uid = value;
-        };
-        this.organiser = function (value) {
-            this.item.organiser = value;
-        };
-        this.summary = function (value) {
-            this.item.summary = value;
-        };
-        this.description = function (value) {
-            this.item.description = value;
-        };
-        this.altDescription = function (value) {
-            this.item.altDescription = value;
-        };
-        this.categories = function (value) {
-            this.item.categories = value;
-        };
-        this.url = function (value) {
-            this.item.url = value;
-        };
-        this.class = function (value) {
-            this.item.class = value;
-        };
-        this.method = function (value) {
-            this.item.method = value;
-        };
-        this.checkType = function (type, value) {
-            // Object.prototype.toString.call(value) === '[object Date]';
-            var oType = Object.prototype.toString.call(value);
-            if (oType === type) {
-                return true;
-            } else {
-                ra.showError('Incorrect type in ICS');
-            }
-            return false;
-        };
-    };
-}
 
 // create input field to allow uploading a file
 // add field to a tag like a button
@@ -2897,7 +2629,7 @@ ra.SimpleTemplate = function (template) {
     }
 
     this.template = template.replace(
-            /\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/gi,
+            /\{([^}]*?)\?((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}/gi,
             '{if:$2}$1{$2}{/if}'
             );
 
@@ -2914,7 +2646,7 @@ ra.SimpleTemplate.prototype.validateTemplate = function () {
 
     while (pos < len) {
         if (this.template[pos] === '{') {
-            var match = this.template.slice(pos).match(/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i);
+            var match = this.template.slice(pos).match(/^(\{(?:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|if:[^}]+|if_not:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|\/if|\/if_not)\})/i);
             if (match) {
                 pos += match[1].length;
                 continue;
@@ -3012,7 +2744,7 @@ ra.SimpleTemplate.prototype.tokenize = function () {
 
     while (pos < len) {
         if (this.template[pos] === '{') {
-            var match = this.template.slice(pos).match(/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i);
+            var match = this.template.slice(pos).match(/^(\{(?:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|if:[^}]+|if_not:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|\/if|\/if_not)\})/i);
             if (match) {
                 tokens.push({type: 'tag', value: match[1]});
                 pos += match[1].length;
@@ -3045,7 +2777,7 @@ ra.SimpleTemplate.prototype.getFields = function () {
         var tag = tokens[i].value;
         var m;
 
-        if ((m = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+        if ((m = tag.match(/^\{((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i))) {
             fields[m[1]] = true;
         }
 
@@ -3053,7 +2785,7 @@ ra.SimpleTemplate.prototype.getFields = function () {
             fields[m[1].trim()] = true;
         }
 
-        if ((m = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+        if ((m = tag.match(/^\{if_not:((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i))) {
             fields[m[1]] = true;
         }
     }
@@ -3078,7 +2810,7 @@ ra.SimpleTemplate.prototype.render = function (values) {
 ra.SimpleTemplate.prototype.evaluateCondition = function (condition) {
     condition = condition.trim();
 
-    var m = condition.match(/^([a-z_][a-z0-9_+]*)\s*(=|!=)\s*(.*?)$/i);
+    var m = condition.match(/^((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\s*(=|!=)\s*(.*?)$/i);
     if (m) {
         var field = m[1];
         var op = m[2];
@@ -3106,7 +2838,7 @@ ra.SimpleTemplate.prototype.parseBlock = function (tokens) {
         var tag = token.value;
         var m;
 
-        if ((m = tag.match(/^\{([a-z_][a-z0-9_+]*)\}$/i))) {
+        if ((m = tag.match(/^\{((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i))) {
             var field = m[1];
             output += this.values[field] || '';
             this.pos++;
@@ -3125,7 +2857,7 @@ ra.SimpleTemplate.prototype.parseBlock = function (tokens) {
             continue;
         }
 
-        if ((m = tag.match(/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i))) {
+        if ((m = tag.match(/^\{if_not:((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i))) {
             this.pos++;
             var fieldName = m[1];
             var sub2 = this.parseBlock(tokens);

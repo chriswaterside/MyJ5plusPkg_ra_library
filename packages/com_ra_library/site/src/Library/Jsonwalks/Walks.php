@@ -240,10 +240,6 @@ class Walks {
         }
     }
 
-//    public function noWalks($no) {
-//        $this->limitNumberWalks($no);
-//    }
-
     public function appendWalkTitle($titles) {
         foreach ($this->arrayofwalks as $key => $walk) {
             $groupCode = $walk->getIntValue("admin", "groupCode");
@@ -252,19 +248,6 @@ class Walks {
             }
         }
     }
-
-//  not used
-//     public function walksInFuture($period) {
-//        $today = new \DateTime();
-//        $interval = new DateInterval($period);
-//        $today->add($interval);
-//        foreach ($this->arrayofwalks as $key => $value) {
-//            $date = $value->walkDate;
-//            if ($date > $today) {
-//                unset($this->arrayofwalks[$key]);
-//            }
-//        }
-//    }
 
     public function sort($sortorder1, $sortorder2, $sortorder3) {
         $this->sortorder1 = $sortorder1;
@@ -309,12 +292,21 @@ class Walks {
         return $no;
     }
 
-    public function events() {
-        $arrayevents = array();
-        foreach ($this->arrayofwalks as $key => $value) {
-            $arrayevents[] = $value->event();
+    public function getIcalendarFile($icsfile) {
+        foreach ($this->arrayofwalks as $event) {
+            $event->Event_ics($icsfile);
         }
-        return $arrayevents;
+    }
+
+    public function getLastDate() {
+        $lastdate = date("Y-m-d");
+        foreach ($this->arrayofwalks as $walk) {
+            $currentdate = $walk->EventDateYYYYMMDD();
+            if ($currentdate > $lastdate) {
+                $lastdate = $currentdate;
+            }
+        }
+        return $lastdate;
     }
 
     public function __destruct() {

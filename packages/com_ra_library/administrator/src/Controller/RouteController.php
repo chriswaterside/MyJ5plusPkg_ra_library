@@ -22,6 +22,15 @@ use Joomla\CMS\Factory;
  */
 class RouteController extends FormController {
 
+    use ImageUploadTrait;
+
+    /**
+     * @return  string  Record type for the background photo upload (ImageUploadTrait).
+     */
+    protected function imageRecordType(): string {
+        return 'route';
+    }
+
     protected $view_list = 'routes';
 
     /**

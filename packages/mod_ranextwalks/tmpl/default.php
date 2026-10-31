@@ -28,7 +28,7 @@ $comParams = ComponentHelper::getParams('com_ra_library');
 $newEvents = (int) $comParams->get('daysfornew', 7);
 
 $groupsString = $params->get('ramblersgroups', '');
-if ($groupString === "") {
+if ($groupsString === "") {
     throw new \RuntimeException('Next walks module: no groups specified');
 }
 $limit = $params->get('limit', 7);

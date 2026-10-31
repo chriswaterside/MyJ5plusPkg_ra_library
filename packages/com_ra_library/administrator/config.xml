@@ -75,7 +75,7 @@
             filter="raw"
             rows="6"
             label="COM_RA_LIBRARY_CONFIG_PASTWALK_ITEM_TEMPLATE_MORE_LABEL"
-            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
+            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:custom_fields}{custom_fields}{/if}{if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
         />
     </fieldset>
 
@@ -129,7 +129,7 @@
             filter="raw"
             rows="6"
             label="COM_RA_LIBRARY_CONFIG_ROUTE_ITEM_TEMPLATE_MORE_LABEL"
-            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:route_points_list}&amp;lt;h3&amp;gt;Route points&amp;lt;/h3&amp;gt;{route_points_list}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
+            description="Shown after the Intro on the Single Item page only - never shown in the Blog listing. Same tokens as Intro. Automatically wrapped in &amp;lt;div class=&amp;quot;ra-item-more&amp;quot;&amp;gt;...&amp;lt;/div&amp;gt; - you only need to supply the content below. Default is {if:custom_fields}{custom_fields}{/if}{if:image_grid}&amp;lt;h3&amp;gt;Photos&amp;lt;/h3&amp;gt;{image_grid}{/if}{if:route_points_list}&amp;lt;h3&amp;gt;Route points&amp;lt;/h3&amp;gt;{route_points_list}{/if}{if:document_list}&amp;lt;h3&amp;gt;Documents&amp;lt;/h3&amp;gt;{document_list}{/if}{if:gpx_map_list}&amp;lt;h3&amp;gt;Additional routes&amp;lt;/h3&amp;gt;{gpx_map_list}{/if}{if:gpx_map}&amp;lt;h3&amp;gt;Route&amp;lt;/h3&amp;gt;{gpx_map}{/if}"
         />
     </fieldset>
 

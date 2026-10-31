@@ -13,7 +13,6 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
-use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 
 /**
  * RaStyling System Plugin
@@ -56,11 +55,15 @@ class PlgSystemRastyling extends CMSPlugin {
             return;
         }
 
-        //   $baseUrl = Uri::root();
-        // 1. Optional: ramblers.css (expected at <site-root>/css/ramblers.css)
+
+        // 1. Optional: ramblers.css
         if ((int) $this->params->get('include_ramblers_css', 0) === 1) {
-            // $doc->addStyleSheet('modules/mod_rafooter/css/ramblers.css', ['version' => 'auto']);
-            Load::addStyleSheet('modules/mod_rafooter/css/ramblers.css');
+            $cssFile = 'media/plg_system_rastyling/css/ramblers.css';
+            $doc->getWebAssetManager()->registerAndUseStyle(
+                    'plg_system_rastyling.ramblers',
+                    $cssFile,
+                    ['version' => is_file(JPATH_ROOT . '/' . $cssFile) ? filemtime(JPATH_ROOT . '/' . $cssFile) : 'auto']
+            );
         }
 
         // 2. Optional: user-defined CSS file
@@ -72,7 +75,7 @@ class PlgSystemRastyling extends CMSPlugin {
             }
         }
 
-        // 3. Optional: user-defined JS file (deferred)
+        // 3. Optional: user-defined JS file 
         if ((int) $this->params->get('custom_js_enabled', 0) === 1) {
             $customJs = trim((string) $this->params->get('custom_js_file', ''));
             $jsPath = JPATH_ROOT . '/' . ltrim($customJs, '/');

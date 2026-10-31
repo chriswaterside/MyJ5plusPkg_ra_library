@@ -32,6 +32,12 @@ final class Ra_library extends CMSPlugin implements SubscriberInterface {
 
         $text = $item->text;
 
+        // Self-contained tags that carry their own settings, no Library Display needed:
+        //   {ra_library:documents folder="images/minutes" types="pdf,docx" sort="asc"}
+        //   {ra_library:gpx file="images/routes/walk.gpx" colour="#782327" download="Public"}
+        $text = PluginHelper::replaceInlineTags($text);
+        $item->text = $text;
+
         // Log that we are in onContentPrepare (for debugging)
         //   $logger = \Joomla\CMS\Factory::getLogger();
         //   $logger->info('Ra_library onContentPrepare fired for context: ' . $context);

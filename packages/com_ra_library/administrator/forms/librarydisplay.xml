@@ -21,7 +21,7 @@
                required="true" 
                message="You must give this item a name" 
                label="JGLOBAL_TITLE" 
-               description="Title of this displayed, must be unique" 
+               description="Title of this display, should be unique" 
                hint="COM_RA_LIBRARY_FORM_LBL_LIBRARYDISPLAY_TITLE"
         />
         <field
@@ -52,69 +52,151 @@
                required="true"
                label="Select a display type" 
                description="Select option from lowest level">
-            <group label="Future led walks and events" value="walks">
+            <group label="Future led walks and events" 
+                   value="walks"
+                   image="/media/com_ra_library/images/displayoptions/person-hiking-solid-full.svg"
+            >
                 <group label="Recommended" >
-                    <option value="future_display" >Display of led walks (tabbed layout)</option>
-                    <option value="future_nextwalks">Next walks</option>
+                    <option value="future_display" 
+                            preview="/media/com_ra_library/images/displayoptions/future_display.png"
+                            caption="Tabbed display for future walks">Display of led walks (tabbed layout)</option>
+                    <option value="future_nextwalks"
+                            preview="/media/com_ra_library/images/displayoptions/future_nextwalks.png"
+                            caption="Next walks, displayed in a module">Next walks</option>
                 </group>
-                <group label="Legacy formats" >
-                    <option value="future_table">Table of led walks</option>
-                    <option value="future_list">List of led walks</option>
-                    <option value="future_map">Map of led walks</option>
-                    <option value="future_fulldetails">Full details</option>
-                    <option value="future_calendar">Calendar</option>
+                <group label="Calendar" >
+                    <option value="future_calendar"
+                            preview="/media/com_ra_library/images/displayoptions/future_calendar.png"
+                            caption="Calendar, designed to fit in a sidebar">Sidebar calendar</option>
+                    <option value="future_addtocalendar"
+                            preview="/media/com_ra_library/images/displayoptions/future_addtocalendar.png"
+                            caption="Button to download or subscribe to a calendar of walks/events">Add to Calendar button</option>
+                </group>
+                <group label="Other formats" >
+                    <option value="future_table"   
+                            preview="/media/com_ra_library/images/displayoptions/future_table.png"
+                            caption="Typical Table display">Table of led walks</option>
+                    <option value="future_list"
+                            preview="/media/com_ra_library/images/displayoptions/future_list.png"
+                            caption="Typical List display">List of led walks</option>
+                    <option value="future_map"
+                            preview="/media/com_ra_library/images/displayoptions/future_map.png"
+                            caption="Typical map display">Map of led walks</option>
+                    <option value="future_fulldetails"
+                            preview="/media/com_ra_library/images/displayoptions/future_fulldetails.png"
+                            caption="Typical Full details display">Full details</option>
                 </group>
                 <group label="Group custom displays - only for these groups" >
                     <group label="Chiltern Young Walkers Group" >
-                        <option value="future_BU51a">Fulldetails </option>
-                        <option value="future_BU51b">Groupstabs </option>
-                        <option value="future_BU51c">Microtabs </option>
-                        <option value="future_BU51d">Tabs </option>
+                        <option value="future_BU51a"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Fulldetails </option>
+                        <option value="future_BU51b"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Groupstabs </option>
+                        <option value="future_BU51c"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Microtabs </option>
+                        <option value="future_BU51d"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Tabs </option>
                     </group> 
                     <group label="Mid Lancashire Area" >
-                        <option value="future_MLa">Print</option>
+                        <option value="future_MLa"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Print</option>
                     </group>
                     <group label="Staffordshire Area" >
-                        <option value="future_NSa">Walksprinted</option>
+                        <option value="future_NSa"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Walksprinted</option>
                     </group> 
                     <group label="East Surrey Walkers" >
-                        <option value="future_SR02a">Display</option>
-                        <option value="future_SR02b">Nextwalks</option>
-                        <option value="future_SR02c">Table2</option>
+                        <option value="future_SR02a"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Display</option>
+                        <option value="future_SR02b"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Nextwalks</option>
+                        <option value="future_SR02c"
+                                preview="/media/com_ra_library/images/displayoptions/future_customformat.png"
+                                caption="Typical Full details display">Table2</option>
                     </group> 
                 </group>
             </group>
-            <group label="Past Walks">
-                <option value="pastwalks_blog">Past Walks - Blog</option>
-                <option value="pastwalks_list">Past Walks - List</option>
-                <option value="pastwalks_categorytree">Past Walks - List all Categories in a Category Tree</option>
-                <option value="pastwalks_table">Past Walks - Table</option>
-                <option value="pastwalks_maptable">Past Walks - Map and Table</option>
+            <group label="Past Walks"
+                   image="/media/com_ra_library/images/displayoptions/shoe-prints-solid-full.svg"
+            >
+                <option value="pastwalks_blog"
+                        preview="/media/com_ra_library/images/displayoptions/routes_blog.png"
+                        caption="Typical Past Walks blog display">Past Walks - Blog</option>
+                <option value="pastwalks_list"
+                        preview="/media/com_ra_library/images/displayoptions/routes_list.png"
+                        caption="Typical Past Walks list display">Past Walks - List</option>
+                <option value="pastwalks_table"
+                        preview="/media/com_ra_library/images/displayoptions/routes_table.png"
+                        caption="Typical Full details display">Past Walks - Table</option>
+                <option value="pastwalks_maptable"
+                        preview="/media/com_ra_library/images/displayoptions/routes_maptable.png"
+                        caption="Typical Full details display">Past Walks - Map and Table</option>
+                <option value="pastwalks_categorytree"
+                        preview="/media/com_ra_library/images/displayoptions/routes_cattree.png"
+                        caption="Typical Category tree display">Past Walks - List Categories in a Category Tree</option>
             </group>
            
-            <group label="Walking Routes">
+            <group label="Walking Routes"
+                   image="/media/com_ra_library/images/displayoptions/route-solid-full.svg"
+            >
                 <group label="From the route library">
-                    <option value="routes_blog">Blog</option>
-                    <option value="routes_list">List</option>
-                    <option value="routes_table">Table</option>
-                    <option value="routes_maptable">Map and Table</option>
-                    <option value="routes_categorytree">List all Categories in a Category Tree</option>
+                    <option value="routes_blog"
+                            preview="/media/com_ra_library/images/displayoptions/routes_blog.png"
+                            caption="Typical Routes blog display">Blog</option>
+                    <option value="routes_list"
+                            preview="/media/com_ra_library/images/displayoptions/routes_list.png"
+                            caption="Typical Routes List display">List</option>
+                    <option value="routes_table"
+                            preview="/media/com_ra_library/images/displayoptions/routes_table.png"
+                            caption="Typical Routes Table display">Table</option>
+                    <option value="routes_maptable"
+                            preview="/media/com_ra_library/images/displayoptions/routes_maptable.png"
+                            caption="Typical Routes Map and Table display">Map and Table</option>
+                    <option value="routes_categorytree"
+                            preview="/media/com_ra_library/images/displayoptions/routes_cattree.png"
+                            caption="Typical Category tree display">List Categories in a Category Tree</option>
                 </group>
                 <group label="From GPX files">
-                    <option value="routes_display_single">Display single walking route (GPX)</option>
-                    <option value="routes_display_multi">Display multiple walking routes (GPX folder)</option>
+                    <option value="routes_display_single"
+                            preview="/media/com_ra_library/images/displayoptions/routes_single.png"
+                            caption="Typical display of single GPX route">Display single walking route (GPX)</option>
+                    <option value="routes_display_multi"
+                            preview="/media/com_ra_library/images/displayoptions/routes_folder.png"
+                            caption="Typical display of GPX routes from a folder">Display multiple walking routes (GPX folder)</option>
                 </group>
                 <group label="Draw a new route">
-                    <option value="routes_plot">Plot a walking route</option>
+                    <option value="routes_plot"
+                            preview="/media/com_ra_library/images/displayoptions/routes_plot.png"
+                            caption="Typical Plot a walking Route display">Plot a walking route</option>
                 </group>
             </group>
-            <group label="Display table of data">     
-                <option value="table_csv">Display data from a CSV file</option>
-                <option value="table_sql">Display data from an SQL table</option>
-                <option value="table_json">Display data from a JSON feed</option>
+            <group label="Display table of data"
+                   image="/media/com_ra_library/images/displayoptions/table-solid-full.svg"
+            >     
+                <option value="table_csv"
+                        preview="/media/com_ra_library/images/displayoptions/table_csv.png"
+                        caption="Typical display of data from csv file">Display data from a CSV file</option>
+                <option value="table_sql"
+                        preview="/media/com_ra_library/images/displayoptions/table_json.png"
+                        caption="Typical display of data from SQL table">Display data from an SQL table</option>
+                <option value="table_json"
+                        preview="/media/com_ra_library/images/displayoptions/table_json.png"
+                        caption="Typical display of table from JSON feed">Display data from a JSON feed</option>
             </group>
-            <group label="Documents" >     
-                <option value="documents_folder">Display list of documents in folder</option>
+            <group label="Documents"  
+                   image="/media/com_ra_library/images/displayoptions/list-solid-full.svg"
+            >     
+                <option value="documents_folder"
+                        preview="/media/com_ra_library/images/displayoptions/documents.png"
+                        caption="Typical display of documents">Display list of documents in folder</option>
             </group>
     
         </field>
@@ -511,6 +593,18 @@ Default is&lt;br /&gt;
                    size="10" 
                    
             />  
+            <!-- 'Add to calendar' button for future walk displays.
+            No default here on purpose: edit.php pre-sets Yes for the tabbed display when nothing has been saved,
+            and DisplayHelper::showCalendarLink() does the same at run time. -->
+            <field name="show_calendar_link"
+                   type="radio"
+                   layout="joomla.form.field.radio.switcher"
+                   label="Add to calendar button"
+                   description="Show an 'Add to calendar' button, so visitors can download the walks/events as a calendar file or subscribe to them."
+            >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
             <field name="calendar_size"
                    type="list" 
                    default="0"

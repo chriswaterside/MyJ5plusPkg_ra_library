@@ -58,6 +58,15 @@ class ImageGalleryHelper
     private const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
     /**
+     * Most photos one record's gallery may hold - matches max="50" on the
+     * "images" subform in forms/pastwalk.xml and forms/route.xml, so a bulk
+     * add can never create a gallery the form then refuses to save.
+     *
+     * @since 1.0.13
+     */
+    private const MAX_IMAGES_PER_RECORD = 50;
+
+    /**
      * Fetch the gallery rows for a record, in display order.
      *
      * @param   int  $recordId  The past walk / route id.
@@ -161,8 +170,14 @@ class ImageGalleryHelper
 
             $thumbnailPath = $existingRow->thumbnail_path ?? '';
             $largePath = $existingRow->large_path ?? '';
+            $fileHash = (string) ($existingRow->file_hash ?? '');
 
             if ($hasNewUpload) {
+                // Hash the ORIGINAL bytes before processUpload() - it rewrites
+                // the temp file in place when correcting EXIF rotation. Stored
+                // so "Add several photos at once" can skip re-adds of this photo.
+                $fileHash = (string) @sha1_file($uploadedFile['tmp_name']);
+
                 $processed = self::processUpload($uploadedFile, $recordId, $recordType);
 
                 if ($processed === false) {
@@ -197,6 +212,7 @@ class ImageGalleryHelper
                 'description' => $description,
                 'thumbnail_path' => $thumbnailPath,
                 'large_path' => $largePath,
+                'file_hash' => $fileHash,
                 'grid_reference' => $gridReference,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
@@ -417,6 +433,57 @@ class ImageGalleryHelper
     }
 
     /**
+     * Download a remote photo (Walks Manager media host).
+     *
+     * Uses Joomla's HTTP client (cURL or streams, with a User-Agent, redirects
+     * and a timeout) rather than file_get_contents(), and says WHY a download
+     * failed so the import screen can show something more useful than "could
+     * not download". Transient failures (timeouts, 5xx, dropped connections)
+     * are retried up to three times with a short pause; 404/410 are not.
+     *
+     * @param   string  $url  The photo URL.
+     *
+     * @return  array  [body|false, reason string for the failure ('' on success)]
+     *
+     * @since   1.0.14
+     */
+    private static function fetchRemotePhoto(string $url): array
+    {
+        // Spaces and non-ASCII characters in a path are not valid in a URL.
+        $url = preg_replace_callback('/[^\x21-\x7e]/', static fn ($m) => rawurlencode($m[0]), $url);
+        $reason = '';
+
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            if ($attempt > 1) {
+                usleep(700000);
+            }
+
+            try {
+                $http = \Joomla\CMS\Http\HttpFactory::getHttp(['follow_location' => true]);
+                $response = $http->get($url, ['Accept' => 'image/*,*/*;q=0.8'], 30);
+
+                $code = method_exists($response, 'getStatusCode') ? (int) $response->getStatusCode() : (int) ($response->code ?? 0);
+                $body = method_exists($response, 'getBody') ? (string) $response->getBody() : (string) ($response->body ?? '');
+
+                if ($code >= 200 && $code < 300 && $body !== '') {
+                    return [$body, ''];
+                }
+
+                $reason = $code >= 200 && $code < 300 ? 'empty response' : 'HTTP ' . $code;
+
+                // The photo is not there (or not for us): trying again will not help.
+                if (\in_array($code, [400, 401, 403, 404, 410], true)) {
+                    break;
+                }
+            } catch (\Throwable $e) {
+                $reason = trim($e->getMessage()) !== '' ? trim($e->getMessage()) : 'connection failed';
+            }
+        }
+
+        return [false, $reason];
+    }
+
+    /**
      * Download one photo from a Walks Manager feed URL and save it into a
      * record's gallery, going through the exact same resize pipeline as a
      * manual upload (no originals kept). Used by the "Import from Walks
@@ -444,25 +511,18 @@ class ImageGalleryHelper
             return Text::_('COM_RA_LIBRARY_IMAGE_IMPORT_TMP_ERROR');
         }
 
-        $contents = false;
-
-        // Two attempts, same pattern as Wm\Fileio::readFile() elsewhere in
-        // this component - the Walks Manager media host occasionally blips.
-        for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $contents = @file_get_contents($url);
-
-            if ($contents !== false) {
-                break;
-            }
-        }
+        [$contents, $reason] = self::fetchRemotePhoto($url);
 
         if ($contents === false) {
             @unlink($tmpPath);
 
-            return Text::sprintf('COM_RA_LIBRARY_IMAGE_IMPORT_FETCH_ERROR', $caption !== '' ? $caption : $url);
+            return Text::sprintf('COM_RA_LIBRARY_IMAGE_IMPORT_FETCH_ERROR', $caption !== '' ? $caption : $url, $reason, $url);
         }
 
         file_put_contents($tmpPath, $contents);
+
+        // Taken before resizeAndStore() rewrites the temp file (EXIF rotation).
+        $fileHash = (string) @sha1_file($tmpPath);
 
         $mimeType = @mime_content_type($tmpPath) ?: '';
 
@@ -487,6 +547,7 @@ class ImageGalleryHelper
             'description' => $description,
             'thumbnail_path' => $processed['thumbnail_path'],
             'large_path' => $processed['large_path'],
+            'file_hash' => $fileHash,
             'grid_reference' => '',
             'latitude' => null,
             'longitude' => null,
@@ -503,6 +564,179 @@ class ImageGalleryHelper
         $db->setQuery($query)->execute();
 
         return true;
+    }
+
+    /**
+     * Limits shown on the edit forms and used by the uploader script.
+     * (Photos are uploaded one request at a time, so only the per-file PHP
+     * limit applies - not post_max_size or max_file_uploads.)
+     *
+     * @return  array{maxImages: int, maxFileBytes: int, maxPixels: int}
+     *
+     * @since   1.0.14
+     */
+    public static function getUploadLimits(): array
+    {
+        return [
+            'maxImages' => self::MAX_IMAGES_PER_RECORD,
+            // 0 = unlimited
+            'maxFileBytes' => self::iniToBytes((string) \ini_get('upload_max_filesize')),
+            'maxPixels' => self::MAX_LARGE_DIMENSION,
+        ];
+    }
+
+    /**
+     * Add ONE uploaded photo to a saved record's gallery (the background
+     * uploader on the edit forms posts photos one at a time).
+     *
+     * Duplicates are detected by the SHA-1 of the original file bytes against
+     * photos already in this record's gallery. Photos stored before the
+     * file_hash column existed have no hash and cannot be matched.
+     *
+     * @param   int     $recordId    The past walk / route id (must already exist).
+     * @param   string  $recordType  'pastwalk' or 'route'.
+     * @param   array   $file        The entry from the request's files input (name/tmp_name/error/size).
+     *
+     * @return  array  ['status' => added|duplicate|full|invalid|failed, 'row' => array|null, 'name' => string]
+     *
+     * @since   1.0.14
+     */
+    public static function addUploadedPhoto(int $recordId, string $recordType, array $file): array
+    {
+        $name = trim((string) ($file['name'] ?? ''));
+        $name = $name !== '' ? basename($name) : '?';
+        $result = ['status' => 'failed', 'row' => null, 'name' => $name];
+
+        $error = (int) ($file['error'] ?? \UPLOAD_ERR_NO_FILE);
+        $tmpName = (string) ($file['tmp_name'] ?? '');
+
+        if ($recordId <= 0 || $error !== \UPLOAD_ERR_OK || $tmpName === '' || !is_uploaded_file($tmpName)) {
+            return $result;
+        }
+
+        if (\count(self::getImagesForRecord($recordId)) >= self::MAX_IMAGES_PER_RECORD) {
+            $result['status'] = 'full';
+
+            return $result;
+        }
+
+        // Hash first: cheap, and must be of the untouched original (see processUpload()).
+        $hash = (string) @sha1_file($tmpName);
+
+        if ($hash !== '') {
+            $db = Factory::getContainer()->get(DatabaseInterface::class);
+            $query = $db->getQuery(true)
+                ->select('COUNT(*)')
+                ->from($db->quoteName('#__ra_library_images'))
+                ->where($db->quoteName('record_id') . ' = ' . $recordId)
+                ->where($db->quoteName('file_hash') . ' = ' . $db->quote($hash));
+
+            if ((int) $db->setQuery($query)->loadResult() > 0) {
+                $result['status'] = 'duplicate';
+
+                return $result;
+            }
+        }
+
+        $mimeType = @mime_content_type($tmpName) ?: '';
+
+        if (!\in_array($mimeType, self::ALLOWED_MIME_TYPES, true)) {
+            $result['status'] = 'invalid';
+
+            return $result;
+        }
+
+        $processed = self::processUpload($file, $recordId, $recordType);
+
+        if ($processed === false) {
+            return $result;
+        }
+
+        $columns = [
+            'record_id' => $recordId,
+            'caption' => '',
+            'description' => '',
+            'thumbnail_path' => $processed['thumbnail_path'],
+            'large_path' => $processed['large_path'],
+            'file_hash' => $hash,
+            'grid_reference' => '',
+            'latitude' => null,
+            'longitude' => null,
+            'featured' => 0,
+            'ordering' => self::getNextOrdering($recordId),
+        ];
+
+        self::insertImageRow($columns);
+
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $id = (int) $db->insertid();
+        $root = \Joomla\CMS\Uri\Uri::root(true);
+
+        $result['status'] = 'added';
+        $result['row'] = [
+            'id' => $id,
+            'thumbnail_path' => $processed['thumbnail_path'],
+            'thumbnail_url' => $root . '/' . ltrim($processed['thumbnail_path'], '/'),
+            'large_url' => $root . '/' . ltrim($processed['large_path'], '/'),
+        ];
+
+        return $result;
+    }
+
+    /**
+     * Insert one gallery row. (saveImages() and importPhotoFromUrl() still
+     * carry their own copies of this block - left untouched to keep this
+     * change small; they could call this later.)
+     *
+     * @param   array  $columns  Column => value; null values are written as NULL.
+     *
+     * @return  void
+     *
+     * @since   1.0.13
+     */
+    private static function insertImageRow(array $columns): void
+    {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $query = $db->getQuery(true)->insert($db->quoteName('#__ra_library_images'));
+        $query->columns(array_map(static fn ($col) => $db->quoteName($col), array_keys($columns)));
+        $query->values(implode(',', array_map(
+            static fn ($value) => $value === null ? 'NULL' : $db->quote($value),
+            array_values($columns)
+        )));
+        $db->setQuery($query)->execute();
+    }
+
+    /**
+     * Convert a php.ini size value ("8M", "2G", "512K", "1048576") to bytes.
+     *
+     * @param   string  $value  The ini value.
+     *
+     * @return  int  Bytes; 0 for "0"/empty/-1 (meaning unlimited).
+     *
+     * @since   1.0.13
+     */
+    private static function iniToBytes(string $value): int
+    {
+        $value = trim($value);
+
+        if ($value === '' || $value === '-1') {
+            return 0;
+        }
+
+        $number = (float) $value;
+
+        switch (strtolower(substr($value, -1))) {
+            case 'g':
+                $number *= 1024;
+                // no break
+            case 'm':
+                $number *= 1024;
+                // no break
+            case 'k':
+                $number *= 1024;
+        }
+
+        return (int) $number;
     }
 
     /**

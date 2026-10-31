@@ -22,3 +22,9 @@
 <li><strong>gpx_map_list</strong> - a list of the OTHER GPX files (not the one gpx_map is already showing), each a link that opens the route on a map in a popup, blank if none</li>
 <li><strong>document_list</strong> - a list of titled document download links, blank if none</li>
 </ul>
+<p><strong>Custom fields</strong></p>
+<p>Fields you define under Components &gt; Ra_library &gt; Past Walk Fields. They are only available when at least one field has been created.</p>
+<ul>
+<li><strong>custom_fields</strong> - every custom field that has a value, as a ready-made list (label and value). A field set to &quot;Do not automatically display&quot; is left out of this block</li>
+<li><strong>field:name</strong> - the value of one custom field, where <em>name</em> is the field's Name (shown in the Fields list - lowercase letters, digits and hyphens), e.g. <code>{field:terrain}</code>. Blank if the record has no value. Works in conditions too: <code>{if:field:terrain}Terrain: {field:terrain}{/if}</code> or <code>{Terrain: ?field:terrain}</code></li>
+</ul>

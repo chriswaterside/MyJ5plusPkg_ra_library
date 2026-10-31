@@ -206,7 +206,7 @@ class RoutesModel extends ListModel {
         $orderDirn = $this->state->get('list.direction', 'ASC');
 
         if ($orderCol && $orderDirn) {
-            $query->order($db->escape($orderCol . ' ' . $orderDirn) . ', ' . $db->quoteName('a.title') . ' ASC');
+            $query->order($db->escape($orderCol . ' ' . $orderDirn) . ', ' . $db->quoteName('a.title') . ' ASC' . ', ' . $db->quoteName('a.id') . ' ASC');
         }
 
         return $query;

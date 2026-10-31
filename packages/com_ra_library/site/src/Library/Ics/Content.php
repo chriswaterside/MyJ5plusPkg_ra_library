@@ -1,4 +1,5 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Ics;
 
 /*
@@ -12,10 +13,10 @@ namespace Ramblers\Component\Ra_library\Site\Library\Ics;
  *
  * @author Admin
  */
-class Output {
+class Content {
 
-    private $isc="";
-    
+    private $isc = "";
+
     function __construct() {
         $this->addHeader();
     }
@@ -57,13 +58,16 @@ class Output {
         // Fix added to include number of seconds since midnight, forcing an update on each download. 
         // Otherwise, the event would only update daily. 
         $sequence = strval($days) . strval(time() % 86400);
-       
+
         $this->addRecord("SEQUENCE:" . $sequence);
     }
 
     private function addHeader() {
         $this->isc = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\n";
         $this->isc .= "PRODID:ramblers-webs v1.2\r\n";
+        // Ask calendar apps that honour it (Apple, Outlook) to refresh no more than every 12 hours
+        $this->isc .= "REFRESH-INTERVAL;VALUE=DURATION:PT12H\r\n";
+        $this->isc .= "X-PUBLISHED-TTL:PT12H\r\n";
     }
 
     private function chunk_split_unicode($str, $l = 73, $e = "\r\n") {
@@ -81,5 +85,4 @@ class Output {
     function __destruct() {
         
     }
-
 }
