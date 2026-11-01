@@ -190,18 +190,9 @@ class Feed {
         $this->walks->limitNumberWalks($no);
     }
 
-//    public function noWalks($no) {
-//        $this->limitNumberWalks($no);
-//    }
-
     public function numberWalks() {
         return count($this->walks->allWalks());
     }
-
-//  Not used
-//    public function walksInFuture($period) {
-//        $this->walks->walksInFuture($period);
-//    }
 
     public function noCancelledWalks() {
         $number = 0;
@@ -231,16 +222,16 @@ class Feed {
         $displayclass->DisplayWalks($this->walks);
     }
 
-    public function displayIcsDownload($name, $pretext, $linktext, $posttext) {
-        $events = new REventGroup(); // create a group of events
-        $events->addWalks($this); // add walks to the group of events
-        $display = new REventDownload();
-        $display->setPreText($pretext);
-        $display->setLinkText($linktext);
-        $display->setPostText($posttext);
-        $display->Display($name, $events); // display walks information
-// is this line correct and is function used
-    }
+//    public function displayIcsDownload($name, $pretext, $linktext, $posttext) {
+//        $events = new REventGroup(); // create a group of events
+//        $events->addWalks($this); // add walks to the group of events
+//        $display = new REventDownload();
+//        $display->setPreText($pretext);
+//        $display->setLinkText($linktext);
+//        $display->setPostText($posttext);
+//        $display->Display($name, $events); // display walks information
+//// is this line correct and is function used
+//    }
 
     public function getWalks() {
         return $this->walks;

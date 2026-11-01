@@ -24,6 +24,7 @@ use Ramblers\Component\Ra_library\Site\Library\Leaflet\Map as LeafletMap;
 use Ramblers\Component\Ra_library\Site\Library\Leaflet\Gpx\Map as GpxMap;
 use Ramblers\Component\Ra_library\Site\Library\Load\Load;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
 
 /**
  * Turns one Past Walk / Route database row into the flat token array a
@@ -59,6 +60,17 @@ use Joomla\CMS\Component\ComponentHelper;
  *
  * Route only:
  *   {route_points_list}  ordered list of waypoints (title, grid reference, description)
+ *
+ * Custom Fields (Components > Ra_library > Past Walk Fields / Route Fields):
+ *   {custom_fields}      every custom field that has a value for this record, as
+ *                        Joomla's standard fields list (label + value, honouring each
+ *                        field's "Show Label" setting). A field whose "Automatic Display"
+ *                        option is "Do not automatically display" is left out of this
+ *                        block - it can still be placed individually with {field:name}.
+ *   {field:name}         just the value of one field, where "name" is the field's Name
+ *                        (lowercase letters, digits, hyphens), blank if it has no value.
+ *                        Also works in {if:field:name}, {if_not:field:name} and
+ *                        {, ?field:name}.
  *
  * The image/GPX/document/route-point tokens are deliberately whole
  * pre-built HTML blocks rather than something a template author assembles
@@ -160,6 +172,75 @@ class ItemRenderer
 
         if ($recordType === 'route') {
             $values['route_points_list'] = self::buildRoutePointsList($id);
+        }
+
+        return $values + self::buildCustomFieldValues($row, $recordType);
+    }
+
+    /**
+     * The {custom_fields} block and one {field:name} value per defined
+     * custom field for this record's context (com_ra_library.pastwalk or
+     * com_ra_library.route). Both are blank - never an error - when no
+     * fields are defined, the record has no values, or Joomla's Fields
+     * component can't be used for any reason (a broken field plugin must
+     * not take the whole page down).
+     *
+     * Field values come back already prepared for HTML output by the
+     * Fields plugins (no further escaping needed), and Joomla itself
+     * filters out fields the visitor's access level, the record's category
+     * or language rule out.
+     *
+     * @param   \stdClass  $row         A row from FrontendHelper::getPublishedItem(s)().
+     * @param   string     $recordType  'pastwalk' or 'route'.
+     *
+     * @return  array  'custom_fields' => html, 'field:<name>' => html, ...
+     *
+     * @since   1.0.13
+     */
+    private static function buildCustomFieldValues(\stdClass $row, string $recordType): array
+    {
+        $values = ['custom_fields' => ''];
+
+        try {
+            $context = 'com_ra_library.' . $recordType;
+            $item = (object) [
+                'id' => (int) $row->id,
+                'catid' => (int) ($row->catid ?? 0),
+            ];
+
+            // true = prepare every field's value for display, whatever its
+            // own "Automatic Display" position (that option is applied
+            // below, to {custom_fields} only).
+            $fields = FieldsHelper::getFields($context, $item, true);
+
+            if (empty($fields)) {
+                return $values;
+            }
+
+            $visible = [];
+
+            foreach ($fields as $field) {
+                $value = trim((string) ($field->value ?? ''));
+                $values['field:' . $field->name] = $value;
+
+                if ($value !== '' && (string) $field->params->get('display', '2') !== '0') {
+                    $visible[] = $field;
+                }
+            }
+
+            if ($visible) {
+                $html = FieldsHelper::render($context, 'fields.render', [
+                    'item' => $item,
+                    'context' => $context,
+                    'fields' => $visible,
+                ]);
+
+                if (trim((string) $html) !== '') {
+                    $values['custom_fields'] = '<div class="ra-custom-fields">' . $html . '</div>';
+                }
+            }
+        } catch (\Throwable $e) {
+            // Leave whatever was built so far (at worst, all blank).
         }
 
         return $values;

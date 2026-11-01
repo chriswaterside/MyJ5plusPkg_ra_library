@@ -53,9 +53,6 @@
                 <field name="custom_css_file" type="text" default=""
                        label="MOD_RAFOOTER_FIELD_CUSTOMCSS_LABEL"
                        description="MOD_RAFOOTER_FIELD_CUSTOMCSS_DESC" />
-                <field name="alternative_css_file" type="text" default=""
-                       label="MOD_RAFOOTER_FIELD_ALTERNATIVECSS_LABEL"
-                       description="MOD_RAFOOTER_FIELD_ALTERNATIVECSS_DESC" />
             </fieldset>
 
             <fieldset name="ramblers" label="MOD_RAFOOTER_FIELDSET_LABEL_RAMBLERS">

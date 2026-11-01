@@ -177,6 +177,14 @@ class LibrarydisplaysModel extends ListModel {
             } else {
                 $query->order($db->escape($orderCol . ' ' . $orderDirn));
             }
+
+            // Final tie-breaker. Many rows share the same state, title or
+            // display option, and MySQL does not promise any order among tied
+            // rows - each page of the list is a separate query, so without
+            // this the order can change from page to page.
+            if ($orderCol !== 'a.id' && $orderCol !== 'id') {
+                $query->order($db->quoteName('a.id') . ' ASC');
+            }
         }
 
         return $query;

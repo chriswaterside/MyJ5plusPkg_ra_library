@@ -33,6 +33,16 @@ class Feedoptions {
         $this->sources[] = $source;
     }
 
+    // Add specific walks/events by Walks Manager id, e.g. "100493667" or "1,2,3"
+    public function addWalksManagerIds($ids) {
+        if (!preg_match('/^[0-9]+(,[0-9]+)*$/', $ids)) {
+            throw new \RuntimeException('Invalid ids input');
+        }
+        $source = new Sourcewalksmanager();
+        $source->_initialiseIds($ids);
+        $this->sources[] = $source;
+    }
+
     public function addWalksManagerWellbeingWalks($groups) {
         $this->checkGroups($groups);
         $readwalks = false;
@@ -59,17 +69,6 @@ class Feedoptions {
         $source = new Sourcewalksmanagerarea();
         $source->_initialiseArea($lat, $long, $km, $readwalks, $readevents, $wellbeingWalks);
         $this->sources[] = $source;
-    }
-
-    public function addWalksEditorWalks($groupCode, $groupName, $site) {
-        if (str_contains($site, "<")) {
-            $app = Factory::getApplication();
-            $app->enqueueMessage(Text::_("Site parameter must not contain html tags: " . $site), "error");
-        } else {
-            $source = new Sourcewalkseditor();
-            $source->_initialise($groupCode, $groupName, $site);
-            $this->sources[] = $source;
-        }
     }
 
     private function checkGroups($input) {

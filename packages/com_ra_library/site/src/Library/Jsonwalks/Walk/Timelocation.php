@@ -1,5 +1,7 @@
 <?php
+
 namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,6 +14,8 @@ namespace Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
  * @author chris
  */
 use Joomla\CMS\Factory;
+use Ramblers\Component\Ra_library\Site\Library\Geometry\Greatcircle;
+
 class Timelocation implements \JsonSerializable {
 
     private $type;
@@ -103,7 +107,7 @@ class Timelocation implements \JsonSerializable {
                     $out = $this->timeHHMMshort;
                 }
                 break;
-             case "{Timefull}":
+            case "{Timefull}":
                 if ($this->type !== self::LOCATION_ROUGH) {
                     $out = $this->timeHHMM;
                 }
@@ -146,7 +150,7 @@ class Timelocation implements \JsonSerializable {
             case "time":
                 return $this->time;
             case "lat/long":
-                return  $this->latitude . ',' . $this->longitude ;
+                return $this->latitude . ',' . $this->longitude;
             case "postcode":
                 return $this->postcode;
             case "textTime":
@@ -211,7 +215,7 @@ class Timelocation implements \JsonSerializable {
     public function distanceFromLatLong($lat1, $lon1) {
         $lat2 = $this->latitude;
         $lon2 = $this->longitude;
-        $dist = RGeometryGreatcircle::distance($lat1, $lon1, $lat2, $lon2, "KM");
+        $dist = Greatcircle::distance($lat1, $lon1, $lat2, $lon2, "KM");
         return $dist;
     }
 
@@ -233,5 +237,4 @@ class Timelocation implements \JsonSerializable {
             'osmaps' => $this->osmaps
         ];
     }
-
 }

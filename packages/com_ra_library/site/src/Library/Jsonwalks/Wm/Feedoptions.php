@@ -20,6 +20,10 @@ class Feedoptions {
     public $latitude = null;
     public $longitude = null;
     public $distance = null;
+    // Comma separated list of Walks Manager ids (digits and commas only)
+    public $ids = null;
+    // False = do not read or write the disk cache for this request
+    public $useCache = true;
 
     public function __construct() {
         
@@ -43,6 +47,10 @@ class Feedoptions {
 
         if ($this->groupCode !== null) {
             $url = $url . '&groups=' . strtoupper($this->groupCode);
+        }
+        // Fetch specific walks/events by Walks Manager id
+        if ($this->ids !== null) {
+            $url = $url . '&ids=' . $this->ids;
         }
         if ($this->latitude !== null) {
             $url = $url . '&latitude=' . $this->latitude;
@@ -76,7 +84,10 @@ class Feedoptions {
         if ($this->include_wellbeing_walks) {
             $url = $url . "wellbeing-walks";
         }
-        if ($this->groupCode !== null) {
+        if ($this->ids !== null) {
+            // Cache name for fetch by id
+            $url = 'cache_ids_' . $this->ids;
+        } else if ($this->groupCode !== null) {
             $url = 'cache_' . strtoupper($this->groupCode);
             $url = str_replace(',', '', $url);
         } else {

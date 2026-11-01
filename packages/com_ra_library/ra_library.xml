@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="5.0" method="upgrade">
     <name>com_ra_library</name>
-    <creationDate>2-10-2026</creationDate>
+    <creationDate>31-10-2026</creationDate>
     <copyright>2026 Chris Vaughan</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <author>Chris Vaughan</author>
     <authorEmail>ruby.tuesday@ramblers-webs.org.uk</authorEmail>
     <authorUrl>https://ramblers-webs.org.uk</authorUrl>
-    <version>5.0.84</version>
+    <version>5.0.86</version>
     <description>Component to Ramblers displays of events etc</description>
     <namespace path="src">Ramblers\Component\Ra_library</namespace>
     <scriptfile>script.php</scriptfile>
@@ -51,8 +51,12 @@
             <menu link="option=com_ra_library&amp;view=librarydisplays" view="librarydisplays" alt="Ra_library/Librarydisplays">Display Options</menu>
             <menu link="option=com_ra_library&amp;view=pastwalks" view="pastwalks" alt="Ra_library/Pastwalks">Past Walks</menu>
             <menu link="option=com_categories&amp;extension=com_ra_library.pastwalk" view="categories" alt="Ra_library/Categories">Past Walk Categories</menu>
+            <menu link="option=com_fields&amp;view=fields&amp;context=com_ra_library.pastwalk" alt="Ra_library/PastwalkFields">Past Walk Fields</menu>
+            <menu link="option=com_fields&amp;view=groups&amp;context=com_ra_library.pastwalk" alt="Ra_library/PastwalkFieldGroups">Past Walk Field Groups</menu>
             <menu link="option=com_ra_library&amp;view=routes" view="routes" alt="Ra_library/Routes">Routes</menu>
             <menu link="option=com_categories&amp;extension=com_ra_library.route" view="categories" alt="Ra_library/Categories">Route Categories</menu>
+            <menu link="option=com_fields&amp;view=fields&amp;context=com_ra_library.route" alt="Ra_library/RouteFields">Route Fields</menu>
+            <menu link="option=com_fields&amp;view=groups&amp;context=com_ra_library.route" alt="Ra_library/RouteFieldGroups">Route Field Groups</menu>
         </submenu>
         <files folder="administrator">
             <filename>access.xml</filename>

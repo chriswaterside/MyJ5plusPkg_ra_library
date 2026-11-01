@@ -39,6 +39,17 @@ class Feed {
         return $items;
     }
 
+    // Read specific walks/events by Walks Manager id (no date window, so past items can be fetched)
+    public function getItemsByIds($ids, $readwalks, $readevents) {
+        $feedOpts = new Feedoptions();
+        $feedOpts->ids = $ids;
+        $feedOpts->include_walks = $readwalks;
+        $feedOpts->include_events = $readevents;
+        // a list of ids can be any combination, so only cache single ids (bounded by the number of walks)
+        $feedOpts->useCache = (strpos($ids, ',') === false);
+        return $this->getFeed($feedOpts, true);
+    }
+
     public function getItemsWithinArea($latitude, $longitude, $distance, $readwalks, $readevents, $readwellbeingwalks) {
         $feedOpts = new Feedoptions();
 
@@ -59,6 +70,9 @@ class Feed {
         $cachedWalksFileName = $feedOpts->getCacheFileName("walks.json");
         $source = $this->whichSource($cachedWalksFileName);
         if (!$future) {
+            $source = READSOURCE::FEED;
+        }
+        if (!$feedOpts->useCache) {
             $source = READSOURCE::FEED;
         }
 
@@ -86,7 +100,9 @@ class Feed {
                 }
             } else {
                 // write walks to cache file
-                $this->cacheFolder->writeFile($cachedWalksFileName, $result);
+                if ($feedOpts->useCache) {
+                    $this->cacheFolder->writeFile($cachedWalksFileName, $result);
+                }
             }
         }
 

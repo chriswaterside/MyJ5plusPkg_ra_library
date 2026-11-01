@@ -7,6 +7,34 @@ function initNestedPanels(container) {
     const tree = JSON.parse(dataEl.textContent);
     const hidden = container.querySelector('input[type="hidden"]');
     const levelsEl = container.querySelector('.nestedpanels-levels');
+    const previewEl = container.querySelector('.nestedpanels-preview');
+
+    // The leaf option currently saved/chosen. The preview area falls back
+    // to this whenever the pointer or keyboard focus leaves an option.
+    let selectedNode = null;
+
+    // Shows the large preview image (and optional caption) for an option.
+    // With no node, or a node without a preview, the area is left empty and
+    // CSS shows a placeholder message.
+    function showPreview(node) {
+        if (!previewEl)
+            return;
+        previewEl.innerHTML = '';
+        if (!node || !node.preview)
+            return;
+
+        const img = document.createElement('img');
+        img.src = node.preview;
+        img.alt = ''; // decorative: the option label is already visible and read out
+        previewEl.appendChild(img);
+
+        if (node.caption) {
+            const cap = document.createElement('div');
+            cap.className = 'nestedpanels-preview-caption';
+            cap.textContent = node.caption;
+            previewEl.appendChild(cap);
+        }
+    }
 
     // path[i] = the node chosen at row i (group at every row except
     // possibly the last, which may be the final chosen leaf option).
@@ -80,11 +108,21 @@ function initNestedPanels(container) {
 
                 if (node.type === 'option') {
                     hidden.value = node.value;
+                    selectedNode = node;
                     hidden.dispatchEvent(new Event('change', {bubbles: true}));
                 }
 
                 render();
             };
+
+            // Leaf options preview on hover/focus; leaving reverts to the
+            // option that is actually selected (or the empty placeholder).
+            if (node.type === 'option') {
+                panel.addEventListener('mouseenter', () => showPreview(node));
+                panel.addEventListener('focus', () => showPreview(node));
+                panel.addEventListener('mouseleave', () => showPreview(selectedNode));
+                panel.addEventListener('blur', () => showPreview(selectedNode));
+            }
 
             panel.addEventListener('click', activate);
             panel.addEventListener('keydown', (e) => {
@@ -119,14 +157,19 @@ function initNestedPanels(container) {
             nodesAtLevel = chosen.children;
             level++;
         }
+
+        // The rows were rebuilt, so show the selected option's preview again.
+        showPreview(selectedNode);
     }
 
     // If a value is already saved (editing an existing record), expand
     // every row down to that value so the whole path is visible on load.
     if (hidden.value) {
         const found = findPathToValue(tree, hidden.value, []);
-        if (found)
+        if (found) {
             path = found;
+            selectedNode = found[found.length - 1]; // the leaf option
+        }
     }
 
     render();

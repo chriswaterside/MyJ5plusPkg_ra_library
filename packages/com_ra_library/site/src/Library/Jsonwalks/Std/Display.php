@@ -14,6 +14,7 @@ use \Ramblers\Component\Ra_library\Site\Library\Leaflet\Map;
 use \Ramblers\Component\Ra_library\Site\Library\Load\Load;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Walk;
 use Ramblers\Component\Ra_library\Site\Library\Jsonwalks\Addschema;
+use Ramblers\Component\Ra_library\Site\Library\Ics\Calendarbutton;
 
 // no direct access
 defined("_JEXEC") or die("Restricted access");
@@ -28,6 +29,8 @@ class Display extends Displaybase {
     private $customGradesFormat = null;
     private $customCalendarFormat = null;
     private $customTabOrder = null;
+    // 'Add to calendar' button in the tabbed display
+    private $showCalendarLink = true;
 
     public function DisplayWalks($walks) {
 
@@ -65,6 +68,10 @@ class Display extends Displaybase {
         $data->customListFormat = $this->customListFormat;
         $data->customTableFormat = $this->customTableFormat;
         $data->customTabOrder = $this->customTabOrder;
+        // groups and the ids to download are worked out in the browser from the walks displayed
+        $data->showCalendarLink = $this->showCalendarLink;
+        $data->calendarBaseUrl = Calendarbutton::getBaseUrl();
+        $data->calendarLists = Calendarbutton::getLists();
         $data->displayBookingsTable = false;
         if (ComponentHelper::isEnabled('com_ra_eventbooking')) {
             $data->displayBookingsTable = Ra_eventbookingHelper::canEdit();
@@ -72,6 +79,10 @@ class Display extends Displaybase {
 
         $this->map->setDataObject($data);
         $this->map->display();
+        if ($this->showCalendarLink) {
+            // The subscribe form was moved out of display.js
+            Load::addScript("media/com_ra_library/js/ra.calendarsubscribe.js");
+        }
         Load::addScript("media/com_ra_library/js/jsonwalks/std/display.js");
         Load::addScript("media/com_ra_library/js/vendors/cvList/cvList.js");
         Load::addStyleSheet("media/com_ra_library/js/vendors/cvList/cvList.css");
@@ -79,6 +90,10 @@ class Display extends Displaybase {
         Load::addStyleSheet("media/com_ra_library/css/ra.tabs.css");
         $schema = new Addschema();
         $schema->display($walks);
+    }
+
+    public function setCalendarLink($show) {
+        $this->showCalendarLink = (bool) $show;
     }
 
     public function setWalksClass($value) {

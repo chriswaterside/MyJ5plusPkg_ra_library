@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS `#__ra_library_images` (
 `description` TEXT NULL,
 `thumbnail_path` VARCHAR(500) NULL DEFAULT "",
 `large_path` VARCHAR(500) NULL DEFAULT "",
+`file_hash` CHAR(40) NOT NULL DEFAULT '',
 `grid_reference` VARCHAR(20) NULL DEFAULT "",
 `latitude` DECIMAL(9,6) NULL DEFAULT NULL,
 `longitude` DECIMAL(9,6) NULL DEFAULT NULL,
@@ -132,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `#__ra_library_images` (
 PRIMARY KEY (`id`)
 ,KEY `idx_record_id` (`record_id`)
 ,KEY `idx_featured` (`featured`)
+,KEY `idx_record_hash` (`record_id`, `file_hash`)
 ) DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__ra_library_attachments` (

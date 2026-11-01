@@ -24,6 +24,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
 
 class NestedPanelsField extends FormField {
 
@@ -57,6 +58,8 @@ class NestedPanelsField extends FormField {
         $html[] = '<input type="hidden" id="' . htmlspecialchars($fieldId, ENT_QUOTES) . '" name="' . htmlspecialchars($fieldName, ENT_QUOTES) . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '">';
         $html[] = '<div class="nestedpanels-breadcrumb"></div>';
         $html[] = '<div class="nestedpanels-levels"></div>';
+        // Large preview of the hovered / focused / selected option (see 'preview' attribute).
+        $html[] = '<div class="nestedpanels-preview"></div>';
         $html[] = '<script type="application/json" class="nestedpanels-data">' . json_encode($tree) . '</script>';
         $html[] = '</div>';
 
@@ -79,7 +82,7 @@ class NestedPanelsField extends FormField {
                 $nodes[] = [
                     'type' => 'group',
                     'label' => Text::_((string) $child['label']),
-                    'image' => (string) ($child['image'] ?? ''),
+                    'image' => $this->imageUrl((string) ($child['image'] ?? '')),
                     'children' => $this->buildTree($child),
                 ];
             } elseif ($tag === 'option') {
@@ -87,11 +90,36 @@ class NestedPanelsField extends FormField {
                     'type' => 'option',
                     'value' => (string) $child['value'],
                     'label' => Text::_(trim((string) $child)),
-                    'image' => (string) ($child['image'] ?? ''),
+                    // small icon shown on the panel itself
+                    'image' => $this->imageUrl((string) ($child['image'] ?? '')),
+                    // large image shown in the preview area on hover / focus / selection
+                    'preview' => $this->imageUrl((string) ($child['preview'] ?? '')),
+                    // optional one-line description shown under the preview
+                    'caption' => Text::_((string) ($child['caption'] ?? '')),
                 ];
             }
         }
 
         return $nodes;
+    }
+
+    /**
+     * Turns an image path from the form XML into a usable URL.
+     *
+     * - empty                         => '' (no image)
+     * - http(s):// or // URL          => unchanged
+     * - anything else (e.g. 'media/com_ra_library/images/displays/x.png'
+     *   or '/media/...')              => prefixed with the site base path,
+     *                                    so it also works when Joomla is
+     *                                    installed in a sub-folder.
+     */
+    protected function imageUrl(string $path): string {
+        $path = trim($path);
+
+        if ($path === '' || preg_match('#^(https?:)?//#i', $path)) {
+            return $path;
+        }
+
+        return Uri::root(true) . '/' . ltrim($path, '/');
     }
 }

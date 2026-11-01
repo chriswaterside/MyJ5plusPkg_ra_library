@@ -47,6 +47,169 @@ class Com_Ra_libraryInstallerScript {
     }
 
     /**
+     * Runs after Joomla has installed/updated the component (and rebuilt its
+     * admin menu) - used to group the admin submenu, see groupAdminMenu().
+     *
+     * @param   string                                    $type    install, update, discover_install...
+     * @param   \Joomla\CMS\Installer\InstallerAdapter  $parent  The class calling this method
+     *
+     * @return  boolean
+     *
+     * @since   1.0.14
+     */
+    public function postflight($type, $parent) {
+        if (\in_array($type, ['install', 'update', 'discover_install'], true)) {
+            try {
+                $this->groupAdminMenu();
+            } catch (\Throwable $e) {
+                // Purely cosmetic - on any problem the flat, already
+                // logically-ordered submenu from the manifest simply stays.
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Label the groups in the flat admin submenu the installer builds from
+     * the manifest, so it reads
+     *
+     *   Display Options
+     *   PAST WALKS   (label)
+     *     Past Walks | Categories | Fields | Field Groups
+     *   ROUTES       (label)
+     *     Routes     | Categories | Fields | Field Groups
+     *
+     * using Joomla's own menu "separator with a title" item (rendered by the
+     * administrator sidebar as a small group label), and shortens the item
+     * titles now the label says which section they belong to.
+     *
+     * Deliberately NOT nested headings: com_ra_library's items already sit
+     * on the sidebar's third level (Components > RA Library > item), and the
+     * sidebar neither styles nor supports a fourth level - a heading there
+     * gets a dropdown toggle with no dropdown (JavaScript error on click) and
+     * its children lose their indent.
+     *
+     * Runs in postflight, i.e. after Joomla has (re)built the flat menu - which
+     * it does afresh on every install/update, so this is re-applied each time.
+     * The separators carry this component's component_id, so Joomla removes
+     * them together with the rest of the menu on update/uninstall. Items are
+     * matched by their link; anything not found is simply left alone.
+     *
+     * @return  void
+     *
+     * @since   1.0.14
+     */
+    private function groupAdminMenu() {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+        $extensionId = (int) $db->setQuery(
+            $db->getQuery(true)
+                ->select($db->quoteName('extension_id'))
+                ->from($db->quoteName('#__extensions'))
+                ->where($db->quoteName('type') . ' = ' . $db->quote('component'))
+                ->where($db->quoteName('element') . ' = ' . $db->quote('com_ra_library'))
+        )->loadResult();
+
+        if (!$extensionId) {
+            return;
+        }
+
+        $topId = (int) $db->setQuery(
+            $db->getQuery(true)
+                ->select($db->quoteName('id'))
+                ->from($db->quoteName('#__menu'))
+                ->where($db->quoteName('client_id') . ' = 1')
+                ->where($db->quoteName('menutype') . ' = ' . $db->quote('main'))
+                ->where($db->quoteName('parent_id') . ' = 1')
+                ->where($db->quoteName('component_id') . ' = ' . $extensionId)
+                ->order($db->quoteName('id') . ' DESC')
+        )->loadResult();
+
+        if (!$topId) {
+            return;
+        }
+
+        $groups = [
+            ['title' => 'Past Walks', 'alias' => 'ra-group-pastwalks', 'items' => [
+                'index.php?option=com_ra_library&view=pastwalks' => 'Past Walks',
+                'index.php?option=com_categories&extension=com_ra_library.pastwalk' => 'Categories',
+                'index.php?option=com_fields&view=fields&context=com_ra_library.pastwalk' => 'Fields',
+                'index.php?option=com_fields&view=groups&context=com_ra_library.pastwalk' => 'Field Groups',
+            ]],
+            ['title' => 'Routes', 'alias' => 'ra-group-routes', 'items' => [
+                'index.php?option=com_ra_library&view=routes' => 'Routes',
+                'index.php?option=com_categories&extension=com_ra_library.route' => 'Categories',
+                'index.php?option=com_fields&view=fields&context=com_ra_library.route' => 'Fields',
+                'index.php?option=com_fields&view=groups&context=com_ra_library.route' => 'Field Groups',
+            ]],
+        ];
+
+        foreach ($groups as $group) {
+            $firstId = 0;
+
+            foreach ($group['items'] as $link => $newTitle) {
+                $id = (int) $db->setQuery(
+                    $db->getQuery(true)
+                        ->select($db->quoteName('id'))
+                        ->from($db->quoteName('#__menu'))
+                        ->where($db->quoteName('client_id') . ' = 1')
+                        ->where($db->quoteName('menutype') . ' = ' . $db->quote('main'))
+                        ->where($db->quoteName('component_id') . ' = ' . $extensionId)
+                        ->where($db->quoteName('parent_id') . ' = ' . $topId)
+                        ->where($db->quoteName('link') . ' = ' . $db->quote($link))
+                        ->order($db->quoteName('id') . ' DESC')
+                )->loadResult();
+
+                if (!$id) {
+                    continue;
+                }
+
+                if (!$firstId) {
+                    $firstId = $id;
+                }
+
+                $db->setQuery(
+                    $db->getQuery(true)
+                        ->update($db->quoteName('#__menu'))
+                        ->set($db->quoteName('title') . ' = ' . $db->quote($newTitle))
+                        ->where($db->quoteName('id') . ' = ' . $id)
+                )->execute();
+            }
+
+            if (!$firstId) {
+                continue;
+            }
+
+            // The label: a titled separator placed just before the group's first item.
+            // (text_separator = 1 is what makes the sidebar show the separator's title.)
+            /** @var \Joomla\CMS\Table\Menu $label */
+            $label = Table::getInstance('menu');
+            $label->setLocation($firstId, 'before');
+
+            $data = [
+                'menutype' => 'main',
+                'client_id' => 1,
+                'title' => $group['title'],
+                'alias' => $group['alias'],
+                'type' => 'separator',
+                'published' => 1,
+                'parent_id' => $topId,
+                'component_id' => $extensionId,
+                'img' => 'class:component',
+                'home' => 0,
+                'link' => '',
+                'path' => '',
+                'params' => '{"text_separator":1}',
+            ];
+
+            if ($label->bind($data) && $label->check()) {
+                $label->store();
+            }
+        }
+    }
+
+    /**
      * @param   \Joomla\CMS\Installer\InstallerAdapter  $parent  The class calling this method
      *
      * @return  boolean

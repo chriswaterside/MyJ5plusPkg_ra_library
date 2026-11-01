@@ -413,7 +413,11 @@ L.Control.Elevation = L.Control.extend({
 
             if (!this._mouseHeightFocus) {
 
-                var heightG = d3.select(".leaflet-overlay-pane svg")
+                // Scoped to THIS map's overlay pane. A global selector
+                // (".leaflet-overlay-pane svg") always matched the first map
+                // on the page, so with several maps only the first showed
+                // the hover position/height indicator.
+                var heightG = d3.select(this._map.getPanes().overlayPane).select("svg")
                         .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
                         .attr("class", opts.theme + " height-focus line")

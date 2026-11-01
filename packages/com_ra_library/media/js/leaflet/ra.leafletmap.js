@@ -276,9 +276,11 @@ ra._leafletmap = function (tag, copyrightTag, options) {
         this.overlayLayers["Footpath Network (OS NGD)"] = new L.RA.FootpathNetworkLayer({
             apiKey: options.licenseKeys.OSMNGD,
             minZoom: 13,
-            onlyPublicRightOfWay: true,
-            attribution: 'Highway dedication (indicative PRoW) &copy; Ordnance Survey'
-        });
+            onlyPublicRightOfWay: false,
+            attribution: 'Highway dedication (indicative PRoW) &copy; Ordnance Survey',
+            logFeatureTypes: true, // debug aid: console.table a count of `description` values per fetch
+            showRoadsTracksAndPaths: false,
+            includeRoadsInLanes: false});
     }
 
 // get my location for directions

@@ -119,7 +119,7 @@ HTMLHelper::_('bootstrap.tooltip');
                                     <label class="text-center" style="cursor:pointer">
                                         <img src="<?php echo htmlspecialchars($photo->thumb); ?>" alt="<?php echo htmlspecialchars($photo->alt); ?>"
                                              style="max-width:90px;max-height:90px;display:block;border:2px solid transparent" class="ra-import-photo-thumb">
-                                        <input type="checkbox" class="form-check-input" name="photos[<?php echo htmlspecialchars($row->wm_id); ?>][]" value="<?php echo (int) $index; ?>">
+                                        <input type="checkbox" class="form-check-input" name="photos[<?php echo htmlspecialchars($row->wm_id); ?>][]" value="<?php echo (int) $index; ?>" checked>
                 <?php echo Text::_('COM_RA_LIBRARY_IMPORT_PHOTO_TICK'); ?>
                                     </label>
                                     <?php endforeach; ?>

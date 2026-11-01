@@ -139,3 +139,43 @@
     color: #198754;
     font-weight: 700;
 }
+
+/* Large preview of the hovered / focused / selected option.
+   Fixed aspect ratio so the form below does not jump when it fills. */
+.nestedpanels-preview {
+    margin-top: 1rem;
+    width: 480px;
+    max-width: 100%;
+    aspect-ratio: 8 / 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #dcdcdc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.nestedpanels-preview:empty::before {
+    content: 'No preview';
+    padding: 0 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.nestedpanels-preview img {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.nestedpanels-preview-caption {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}

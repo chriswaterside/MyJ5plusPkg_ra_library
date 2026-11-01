@@ -27,6 +27,7 @@ class Simplelist extends Displaybase {
         $this->customFormat = $format;
     }
 
+    #[\Override]
     public function DisplayWalks($walks) {
 
         if ($this->customFormat !== null) {

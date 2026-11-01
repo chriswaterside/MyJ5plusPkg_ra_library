@@ -246,6 +246,10 @@ class Walk implements \JsonSerializable {
         return $this->basics->getIntValue("walkDate");
     }
 
+    public function EventDateYYYYMMDD() {
+        return $this->basics->getIntValue("walkDate")->format('Y-m-d');
+    }
+
     public function EventText() {
         //  $calendarFormat = ["{meetTime}", "{< meet, >startTime}", "{,title}", "{,distance}"];
 
@@ -300,7 +304,8 @@ class Walk implements \JsonSerializable {
         $icsfile->addRecord("LOCATION:", $startLocation);
         $icsfile->addRecord("TRANSP:OPAQUE");
         $icsfile->addSequence($this->getIntValue("admin", "dateUpdated"));
-        $icsfile->addRecord("UID: walk" . $this->getIntValue("admin", "id") . "-isc@ramblers-webs.org.uk");
+        // no blank after "UID:", so the UID is the same as in the old JS created files ('walk<id>-isc@...')
+        $icsfile->addRecord("UID:walk" . $this->getIntValue("admin", "id") . "-isc@ramblers-webs.org.uk");
         $icsfile->addRecord("ORGANIZER;CN=" . $this->getIntValue("admin", "groupName") . ":mailto:ignore@ramblers-webs.org.uk");
 
         if ($this->isCancelled()) {
@@ -758,10 +763,6 @@ class Walk implements \JsonSerializable {
 
     private function contains($needle, $haystack) {
         return strpos($haystack, $needle) !== false;
-    }
-
-    public function EventDateYYYYMMDD() {
-        return $this->basics->getIntValue("walkDate")->format('Y-m-d');
     }
 
     #[\Override]

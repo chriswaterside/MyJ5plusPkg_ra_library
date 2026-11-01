@@ -163,25 +163,28 @@ class Walk implements \JsonSerializable {
                 if ($this->ascentMetres !== null) {
                     return $this->ascentMetres;
                 }
+                return "";
             case "ascentFeet":
                 if ($this->ascentFeet !== null) {
                     return $this->ascentFeet;
                 }
+                return "";
             case "schemaDistance":
                 if ($this->nationalGrade !== "None") {
                     return "A " . $this->nationalGrade . " " . $this->distanceMiles . "mile / " . $this->distanceKm . "km walk";
                 }
+                return "";
             case "icsWalkDistance":
                 if ($this->distanceMiles > 0) {
                     return ", " . $this->distanceMiles . "mi/" . $this->distanceKm . "km";
                 }
+                return "";
             case "_icsWalkGrade":
                 if ($this->localGrade !== "") {
                     return "Grade: " . $this->localGrade . "/" . $this->nationalGrade . "; <br/> ";
                 } else {
                     return "Grade: " . $this->nationalGrade . "; <br/> ";
                 }
-                return "";
         }
         $app = Factory::getApplication();
         $app->enqueueMessage("RJsonwalksWalkWalk error, invalid Walk value: " . $option);

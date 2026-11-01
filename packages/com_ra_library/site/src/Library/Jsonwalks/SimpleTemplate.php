@@ -13,6 +13,13 @@ class SimpleTemplate {
     private array $values = [];
     private int $pos = 0;
 
+    /*
+     * Besides plain {name} tokens, templates may use Joomla Custom Field
+     * values as {field:fieldname} (also in {if:field:fieldname},
+     * {if_not:field:fieldname} and the {text ?field:fieldname} shorthand).
+     * fieldname is the field's Name from Components > Ra_library > Fields:
+     * lowercase letters, digits, hyphens or underscores.
+     */
     public function __construct(string|array $template) {
         if (is_array($template)) {
             $template = self::convertOldTemplate($template);
@@ -20,7 +27,7 @@ class SimpleTemplate {
 
         // {from ?company} → {if:company}from {company}{/if}
         $this->template = preg_replace(
-                '/\{([^}]*?)\?([a-z_][a-z0-9_+]*)\}/i',
+                '/\{([^}]*?)\?((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}/i',
                 '{if:$2}$1{$2}{/if}',
                 $template
         );
@@ -37,7 +44,7 @@ class SimpleTemplate {
             $ch = $this->template[$pos];
 
             if ($ch === '{') {
-                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
+                if (preg_match('/^(\{(?:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|if:[^}]+|if_not:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
                     $pos += strlen($match[1]);
                     continue;
                 }
@@ -132,7 +139,7 @@ class SimpleTemplate {
             $ch = $this->template[$pos];
 
             if ($ch === '{') {
-                if (preg_match('/^(\{(?:[a-z_][a-z0-9_+]*|if:[^}]+|if_not:[a-z_][a-z0-9_+]*|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
+                if (preg_match('/^(\{(?:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|if:[^}]+|if_not:(?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*)|\/if|\/if_not)\})/i', substr($this->template, $pos), $match)) {
                     $tokens[] = ['type' => 'tag', 'value' => $match[1]];
                     $pos += strlen($match[1]);
                     continue;
@@ -163,7 +170,7 @@ class SimpleTemplate {
 
             $tag = $token['value'];
 
-            if (preg_match('/^\{([a-z_][a-z0-9_+]*)\}$/i', $tag, $m)) {
+            if (preg_match('/^\{((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i', $tag, $m)) {
                 $fields[$m[1]] = true;
             }
 
@@ -171,7 +178,7 @@ class SimpleTemplate {
                 $fields[trim($m[1])] = true;
             }
 
-            if (preg_match('/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i', $tag, $m)) {
+            if (preg_match('/^\{if_not:((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i', $tag, $m)) {
                 $fields[$m[1]] = true;
             }
         }
@@ -190,7 +197,7 @@ class SimpleTemplate {
     private function evaluateCondition(string $condition): bool {
         $condition = trim($condition);
 
-        if (preg_match('/^([a-z_][a-z0-9_+]*)\s*(=|!=)\s*(.*?)$/i', $condition, $m)) {
+        if (preg_match('/^((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\s*(=|!=)\s*(.*?)$/i', $condition, $m)) {
             $field = $m[1];
             $op = $m[2];
             $expected = $m[3];
@@ -217,7 +224,7 @@ class SimpleTemplate {
 
             $tag = $token['value'];
 
-            if (preg_match('/^\{([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchField)) {
+            if (preg_match('/^\{((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i', $tag, $matchField)) {
                 $field = $matchField[1];
                 $output .= $this->values[$field] ?? '';
                 $this->pos++;
@@ -236,7 +243,7 @@ class SimpleTemplate {
                 continue;
             }
 
-            if (preg_match('/^\{if_not:([a-z_][a-z0-9_+]*)\}$/i', $tag, $matchIfNot)) {
+            if (preg_match('/^\{if_not:((?:field:[a-z0-9_-]+|[a-z_][a-z0-9_+]*))\}$/i', $tag, $matchIfNot)) {
                 $this->pos++;
                 $fieldName = $matchIfNot[1];
                 $sub = $this->parseBlock($tokens);

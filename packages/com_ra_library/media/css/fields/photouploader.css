@@ -1,0 +1,52 @@
+/* Background photo uploader on the Past Walk / Route edit forms. */
+.ra-uploader {
+    border: 2px dashed var(--template-bg-dark-30, #adb5bd);
+    border-radius: .5rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.ra-uploader.ra-uploader-over {
+    border-color: var(--bs-primary, #0d6efd);
+    background: rgba(13, 110, 253, .07);
+}
+
+.ra-uploader-list {
+    list-style: none;
+    margin: .75rem 0 0;
+    padding: 0;
+    text-align: left;
+    font-size: .875rem;
+}
+
+.ra-uploader-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .15rem 0;
+    border-bottom: 1px solid rgba(128, 128, 128, .2);
+}
+
+.ra-uploader-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ra-uploader-state {
+    flex: none;
+}
+
+.ra-uploader-ok .ra-uploader-state {
+    color: var(--bs-success, #198754);
+}
+
+.ra-uploader-skip .ra-uploader-state {
+    color: var(--bs-secondary, #6c757d);
+}
+
+.ra-uploader-error .ra-uploader-state {
+    color: var(--bs-danger, #dc3545);
+    white-space: normal;
+    text-align: right;
+}

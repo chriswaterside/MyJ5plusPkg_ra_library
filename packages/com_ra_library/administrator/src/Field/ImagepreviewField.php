@@ -12,7 +12,9 @@ namespace Ramblers\Component\Ra_library\Administrator\Field;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 
 /**
@@ -45,8 +47,29 @@ class ImagepreviewField extends FormField
             return $hidden . '<span class="text-muted small">' . \Joomla\CMS\Language\Text::_('COM_RA_LIBRARY_IMAGE_NEW_ROW') . '</span>';
         }
 
-        $src = Uri::root(true) . '/' . ltrim((string) $this->value, '/');
+        $thumbRelative = ltrim((string) $this->value, '/');
+        $src = Uri::root(true) . '/' . $thumbRelative;
 
-        return $hidden . '<img src="' . htmlspecialchars($src, \ENT_QUOTES, 'UTF-8') . '" alt="" style="max-width:80px;max-height:80px;border-radius:3px;">';
+        // The 1600px copy sits next to the thumbnail and shares its base name
+        // (ImageGalleryHelper::resizeAndStore(): <base>_thumb.jpg / <base>_large.jpg).
+        // Use it for the hover preview and the click viewer when it is there.
+        $largeRelative = preg_replace('/_thumb\.jpg$/', '_large.jpg', $thumbRelative);
+        $largeSrc = ($largeRelative !== $thumbRelative && is_file(JPATH_ROOT . '/' . $largeRelative))
+            ? Uri::root(true) . '/' . $largeRelative
+            : $src;
+
+        $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+        $wa->registerAndUseStyle('fields.imagepreview', 'media/com_ra_library/css/fields/imagepreview.css');
+        $wa->registerAndUseScript('fields.imagepreview', 'media/com_ra_library/js/fields/imagepreview.js', [], ['defer' => true]);
+        Text::script('COM_RA_LIBRARY_IMAGE_VIEWER_CLOSE');
+        Text::script('COM_RA_LIBRARY_IMAGE_VIEWER_PREV');
+        Text::script('COM_RA_LIBRARY_IMAGE_VIEWER_NEXT');
+        Text::script('COM_RA_LIBRARY_IMAGE_VIEWER_COUNT');
+
+        return $hidden
+            . '<a class="ra-photo-thumb" href="' . htmlspecialchars($largeSrc, \ENT_QUOTES, 'UTF-8') . '" target="_blank" rel="noopener"'
+            . ' title="' . htmlspecialchars(Text::_('COM_RA_LIBRARY_IMAGE_VIEW_LARGER'), \ENT_QUOTES, 'UTF-8') . '">'
+            . '<img src="' . htmlspecialchars($src, \ENT_QUOTES, 'UTF-8') . '" alt="">'
+            . '</a>';
     }
 }
