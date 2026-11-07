@@ -58,7 +58,7 @@ class UploadController extends BaseController {
         $destDir = JPATH_SITE . '/' . $uploadFolder;
 
         try {
-            if (!Folder::exists($destDir)) {
+            if (!is_dir($destDir)) {
                 Folder::create($destDir);
             }
 

@@ -32,7 +32,7 @@ if ($background_style === '') {
 
 $background_color = getRAColor($params->get('background_color'), $params->get('background_custom_color'));
 if ($background_color !== '') {
-    $document->addStyleDeclaration('#rt-top { background-color: ' . $background_color . '; }');
+    $document->addStyleDeclaration(getRATarget($params->get('background_target'), $params->get('background_selector')) . ' { background-color: ' . $background_color . '; }');
 }
 
 // -----------------------------------------------------------------------
@@ -92,7 +92,27 @@ echo $header;
 // -----------------------------------------------------------------------
 
 /**
- * Resolve a Ramblers Pantone colour option to a hex string.
+ * Turn the "background applies to" setting into a CSS selector (Gantry 5 sections).
+ * 'same' = the section that contains this header module.
+ */
+function getRATarget(?string $target, ?string $custom): string {
+    $sections = ['top', 'header', 'navigation', 'showcase', 'utility', 'feature', 'expanded', 'extension', 'bottom', 'footer', 'copyright'];
+    $target = (string) $target;
+    if ($target === '' || $target === 'same') {
+        return 'section[id^="g-"]:has(#ramblersheader)';
+    }
+    if ($target === 'custom') {
+        $custom = trim((string) $custom);
+        if ($custom !== '' && preg_match('/^[A-Za-z0-9_#.,\s>+~:*\-\[\]="\'()]+$/', $custom)) {
+            return $custom;
+        }
+        return 'section[id^="g-"]:has(#ramblersheader)';
+    }
+    return in_array($target, $sections, true) ? '#g-' . $target : 'section[id^="g-"]:has(#ramblersheader)';
+}
+
+/**
+ * Resolve a Ramblers brand colour or old Pantone colour option to a hex string.
  */
 function getRAColor(?string $option, ?string $customvalue): string {
     $map = [
@@ -105,6 +125,11 @@ function getRAColor(?string $option, ?string $customvalue): string {
         'pantone4485' => '#5B491F',
         'pantone5565' => '#8BA69C',
         'pantone7474' => '#007A87',
+        'mintcake' => '#9BC8AB',
+        'sunset' => '#F08050',
+        'granite' => '#404141',
+        'rosycheeks' => '#F6B09D',
+        'sunrise' => '#F9B104',
         'white' => '#FFFFFF',
     ];
 

@@ -15,7 +15,7 @@ use Joomla\Database\DatabaseInterface;
  * Package install script for pkg_ra_library.
  *
  * Joomla installs plugins disabled. On a FRESH install of the package this
- * enables the plugins the package relies on, and gives System - RaStyling
+ * enables the plugins the package relies on, and gives System - RA Styling
  * its default settings (ramblers.css switched on).
  *
  * On an UPDATE nothing is touched, so a webmaster who has deliberately
@@ -49,7 +49,7 @@ class Pkg_Ra_libraryInstallerScript
         ],
         [
             'folder'  => 'system',
-            'element' => 'rastyling',
+            'element' => 'ra_styling',
             'params'  => [
                 'include_ramblers_css' => '1',
                 'custom_css_enabled'   => '0',
@@ -68,6 +68,10 @@ class Pkg_Ra_libraryInstallerScript
      */
     public function postflight($type, $parent)
     {
+        // The styling plugin was renamed rastyling -> ra_styling: carry the old
+        // settings across and switch the old plugin off (any install type).
+        $this->migrateOldStylingPlugin();
+
         // Fresh installs only (discover_install covers installs via
         // System > Discover). Never on update.
         if ($type !== 'install' && $type !== 'discover_install') {
@@ -137,6 +141,65 @@ class Pkg_Ra_libraryInstallerScript
         } catch (\Throwable $e) {
             Factory::getApplication()->enqueueMessage(
                 'Could not set default options for plugin ' . $folder . '/' . $element . ': ' . $e->getMessage(),
+                'warning'
+            );
+        }
+    }
+
+    /**
+     * Move the settings of the old System - RaStyling plugin (element "rastyling")
+     * to System - RA Styling (element "ra_styling"), then disable the old one so
+     * ramblers.css is not loaded twice. The old plugin is NOT uninstalled:
+     * the webmaster should do that in Extensions > Manage.
+     */
+    private function migrateOldStylingPlugin(): void
+    {
+        try {
+            $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+            $fetch = function (string $element) use ($db) {
+                $query = $db->getQuery(true)
+                    ->select($db->quoteName(['extension_id', 'enabled', 'params']))
+                    ->from($db->quoteName('#__extensions'))
+                    ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
+                    ->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
+                    ->where($db->quoteName('element') . ' = ' . $db->quote($element));
+
+                return $db->setQuery($query)->loadObject();
+            };
+
+            $old = $fetch('rastyling');
+            $new = $fetch('ra_styling');
+
+            // Nothing to do unless the old plugin is still there and switched on
+            if (!$old || !$new || (int) $old->enabled !== 1) {
+                return;
+            }
+
+            $params = trim((string) $old->params);
+            $query = $db->getQuery(true)
+                ->update($db->quoteName('#__extensions'))
+                ->set($db->quoteName('enabled') . ' = 1')
+                ->where($db->quoteName('extension_id') . ' = ' . (int) $new->extension_id);
+            if ($params !== '' && $params !== '{}') {
+                $query->set($db->quoteName('params') . ' = ' . $db->quote($params));
+            }
+            $db->setQuery($query)->execute();
+
+            $query = $db->getQuery(true)
+                ->update($db->quoteName('#__extensions'))
+                ->set($db->quoteName('enabled') . ' = 0')
+                ->where($db->quoteName('extension_id') . ' = ' . (int) $old->extension_id);
+            $db->setQuery($query)->execute();
+
+            Factory::getApplication()->enqueueMessage(
+                'System - RaStyling has been replaced by System - RA Styling. Your settings were copied across. '
+                . 'Please uninstall the old "System - RaStyling" plugin in Extensions > Manage.',
+                'notice'
+            );
+        } catch (\Throwable $e) {
+            Factory::getApplication()->enqueueMessage(
+                'Could not move the old RaStyling settings: ' . $e->getMessage(),
                 'warning'
             );
         }

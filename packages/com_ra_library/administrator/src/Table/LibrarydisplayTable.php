@@ -23,7 +23,6 @@ use Joomla\CMS\Tag\TaggableTableInterface;
 use Joomla\CMS\Tag\TaggableTableTrait;
 use \Joomla\Database\DatabaseDriver;
 use \Joomla\CMS\Filter\OutputFilter;
-use \Joomla\CMS\Filesystem\File;
 use \Joomla\Registry\Registry;
 use \Ramblers\Component\Ra_library\Administrator\Helper\Ra_libraryHelper;
 use \Joomla\CMS\Helper\ContentHelper;
