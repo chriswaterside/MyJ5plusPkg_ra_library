@@ -2,12 +2,12 @@
 <extension type="module" version="5.0" client="site" method="upgrade">
     <name>RA Footer</name>
     <author>Chris Vaughan Derby and South Derbyshire</author>
-    <creationDate>22-08-2026</creationDate>
+    <creationDate>7-11-2026</creationDate>
     <copyright>Copyright (C) 2015-2026 Ramblers-webs.org.uk</copyright>
     <license>This extension is released under the GNU/GPL License</license>
     <authorEmail>webmaster@ramblers-webs.org.uk</authorEmail>
     <authorUrl>www.ramblers-webs.org.uk</authorUrl>
-    <version>5.0.1</version>
+    <version>1.0.88</version>
     <description>MOD_RAFOOTER_DESCRIPTION</description>
 
     <namespace path="src">RamblersWebs\Module\Rafooter</namespace>
@@ -16,13 +16,14 @@
         <filename module="mod_rafooter">mod_rafooter.php</filename>
         <folder>tmpl</folder>
         <folder>images</folder>
-        <folder>css</folder>
         <folder>src</folder>
         <folder>language</folder>
+        <filename>index.html</filename>
     </files>
 
     <languages>
         <language tag="en-GB">language/en-GB/mod_rafooter.ini</language>
+        <language tag="en-GB">language/en-GB/mod_rafooter.sys.ini</language>
     </languages>
 
     <config>
@@ -45,10 +46,15 @@
                     <option value="0">MOD_RAFOOTER_OPTION_SHORT</option>
                     <option value="2">MOD_RAFOOTER_OPTION_NOCOPYRIGHT</option>
                 </field>
-                <field name="ramblersdisableprivacy" type="radio" default="1"
+                <field name="ramblersdisableprivacy" type="radio" default="0"
                        label="MOD_RAFOOTER_FIELD_RAMBLERSDISABLEPRIVACY_LABEL">
                     <option value="0">MOD_RAFOOTER_OPTION_ENABLE</option>
                     <option value="1">MOD_RAFOOTER_OPTION_DISABLE</option>
+                </field>
+                <field name="showterms" type="radio" default="1"
+                       label="MOD_RAFOOTER_FIELD_SHOWTERMS_LABEL">
+                    <option value="1">MOD_RAFOOTER_OPTION_ENABLE</option>
+                    <option value="0">MOD_RAFOOTER_OPTION_DISABLE</option>
                 </field>
                 <field name="custom_css_file" type="text" default=""
                        label="MOD_RAFOOTER_FIELD_CUSTOMCSS_LABEL"
@@ -56,49 +62,67 @@
             </fieldset>
 
             <fieldset name="ramblers" label="MOD_RAFOOTER_FIELDSET_LABEL_RAMBLERS">
-                <field name="footerstyle" type="radio" default="0"
+                <field name="footerstyle" type="radio" default="1"
                        label="MOD_RAFOOTER_FIELD_FOOTERSTYLE_LABEL">
                     <option value="1">MOD_RAFOOTER_OPTION_ENABLE</option>
                     <option value="0">MOD_RAFOOTER_OPTION_DISABLE</option>
                 </field>
-                <field name="background_color" type="list" default="darkgrey"
+                <field name="footer_target" type="list" default="same"
+                       label="MOD_RAFOOTER_FIELD_TARGET_LABEL"
+                       description="MOD_RAFOOTER_FIELD_TARGET_DESC">
+                    <option value="same">MOD_RAFOOTER_SECTION_SAME</option>
+                    <option value="footer_copyright">MOD_RAFOOTER_SECTION_FOOTER_COPYRIGHT</option>
+                    <option value="top">MOD_RAFOOTER_SECTION_TOP</option>
+                    <option value="header">MOD_RAFOOTER_SECTION_HEADER</option>
+                    <option value="navigation">MOD_RAFOOTER_SECTION_NAVIGATION</option>
+                    <option value="showcase">MOD_RAFOOTER_SECTION_SHOWCASE</option>
+                    <option value="utility">MOD_RAFOOTER_SECTION_UTILITY</option>
+                    <option value="feature">MOD_RAFOOTER_SECTION_FEATURE</option>
+                    <option value="expanded">MOD_RAFOOTER_SECTION_EXPANDED</option>
+                    <option value="extension">MOD_RAFOOTER_SECTION_EXTENSION</option>
+                    <option value="bottom">MOD_RAFOOTER_SECTION_BOTTOM</option>
+                    <option value="footer">MOD_RAFOOTER_SECTION_FOOTER</option>
+                    <option value="copyright">MOD_RAFOOTER_SECTION_COPYRIGHT</option>
+                    <option value="custom">MOD_RAFOOTER_SECTION_CUSTOM</option>
+                </field>
+                <field name="footer_selector" type="text" default=""
+                       showon="footer_target:custom"
+                       label="MOD_RAFOOTER_FIELD_FOOTERSELECTOR_LABEL"
+                       description="MOD_RAFOOTER_FIELD_FOOTERSELECTOR_DESC" />
+                <field name="background_color" type="groupedlist" default="darkgrey"
                        label="MOD_RAFOOTER_FIELD_BACKGROUNDCOLOR_LABEL"
                        description="MOD_RAFOOTER_FIELD_BACKGROUNDCOLOR_DESC">
                     <option value="darkgrey">MOD_RAFOOTER_COLOR_DARKGREY</option>
-                    <option value="pantone0110">PANTONE 0110</option>
-                    <option value="pantone0159">PANTONE 0159</option>
-                    <option value="pantone0186">PANTONE 0186</option>
-                    <option value="pantone0555">PANTONE 0555</option>
-                    <option value="pantone0583">PANTONE 0583</option>
-                    <option value="pantone1815">PANTONE 1815</option>
-                    <option value="pantone4485">PANTONE 4485</option>
-                    <option value="pantone5565">PANTONE 5565</option>
-                    <option value="pantone7474">PANTONE 7474</option>
+                    <group label="MOD_RAFOOTER_GROUP_RAMBLERS_BRAND">
+                        <option value="mintcake">MOD_RAFOOTER_COLOR_MINTCAKE</option>
+                        <option value="sunset">MOD_RAFOOTER_COLOR_SUNSET</option>
+                        <option value="granite">MOD_RAFOOTER_COLOR_GRANITE</option>
+                        <option value="rosycheeks">MOD_RAFOOTER_COLOR_ROSYCHEEKS</option>
+                        <option value="sunrise">MOD_RAFOOTER_COLOR_SUNRISE</option>
+                        <option value="white">MOD_RAFOOTER_COLOR_WHITE_CLOUDY</option>
+                    </group>
                     <option value="custom">MOD_RAFOOTER_COLOR_CUSTOM</option>
+                    <group label="MOD_RAFOOTER_GROUP_PANTONE_OLD">
+                        <option value="pantone0110">PANTONE 0110</option>
+                        <option value="pantone0159">PANTONE 0159</option>
+                        <option value="pantone0186">PANTONE 0186</option>
+                        <option value="pantone0555">PANTONE 0555</option>
+                        <option value="pantone0583">PANTONE 0583</option>
+                        <option value="pantone1815">PANTONE 1815</option>
+                        <option value="pantone4485">PANTONE 4485</option>
+                        <option value="pantone5565">PANTONE 5565</option>
+                        <option value="pantone7474">PANTONE 7474</option>
+                    </group>
                 </field>
-                <field name="custom_background_colour_value" type="text" default="#000000"
-                       size="8"
+                <field name="custom_background_colour_value" type="color" default="#000000"
+                       format="hex" control="hue"
                        showon="background_color:custom"
                        label="MOD_RAFOOTER_FIELD_CUSTOMBACKGROUND_LABEL"
                        description="MOD_RAFOOTER_FIELD_CUSTOMBACKGROUND_DESC" />
-                <field name="textcolour" type="radio" default="1"
+                <field name="textcolour" type="radio" default="0"
                        label="MOD_RAFOOTER_FIELD_TEXTCOLOUR_LABEL">
                     <option value="1">MOD_RAFOOTER_OPTION_DARK</option>
                     <option value="0">MOD_RAFOOTER_OPTION_WHITE</option>
-                </field>
-                <field name="standardimage" type="radio" default="1"
-                       label="MOD_RAFOOTER_FIELD_STANDARDIMAGE_LABEL">
-                    <option value="1">MOD_RAFOOTER_OPTION_YES</option>
-                    <option value="0">MOD_RAFOOTER_OPTION_NO</option>
-                </field>
-                <field name="footer_image" type="media" directory=""
-                       label="MOD_RAFOOTER_FIELD_FOOTERIMAGE_LABEL"
-                       description="MOD_RAFOOTER_FIELD_FOOTERIMAGE_DESC" />
-                <field name="imageposition" type="list" default="center"
-                       label="MOD_RAFOOTER_FIELD_IMAGEPOSITION_LABEL">
-                    <option value="center">MOD_RAFOOTER_POSITION_CENTER</option>
-                    <option value="left">MOD_RAFOOTER_POSITION_LEFT</option>
-                    <option value="right">MOD_RAFOOTER_POSITION_RIGHT</option>
                 </field>
             </fieldset>
         </fields>

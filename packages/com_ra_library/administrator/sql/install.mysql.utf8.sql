@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `#__ra_library_displays` (
 `modified_by` INT(11)  NULL  DEFAULT 0,
 `title` VARCHAR(255)  NOT NULL ,
 `displayoption` VARCHAR(255)  DEFAULT "none" ,
-`options` MEDIUMTEXT NULL  DEFAULT "",
+`options` MEDIUMTEXT NULL,
 PRIMARY KEY (`id`)
 ,KEY `idx_state` (`state`)
 ,KEY `idx_checked_out` (`checked_out`)
